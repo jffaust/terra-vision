@@ -1,5 +1,11 @@
 import { get, writable, type Writable } from 'svelte/store';
 
+export enum AppView {
+    Map,
+    Sunlight
+}
+export const appView = writable(AppView.Map);
+
 export interface CameraView {
     centerLonLat: [number, number];
     rotation: number; // radians

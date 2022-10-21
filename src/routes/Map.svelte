@@ -2,13 +2,14 @@
 	import { onMount } from 'svelte';
 	import OSM from 'ol/source/OSM';
 	import TileLayer from 'ol/layer/Tile';
-	import { fromLonLat } from 'ol/proj';
+	import { fromLonLat, toLonLat } from 'ol/proj';
 	import { Map, MapBrowserEvent, View } from 'ol';
 	import { ScaleLine, Attribution } from 'ol/control';
 	import { defaults as defaultInteractions } from 'ol/interaction';
 	import ImageWMS from 'ol/source/ImageWMS';
 	import ImageLayer from 'ol/layer/Image';
 	import { initialView } from './stores';
+	import type { ObjectEvent } from 'ol/Object';
 
 	let map: Map;
 	const center = fromLonLat([$initialView.centerLonLat[0], $initialView.centerLonLat[1]]);
@@ -40,9 +41,21 @@
 		});
 
 		map.on('click', handleMapClick);
+		view.on('change:center', onCenterChanged);
 	});
 
 	function handleMapClick(e: MapBrowserEvent<any>) {}
+
+	function onCenterChanged(e: ObjectEvent) {
+		const projectedCenter = view.getCenter();
+		if (projectedCenter) {
+			const center = toLonLat(projectedCenter);
+			$initialView = {
+				...$initialView,
+				centerLonLat: [center[0], center[1]]
+			};
+		}
+	}
 </script>
 
 <!-- <svelte:window on:keyup={handleMapKeyUp} /> -->

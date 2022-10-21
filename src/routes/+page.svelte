@@ -1,22 +1,19 @@
 <script lang="ts">
 	import Map from './Map.svelte';
 	import Sidebar from './Sidebar.svelte';
-
-	enum Views {
-		Map,
-		Sunlight
-	}
-
-	let view = Views.Map;
+	import { AppView, appView } from './stores';
+	import Sunlight from './Sunlight.svelte';
 </script>
 
 <div class="app">
 	<Sidebar />
 
 	<div class="view">
-		{#if view == Views.Map}
+		{#if $appView == AppView.Map}
 			<Map />
-		{:else if view == Views.Sunlight}{/if}
+		{:else if $appView == AppView.Sunlight}
+			<Sunlight />
+		{/if}
 	</div>
 </div>
 

@@ -1,12 +1,14 @@
 <script lang="ts">
+	import Map from './Map.svelte';
 	import SidebarButton from './SidebarButton.svelte';
-	import { collapsed } from './stores';
+	import { appView, AppView, collapsed } from './stores';
 
 	function collapseOrExpand() {
 		$collapsed = !collapsed;
 	}
 
-	function changeTool() {
+	function changeView(v: AppView) {
+		$appView = v;
 		if ($collapsed) $collapsed = false;
 	}
 </script>
@@ -14,10 +16,14 @@
 <div class="sidebar" class:collapsed>
 	<menu>
 		<li>
-			<SidebarButton img="/icons/home.svg" alt="Acceuil" on:click={() => changeTool()} />
+			<SidebarButton img="/icons/map.svg" alt="Map" on:click={() => changeView(AppView.Map)} />
 		</li>
 		<li>
-			<SidebarButton img="/icons/map.svg" alt="Carte" on:click={() => changeTool()} />
+			<SidebarButton
+				img="/icons/sun.svg"
+				alt="Sunlight"
+				on:click={() => changeView(AppView.Sunlight)}
+			/>
 		</li>
 		<li>
 			<SidebarButton

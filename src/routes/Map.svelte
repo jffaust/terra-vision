@@ -8,12 +8,12 @@
 	import { defaults as defaultInteractions } from 'ol/interaction';
 	import ImageWMS from 'ol/source/ImageWMS';
 	import ImageLayer from 'ol/layer/Image';
-	import { initialView } from './stores';
+	import { mapsCameraView } from './stores';
 	import type { ObjectEvent } from 'ol/Object';
 
 	let map: Map;
-	const center = fromLonLat([$initialView.centerLonLat[0], $initialView.centerLonLat[1]]);
-	const view = new View({ center, zoom: $initialView.zoom, rotation: $initialView.rotation });
+	const center = fromLonLat([$mapsCameraView.center[0], $mapsCameraView.center[1]]);
+	const view = new View({ center, zoom: $mapsCameraView.zoom, rotation: $mapsCameraView.rotation });
 
 	onMount(() => {
 		map = new Map({
@@ -50,9 +50,9 @@
 		const projectedCenter = view.getCenter();
 		if (projectedCenter) {
 			const center = toLonLat(projectedCenter);
-			$initialView = {
-				...$initialView,
-				centerLonLat: [center[0], center[1]]
+			$mapsCameraView = {
+				...$mapsCameraView,
+				center: [center[0], center[1]]
 			};
 		}
 	}

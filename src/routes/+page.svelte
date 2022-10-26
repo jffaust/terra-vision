@@ -2,7 +2,7 @@
 	import Map from './Map.svelte';
 	import Sidebar from './Sidebar.svelte';
 	import { AppView, appView } from './stores';
-	import Sunlight from './Sunlight.svelte';
+	import SunInsightsView from './SunInsightsView.svelte';
 </script>
 
 <div class="app">
@@ -12,7 +12,7 @@
 		{#if $appView == AppView.Map}
 			<Map />
 		{:else if $appView == AppView.Sunlight}
-			<Sunlight />
+			<SunInsightsView />
 		{/if}
 	</div>
 </div>

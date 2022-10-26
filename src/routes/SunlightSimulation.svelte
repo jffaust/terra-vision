@@ -31,7 +31,7 @@
 	let earthGroup: Group;
 	let earthDayRotation = new THREE.Euler(0, 0, earthTilt, 'XZY'); // radians
 	//https://www.cs.mcgill.ca/~rwest/wikispeedia/wpcd/wp/e/Earth.htm
-	let earthSunOrbit = new THREE.EllipseCurve(
+	const earthSunOrbit = new THREE.EllipseCurve(
 		0,
 		0,
 		149597.887,
@@ -41,7 +41,11 @@
 		false,
 		0
 	);
-	earthSunOrbit;
+
+	// the ellipse curve is only using X and Y coords so we switch Y to Z to have it flat
+	const eartSunOrbitPoints = earthSunOrbit
+		.getSpacedPoints(360)
+		.map((p) => new THREE.Vector3(p.x, 0, p.y));
 
 	const { scene } = useThrelte();
 	let camera: THREE.PerspectiveCamera;
@@ -100,7 +104,7 @@
 	/>
 
 	<Line
-		geometry={new THREE.BufferGeometry().setFromPoints(earthSunOrbit.getSpacedPoints(360))}
+		geometry={new THREE.BufferGeometry().setFromPoints(eartSunOrbitPoints)}
 		material={new THREE.LineBasicMaterial({ color: 0x333333, transparent: true, opacity: 0.5 })}
 	/>
 

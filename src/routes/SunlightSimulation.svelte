@@ -27,7 +27,7 @@
 	const sunRadius = 695.7; // 695,700 km
 	const earthRadius = 6.371; // 6,371 km
 	const earthTilt = 0.4014257; //23 degres or 0.401 radians
-	const earthInitialPos = { x: 150000, y: 0, z: 0 }; // start at June solstice
+	const earthPos = { x: 0, y: 0, z: 0 }; // start at June solstice
 	let earthGroup: Group;
 	let earthDayRotation = new THREE.Euler(0, 0, earthTilt, 'XZY'); // radians
 	//https://www.cs.mcgill.ca/~rwest/wikispeedia/wpcd/wp/e/Earth.htm
@@ -41,10 +41,13 @@
 		false,
 		0
 	);
+	const dayDurationInSec = 60;
+	const yearDurationInSec = 365 * dayDurationInSec;
+	const earthDayRotationRate = (2 * Math.PI) / dayDurationInSec;
 
 	// the ellipse curve is only using X and Y coords so we switch Y to Z to have it flat
 	const eartSunOrbitPoints = earthSunOrbit
-		.getSpacedPoints(360)
+		.getSpacedPoints(3600)
 		.map((p) => new THREE.Vector3(p.x, 0, p.y));
 
 	const { scene } = useThrelte();
@@ -56,14 +59,27 @@
 	let sunTexture: THREE.Texture;
 	let earthTexture: THREE.Texture;
 
-	useFrame(() => {
-		earthDayRotation.y += 0.005;
+	let totalSecondsElapsed = 0;
+	useFrame((ctx, delta) => {
+		totalSecondsElapsed += delta;
+		earthDayRotation.y += delta * earthDayRotationRate;
+
+		const currentAngle = (totalSecondsElapsed % yearDurationInSec) / yearDurationInSec;
+		const xyPoint = earthSunOrbit.getPoint(currentAngle);
+		earthPos.x = xyPoint.x;
+		earthPos.z = xyPoint.y;
+
+		if (camera) {
+			const nextXYPoint = earthSunOrbit.getPoint(currentAngle + 0.00003);
+			camera.position.x = nextXYPoint.x;
+			camera.position.z = nextXYPoint.y;
+		}
 	});
 
 	let gps = getGPS3DPosition($mapsCameraView.center[0], $mapsCameraView.center[1], earthRadius);
 
 	onMount(async () => {
-		scene.add(new THREE.AxesHelper(1000000));
+		scene.add(new THREE.AxesHelper(200000));
 
 		sunTexture = await tLoader.loadAsync('/space/sun.jpg');
 		// https://www.solarsystemscope.com/textures/ CC attribution international license
@@ -85,13 +101,13 @@
 	}
 </script>
 
-<PerspectiveCamera bind:camera position={{ x: earthInitialPos.x, y: 0, z: 15 }} far={1000000}>
-	<OrbitControls target={earthInitialPos} />
+<PerspectiveCamera bind:camera far={1000000}>
+	<OrbitControls zoomSpeed={0.1} rotateSpeed={0.1} target={earthPos} />
 </PerspectiveCamera>
 
-<AmbientLight color={0xe5dee3} intensity={0.3} />
+<!-- <AmbientLight color={0xe5dee3} intensity={0.3} /> -->
 
-<!-- <PointLight position={{ x: 0, y: 0, z: 0 }} /> -->
+<PointLight position={{ x: 0, y: 0, z: 0 }} />
 
 {#if texturesLoaded}
 	<Mesh
@@ -108,17 +124,17 @@
 		material={new THREE.LineBasicMaterial({ color: 0x333333, transparent: true, opacity: 0.5 })}
 	/>
 
-	<Group bind:this={earthGroup} position={earthInitialPos} rotation={earthDayRotation}>
+	<Group bind:this={earthGroup} position={earthPos} rotation={earthDayRotation}>
 		<Mesh
 			geometry={new THREE.SphereGeometry(earthRadius, 100, 100)}
 			material={new THREE.MeshPhongMaterial({
 				map: earthTexture
 			})}
 		/>
-		<LineSegments
+		<!-- <LineSegments
 			geometry={new THREE.EdgesGeometry(new THREE.SphereGeometry(earthRadius, 100, 100))}
 			material={lineMat}
-		/>
+		/> -->
 
 		<Mesh
 			position={gps}

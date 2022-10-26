@@ -66,13 +66,21 @@
 
 		const currentAngle = (totalSecondsElapsed % yearDurationInSec) / yearDurationInSec;
 		const xyPoint = earthSunOrbit.getPoint(currentAngle);
+
+		const diffX = xyPoint.x - earthPos.x;
+		const diffZ = xyPoint.y - earthPos.z;
 		earthPos.x = xyPoint.x;
 		earthPos.z = xyPoint.y;
 
 		if (camera) {
-			const nextXYPoint = earthSunOrbit.getPoint(currentAngle + 0.00003);
-			camera.position.x = nextXYPoint.x;
-			camera.position.z = nextXYPoint.y;
+			if (camera.position.x == 0) {
+				const nextXYPoint = earthSunOrbit.getPoint(currentAngle + 0.00003);
+				camera.position.x = nextXYPoint.x;
+				camera.position.z = nextXYPoint.y;
+			} else {
+				camera.position.x += diffX;
+				camera.position.z += diffZ;
+			}
 		}
 	});
 
@@ -102,7 +110,7 @@
 </script>
 
 <PerspectiveCamera bind:camera far={1000000}>
-	<OrbitControls zoomSpeed={0.1} rotateSpeed={0.1} target={earthPos} />
+	<OrbitControls zoomSpeed={2} rotateSpeed={0.5} target={earthPos} />
 </PerspectiveCamera>
 
 <!-- <AmbientLight color={0xe5dee3} intensity={0.3} /> -->

@@ -29,7 +29,7 @@
 	const earthTilt = 0.4014257; //23 degres or 0.401 radians
 	const earthInitialPos = { x: 150000, y: 0, z: 0 }; // start at June solstice
 	let earthGroup: Group;
-	let earthDayRotation = 0; // radians
+	let earthDayRotation = new THREE.Euler(0, 0, earthTilt, 'XZY'); // radians
 	//https://www.cs.mcgill.ca/~rwest/wikispeedia/wpcd/wp/e/Earth.htm
 	let earthSunOrbit = new THREE.EllipseCurve(
 		0,
@@ -53,7 +53,7 @@
 	let earthTexture: THREE.Texture;
 
 	useFrame(() => {
-		earthDayRotation += 0.005;
+		earthDayRotation.y += 0.005;
 	});
 
 	let gps = getGPS3DPosition($mapsCameraView.center[0], $mapsCameraView.center[1], earthRadius);
@@ -81,7 +81,7 @@
 	}
 </script>
 
-<PerspectiveCamera bind:camera position={{ x: earthInitialPos.x - 10, y: 0, z: 10 }} far={1000000}>
+<PerspectiveCamera bind:camera position={{ x: earthInitialPos.x, y: 0, z: 15 }} far={1000000}>
 	<OrbitControls target={earthInitialPos} />
 </PerspectiveCamera>
 
@@ -104,7 +104,7 @@
 		material={new THREE.LineBasicMaterial({ color: 0x333333, transparent: true, opacity: 0.5 })}
 	/>
 
-	<Group bind:this={earthGroup} position={earthInitialPos} rotation={{ z: earthTilt, y: 0 }}>
+	<Group bind:this={earthGroup} position={earthInitialPos} rotation={earthDayRotation}>
 		<Mesh
 			geometry={new THREE.SphereGeometry(earthRadius, 100, 100)}
 			material={new THREE.MeshPhongMaterial({

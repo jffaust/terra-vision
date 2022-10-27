@@ -31,6 +31,7 @@
 	const earthTilt = 0.4014257; //23 degres or 0.401 radians
 	const earthPos = { x: 0, y: 0, z: 0 }; // start at June solstice
 	let earthGroup: THREE.Group;
+	let axesGroup: THREE.Group;
 	let earthDayRotation = new THREE.Euler(0, 0, earthTilt, 'XZY'); // radians
 	//https://www.cs.mcgill.ca/~rwest/wikispeedia/wpcd/wp/e/Earth.htm
 	const earthSunOrbit = new THREE.EllipseCurve(
@@ -55,7 +56,9 @@
 	const { scene } = useThrelte();
 	let camera: THREE.PerspectiveCamera;
 	const tLoader = new THREE.TextureLoader();
-	const lineMat = new THREE.LineBasicMaterial({ color: 0xff0000 });
+	const equatorMat = new THREE.LineBasicMaterial({ color: 0xff0000 });
+	const axesMat = new THREE.LineBasicMaterial({ color: 0x00ff07 });
+	const gpsColor = 0xff00ff;
 
 	let texturesLoaded = false;
 	let sunTexture: THREE.Texture;
@@ -78,6 +81,10 @@
 			earthGroup.position.set(earthPos.x, earthPos.y, earthPos.z);
 		}
 
+		if (axesGroup) {
+			axesGroup.position.set(earthPos.x, earthPos.y, earthPos.z);
+		}
+
 		if (camera) {
 			if (camera.position.x == 0) {
 				const nextXYPoint = earthSunOrbit.getPoint(currentAngle + 0.00002);
@@ -91,6 +98,7 @@
 	});
 
 	let gps = getGPS3DPosition($mapsCameraView.center[0], $mapsCameraView.center[1], earthRadius);
+	let gpsRingSize = Math.cos(degToRad($mapsCameraView.center[1])) * earthRadius;
 
 	onMount(async () => {
 		scene.add(new THREE.AxesHelper(200000));
@@ -148,21 +156,62 @@
 	/>
 
 	<Group bind:group={earthGroup} rotation={earthDayRotation}>
+		<!-- earth -->
 		<Mesh
 			geometry={new THREE.SphereGeometry(earthRadius, 200, 200)}
 			material={new THREE.MeshPhongMaterial({
 				map: earthTexture
 			})}
 		/>
+
 		<!-- <LineSegments
 			geometry={new THREE.EdgesGeometry(new THREE.SphereGeometry(earthRadius + 0.01, 100, 100))}
 			material={lineMat}
 		/> -->
 
+		<!-- gps coords pin -->
 		<Mesh
 			position={gps}
 			geometry={new THREE.SphereGeometry(0.02, 36, 36)}
-			material={new THREE.MeshBasicMaterial({ color: 0xff0000 })}
+			material={new THREE.MeshBasicMaterial({ color: gpsColor })}
+		/>
+
+		<!-- gps coords path -->
+		<LineSegments
+			position={{ y: gps.y }}
+			rotation={{ x: Math.PI / 2 }}
+			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(gpsRingSize + 0.01, 100, 100))}
+			material={new THREE.LineBasicMaterial({ color: 0xff8c00 })}
+		/>
+
+		<!-- north and south poles -->
+		<Line
+			points={[
+				[0, -earthRadius - 0.5, 0],
+				[0, earthRadius + 0.5, 0]
+			]}
+			material={equatorMat}
+		/>
+
+		<!-- equator -->
+		<LineSegments
+			rotation={{ x: Math.PI / 2 }}
+			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100, 100))}
+			material={equatorMat}
+		/>
+	</Group>
+
+	<Group bind:group={axesGroup}>
+		<!-- this one might not be necessary -->
+		<!-- <LineSegments
+			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100, 100))}
+			material={axesMat}
+		/> -->
+
+		<LineSegments
+			rotation={{ x: Math.PI / 2 }}
+			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100, 100))}
+			material={axesMat}
 		/>
 	</Group>
 {/if}

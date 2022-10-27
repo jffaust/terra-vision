@@ -63,6 +63,7 @@
 	let texturesLoaded = false;
 	let sunTexture: THREE.Texture;
 	let earthTexture: THREE.Texture;
+	let milkyWayTexture: THREE.Texture;
 
 	let totalSecondsElapsed = 0;
 	useFrame((ctx, delta) => {
@@ -103,6 +104,9 @@
 	onMount(async () => {
 		scene.add(new THREE.AxesHelper(200000));
 
+		//https://www.eso.org/public/images/eso0932a/
+		milkyWayTexture = await tLoader.loadAsync('/space/milky-way-large.jpg');
+		// https://www.solarsystemscope.com/textures/ CC attribution international license
 		sunTexture = await tLoader.loadAsync('/space/sun.jpg');
 		// https://www.solarsystemscope.com/textures/ CC attribution international license
 		earthTexture = await tLoader.loadAsync('/space/8k_earth_daymap.jpg');
@@ -132,7 +136,7 @@
 
 <svelte:window on:keyup={handleKeyUp} />
 
-<PerspectiveCamera bind:camera far={1000000}>
+<PerspectiveCamera bind:camera far={10000000}>
 	<OrbitControls zoomSpeed={2} rotateSpeed={0.5} target={earthPos} />
 </PerspectiveCamera>
 
@@ -142,6 +146,15 @@
 
 {#if texturesLoaded}
 	<Mesh
+		geometry={new THREE.SphereGeometry(1000000, 1000, 1000)}
+		material={new THREE.MeshBasicMaterial({
+			map: milkyWayTexture,
+			side: THREE.BackSide
+		})}
+	/>
+
+	<!-- sun -->
+	<Mesh
 		geometry={new THREE.SphereGeometry(sunRadius, 400, 200)}
 		material={new THREE.MeshStandardMaterial({
 			emissive: 0xffd700,
@@ -150,6 +163,7 @@
 		})}
 	/>
 
+	<!-- earth sun orbit -->
 	<Line
 		geometry={new THREE.BufferGeometry().setFromPoints(eartSunOrbitPoints)}
 		material={new THREE.LineBasicMaterial({ color: 0x333333, transparent: true, opacity: 0.5 })}

@@ -17,8 +17,9 @@
 	} from '@threlte/core';
 	import { onMount } from 'svelte';
 	import { mapsCameraView } from './stores';
+	import { DoubleSide } from 'three';
 
-	// const ctx = useThrelte();
+	const ctx = useThrelte();
 
 	let playSimulation = true;
 
@@ -62,7 +63,9 @@
 
 	let texturesLoaded = false;
 	let sunTexture: THREE.Texture;
-	let earthTexture: THREE.Texture;
+	let earthMap: THREE.Texture;
+	let earthSpecMap: THREE.Texture;
+	let earthBumpMap: THREE.Texture;
 	let milkyWayTexture: THREE.Texture;
 
 	let totalSecondsElapsed = 0;
@@ -102,17 +105,35 @@
 	let gpsRingSize = Math.cos(degToRad($mapsCameraView.center[1])) * earthRadius;
 
 	onMount(async () => {
+		if (ctx && ctx.renderer) {
+			ctx.renderer.physicallyCorrectLights = true;
+		}
+
 		scene.add(new THREE.AxesHelper(200000));
 
-		//https://www.eso.org/public/images/eso0932a/
-		milkyWayTexture = await tLoader.loadAsync('/space/milky-way-large.jpg');
-		// https://www.solarsystemscope.com/textures/ CC attribution international license
-		sunTexture = await tLoader.loadAsync('/space/sun.jpg');
-		// https://www.solarsystemscope.com/textures/ CC attribution international license
-		earthTexture = await tLoader.loadAsync('/space/8k_earth_daymap.jpg');
-		earthTexture.wrapS = THREE.RepeatWrapping;
-		earthTexture.offset.x = 0.25; // not sure why :)
-		texturesLoaded = true;
+		try {
+			//https://www.eso.org/public/images/eso0932a/
+			milkyWayTexture = await tLoader.loadAsync('/space/milky-way-large.jpg');
+			// https://www.solarsystemscope.com/textures/ CC attribution international license
+			sunTexture = await tLoader.loadAsync('/space/sun.jpg');
+			// https://www.solarsystemscope.com/textures/ CC attribution international license
+			// earthTexture = await tLoader.loadAsync('/space/8k_earth_daymap.jpg');
+			// https://visibleearth.nasa.gov/images/73701/may-blue-marble-next-generation-w-topography-and-bathymetry/73710l
+			earthMap = await tLoader.loadAsync('/space/earth_blue_marble_may_small.jpg');
+			earthMap.wrapS = THREE.RepeatWrapping;
+			earthMap.offset.x = 0.25; // not sure why :)
+			earthSpecMap = await tLoader.loadAsync('/space/8k_earth_specular_map.jpg');
+			earthSpecMap.wrapS = THREE.RepeatWrapping;
+			earthSpecMap.offset.x = 0.25; // not sure why :)
+			// https://www.shadedrelief.com/natural3/pages/extra.html
+			// earthBumpMap = await tLoader.loadAsync('/space/earth_bump_16k.jpg');
+			// earthBumpMap.wrapS = THREE.RepeatWrapping;
+			// earthBumpMap.offset.x = 0.25;
+			texturesLoaded = true;
+		} catch (e) {
+			console.log(e);
+			//todo erro
+		}
 	});
 
 	function getGPS3DPosition(lon: number, lat: number, radius: number): Position {
@@ -142,14 +163,17 @@
 
 <!-- <AmbientLight color={0xe5dee3} intensity={0.3} /> -->
 
-<PointLight position={{ x: 0, y: 0, z: 0 }} />
+<PointLight position={{ x: 0, y: 0, z: 0 }} decay={2} intensity={100000000000} />
 
 {#if texturesLoaded}
+	<!-- milky wayy -->
 	<Mesh
-		geometry={new THREE.SphereGeometry(1000000, 1000, 1000)}
-		material={new THREE.MeshBasicMaterial({
-			map: milkyWayTexture,
-			side: THREE.BackSide
+		geometry={new THREE.SphereGeometry(500000, 1000, 1000)}
+		material={new THREE.MeshStandardMaterial({
+			side: THREE.BackSide,
+			emissive: 0x000000,
+			emissiveIntensity: 1,
+			map: milkyWayTexture
 		})}
 	/>
 
@@ -174,7 +198,13 @@
 		<Mesh
 			geometry={new THREE.SphereGeometry(earthRadius, 200, 200)}
 			material={new THREE.MeshPhongMaterial({
-				map: earthTexture
+				map: earthMap,
+				// normalMap: earthNormalTexture,
+				// normalScale: 0.5,
+				// bumpMap: earthBumpMap,
+				// bumpScale: 0.1,
+				specularMap: earthSpecMap,
+				shininess: 0.5
 			})}
 		/>
 
@@ -217,10 +247,11 @@
 
 	<Group bind:group={axesGroup}>
 		<!-- this one might not be necessary -->
-		<!-- <LineSegments
+		<LineSegments
+			rotation={{ x: Math.PI / 2, y: Math.PI / 2 }}
 			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100, 100))}
 			material={axesMat}
-		/> -->
+		/>
 
 		<LineSegments
 			rotation={{ x: Math.PI / 2 }}

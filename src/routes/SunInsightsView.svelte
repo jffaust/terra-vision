@@ -4,7 +4,7 @@
 </script>
 
 <div id="view">
-	<Canvas><SunlightSimulation /></Canvas>
+	<Canvas rendererParameters={{ antialias: true }}><SunlightSimulation /></Canvas>
 </div>
 
 <style>

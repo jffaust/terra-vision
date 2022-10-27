@@ -2,7 +2,6 @@
 	import * as THREE from 'three';
 	import { DEG2RAD, degToRad } from 'three/src/math/MathUtils';
 	import {
-		Canvas,
 		PointLight,
 		AmbientLight,
 		Group,
@@ -18,7 +17,10 @@
 	} from '@threlte/core';
 	import { onMount } from 'svelte';
 	import { mapsCameraView } from './stores';
-	import { BufferGeometry } from 'three';
+
+	// const ctx = useThrelte();
+
+	let playSimulation = true;
 
 	//woah : https://gravitysimulator.org/solar-system/the-inner-solar-system
 	//code: https://discourse.threejs.org/t/updating-ellipsecurve/8218/8
@@ -28,7 +30,7 @@
 	const earthRadius = 6.371; // 6,371 km
 	const earthTilt = 0.4014257; //23 degres or 0.401 radians
 	const earthPos = { x: 0, y: 0, z: 0 }; // start at June solstice
-	let earthGroup: Group;
+	let earthGroup: THREE.Group;
 	let earthDayRotation = new THREE.Euler(0, 0, earthTilt, 'XZY'); // radians
 	//https://www.cs.mcgill.ca/~rwest/wikispeedia/wpcd/wp/e/Earth.htm
 	const earthSunOrbit = new THREE.EllipseCurve(
@@ -61,6 +63,7 @@
 
 	let totalSecondsElapsed = 0;
 	useFrame((ctx, delta) => {
+		if (!playSimulation) return;
 		totalSecondsElapsed += delta;
 		earthDayRotation.y += delta * earthDayRotationRate;
 
@@ -71,10 +74,13 @@
 		const diffZ = xyPoint.y - earthPos.z;
 		earthPos.x = xyPoint.x;
 		earthPos.z = xyPoint.y;
+		if (earthGroup) {
+			earthGroup.position.set(earthPos.x, earthPos.y, earthPos.z);
+		}
 
 		if (camera) {
 			if (camera.position.x == 0) {
-				const nextXYPoint = earthSunOrbit.getPoint(currentAngle + 0.00003);
+				const nextXYPoint = earthSunOrbit.getPoint(currentAngle + 0.00002);
 				camera.position.x = nextXYPoint.x;
 				camera.position.z = nextXYPoint.y;
 			} else {
@@ -107,7 +113,16 @@
 		console.log(result);
 		return result;
 	}
+
+	function handleKeyUp(e: KeyboardEvent) {
+		console.log(e);
+		if (e.code == 'Space') {
+			playSimulation = !playSimulation;
+		}
+	}
 </script>
+
+<svelte:window on:keyup={handleKeyUp} />
 
 <PerspectiveCamera bind:camera far={1000000}>
 	<OrbitControls zoomSpeed={2} rotateSpeed={0.5} target={earthPos} />
@@ -132,22 +147,22 @@
 		material={new THREE.LineBasicMaterial({ color: 0x333333, transparent: true, opacity: 0.5 })}
 	/>
 
-	<Group bind:this={earthGroup} position={earthPos} rotation={earthDayRotation}>
+	<Group bind:group={earthGroup} rotation={earthDayRotation}>
 		<Mesh
-			geometry={new THREE.SphereGeometry(earthRadius, 100, 100)}
+			geometry={new THREE.SphereGeometry(earthRadius, 200, 200)}
 			material={new THREE.MeshPhongMaterial({
 				map: earthTexture
 			})}
 		/>
 		<!-- <LineSegments
-			geometry={new THREE.EdgesGeometry(new THREE.SphereGeometry(earthRadius, 100, 100))}
+			geometry={new THREE.EdgesGeometry(new THREE.SphereGeometry(earthRadius + 0.01, 100, 100))}
 			material={lineMat}
 		/> -->
 
 		<Mesh
 			position={gps}
-			geometry={new THREE.SphereGeometry(0.01, 36, 36)}
-			material={new THREE.MeshBasicMaterial({ color: 0x38ea27 })}
+			geometry={new THREE.SphereGeometry(0.02, 36, 36)}
+			material={new THREE.MeshBasicMaterial({ color: 0xff0000 })}
 		/>
 	</Group>
 {/if}

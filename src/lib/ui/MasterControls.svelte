@@ -20,8 +20,6 @@
 	$: displayDate = dateFormat($datetime, 'mmmm dS, yyyy, h:MM:ss TT');
 
 	function advance() {
-		console.log('advancing');
-
 		const now = performance.now();
 		const elapsedMs = now - previousTime;
 

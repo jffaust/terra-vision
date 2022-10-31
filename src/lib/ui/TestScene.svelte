@@ -13,12 +13,13 @@
 	} from '@threlte/core';
 	import { onMount } from 'svelte';
 	import { DoubleSide } from 'three';
+	import { pos } from '$lib/sim/simulation';
 
 	const ctx = useThrelte();
 	const { scene } = useThrelte();
 
 	let totalSecondsElapsed = 0;
-	useFrame((ctx, delta) => {});
+	//useFrame((ctx, delta) => {});
 
 	onMount(async () => {
 		console.log('SpaceSimScene Mounted');
@@ -45,7 +46,7 @@
 <!-- Cube -->
 <Group>
 	<Mesh
-		position={{ y: 0.5 }}
+		position={{ x: $pos, y: 0.5 }}
 		castShadow
 		geometry={new THREE.BoxGeometry(1, 1, 1)}
 		material={new THREE.MeshStandardMaterial({ color: '#333333' })}

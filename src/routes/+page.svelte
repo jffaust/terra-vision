@@ -1,12 +1,36 @@
 <script lang="ts">
-	import { Textures } from '$lib/constants';
+	import { Textures, ViewTypes, type Rect, type View } from '$lib/types';
+	import ViewContainer from '$lib/ViewContainer.svelte';
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
-	import SpaceSimCanvas from './SpaceSimCanvas.svelte';
+	import SpaceSimCanvas from '$lib/SpaceSimCanvas.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
 	const textures = new Map<Textures, THREE.Texture>();
+
+	let views: View[] = [
+		{
+			id: 0,
+			view: ViewTypes.SpaceSim,
+			region: {
+				left: 0,
+				top: 0,
+				width: 0.5,
+				height: 1
+			}
+		},
+		{
+			id: 1,
+			view: ViewTypes.SpaceSim,
+			region: {
+				left: 0.5,
+				top: 0,
+				width: 0.5,
+				height: 1
+			}
+		}
+	];
 
 	onMount(async () => {
 		try {
@@ -34,11 +58,31 @@
 			//todo erro
 		}
 	});
+
+	function getViewPixelRegion(view: View): Rect {
+		return {
+			left: view.region.left * window.innerWidth,
+			top: view.region.top * window.innerHeight,
+			width: view.region.width * window.innerWidth,
+			height: view.region.height * window.innerHeight
+		};
+	}
+
+	function onResize() {
+		views = views;
+	}
 </script>
+
+<svelte:window on:resize={onResize} />
 
 <div class="app">
 	{#if texturesLoaded}
-		<SpaceSimCanvas {textures} />
+		{#each views as view (view.id)}
+			{@const pixelRect = getViewPixelRegion(view)}
+			<ViewContainer {...pixelRect}>
+				<SpaceSimCanvas {textures} width={pixelRect.width} height={pixelRect.height} />
+			</ViewContainer>
+		{/each}
 	{:else}
 		<p>Loading textures...</p>
 	{/if}

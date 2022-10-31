@@ -15,10 +15,10 @@
 		useThrelte,
 		Line
 	} from '@threlte/core';
-	import { onMount } from 'svelte';
+	import { beforeUpdate, onMount } from 'svelte';
 	import { mapsCameraView } from './stores';
 	import { DoubleSide } from 'three';
-	import { Textures } from '$lib/constants';
+	import { Textures } from './types';
 
 	export let textures: Map<Textures, THREE.Texture>;
 
@@ -100,28 +100,27 @@
 	let gpsRingSize = Math.cos(degToRad($mapsCameraView.center[1])) * earthRadius;
 
 	onMount(async () => {
+		console.log('SpaceSimScene Mounted');
 		if (ctx && ctx.renderer) {
 			ctx.renderer.physicallyCorrectLights = true;
 		}
 
 		scene.add(new THREE.AxesHelper(200000));
-
-		console.log('Sim mounted');
 	});
 
 	function getGPS3DPosition(lon: number, lat: number, radius: number): Position {
-		console.log(`coords are: ${lon}, ${lat}`);
+		//console.log(`coords are: ${lon}, ${lat}`);
 		let result = {
 			x: Math.sin(degToRad(lon)) * Math.cos(degToRad(lat)) * radius,
 			y: Math.sin(degToRad(lat)) * radius,
 			z: Math.cos(degToRad(lon)) * Math.cos(degToRad(lat)) * radius
 		};
-		console.log(result);
+		//console.log(result);
 		return result;
 	}
 
 	function handleKeyUp(e: KeyboardEvent) {
-		console.log(e);
+		//TODO doesnt belong here
 		if (e.code == 'Space') {
 			playSimulation = !playSimulation;
 		}

@@ -18,6 +18,9 @@
 	import { onMount } from 'svelte';
 	import { mapsCameraView } from './stores';
 	import { DoubleSide } from 'three';
+	import { Textures } from '$lib/constants';
+
+	export let textures: Map<Textures, THREE.Texture>;
 
 	const ctx = useThrelte();
 
@@ -56,17 +59,9 @@
 
 	const { scene } = useThrelte();
 	let camera: THREE.PerspectiveCamera;
-	const tLoader = new THREE.TextureLoader();
 	const equatorMat = new THREE.LineBasicMaterial({ color: 0xff0000 });
 	const axesMat = new THREE.LineBasicMaterial({ color: 0x00ff07 });
 	const gpsColor = 0xff00ff;
-
-	let texturesLoaded = false;
-	let sunTexture: THREE.Texture;
-	let earthMap: THREE.Texture;
-	let earthSpecMap: THREE.Texture;
-	let earthBumpMap: THREE.Texture;
-	let milkyWayTexture: THREE.Texture;
 
 	let totalSecondsElapsed = 0;
 	useFrame((ctx, delta) => {
@@ -111,29 +106,7 @@
 
 		scene.add(new THREE.AxesHelper(200000));
 
-		try {
-			//https://www.eso.org/public/images/eso0932a/
-			milkyWayTexture = await tLoader.loadAsync('/space/milky-way-large.jpg');
-			// https://www.solarsystemscope.com/textures/ CC attribution international license
-			sunTexture = await tLoader.loadAsync('/space/sun.jpg');
-			// https://www.solarsystemscope.com/textures/ CC attribution international license
-			// earthTexture = await tLoader.loadAsync('/space/8k_earth_daymap.jpg');
-			// https://visibleearth.nasa.gov/images/73701/may-blue-marble-next-generation-w-topography-and-bathymetry/73710l
-			earthMap = await tLoader.loadAsync('/space/earth_blue_marble_may_small.jpg');
-			earthMap.wrapS = THREE.RepeatWrapping;
-			earthMap.offset.x = 0.25; // not sure why :)
-			earthSpecMap = await tLoader.loadAsync('/space/8k_earth_specular_map.jpg');
-			earthSpecMap.wrapS = THREE.RepeatWrapping;
-			earthSpecMap.offset.x = 0.25; // not sure why :)
-			// https://www.shadedrelief.com/natural3/pages/extra.html
-			// earthBumpMap = await tLoader.loadAsync('/space/earth_bump_16k.jpg');
-			// earthBumpMap.wrapS = THREE.RepeatWrapping;
-			// earthBumpMap.offset.x = 0.25;
-			texturesLoaded = true;
-		} catch (e) {
-			console.log(e);
-			//todo erro
-		}
+		console.log('Sim mounted');
 	});
 
 	function getGPS3DPosition(lon: number, lat: number, radius: number): Position {
@@ -165,101 +138,99 @@
 
 <PointLight position={{ x: 0, y: 0, z: 0 }} decay={2} intensity={100000000000} />
 
-{#if texturesLoaded}
-	<!-- milky wayy -->
+<!-- milky wayy -->
+<Mesh
+	geometry={new THREE.SphereGeometry(500000, 100, 100)}
+	material={new THREE.MeshStandardMaterial({
+		side: THREE.BackSide,
+		emissive: 0x000000,
+		emissiveIntensity: 1,
+		map: textures.get(Textures.MilkyWay)
+	})}
+/>
+
+<!-- sun -->
+<Mesh
+	geometry={new THREE.SphereGeometry(sunRadius, 50, 50)}
+	material={new THREE.MeshStandardMaterial({
+		emissive: 0xffd700,
+		emissiveIntensity: 1,
+		emissiveMap: textures.get(Textures.Sun)
+	})}
+/>
+
+<!-- earth sun orbit -->
+<Line
+	geometry={new THREE.BufferGeometry().setFromPoints(eartSunOrbitPoints)}
+	material={new THREE.LineBasicMaterial({ color: 0x333333, transparent: true, opacity: 0.5 })}
+/>
+
+<Group bind:group={earthGroup} rotation={earthDayRotation}>
+	<!-- earth -->
 	<Mesh
-		geometry={new THREE.SphereGeometry(500000, 100, 100)}
-		material={new THREE.MeshStandardMaterial({
-			side: THREE.BackSide,
-			emissive: 0x000000,
-			emissiveIntensity: 1,
-			map: milkyWayTexture
+		geometry={new THREE.SphereGeometry(earthRadius, 100, 100)}
+		material={new THREE.MeshPhongMaterial({
+			map: textures.get(Textures.EarthColor)
+			// normalMap: earthNormalTexture,
+			// normalScale: 0.5,
+			// bumpMap: earthBumpMap,
+			// bumpScale: 0.1,
+			// specularMap: earthSpecMap,
+			// shininess: 0.5
 		})}
 	/>
 
-	<!-- sun -->
-	<Mesh
-		geometry={new THREE.SphereGeometry(sunRadius, 50, 50)}
-		material={new THREE.MeshStandardMaterial({
-			emissive: 0xffd700,
-			emissiveIntensity: 1,
-			emissiveMap: sunTexture
-		})}
-	/>
-
-	<!-- earth sun orbit -->
-	<Line
-		geometry={new THREE.BufferGeometry().setFromPoints(eartSunOrbitPoints)}
-		material={new THREE.LineBasicMaterial({ color: 0x333333, transparent: true, opacity: 0.5 })}
-	/>
-
-	<Group bind:group={earthGroup} rotation={earthDayRotation}>
-		<!-- earth -->
-		<Mesh
-			geometry={new THREE.SphereGeometry(earthRadius, 100, 100)}
-			material={new THREE.MeshPhongMaterial({
-				map: earthMap,
-				// normalMap: earthNormalTexture,
-				// normalScale: 0.5,
-				// bumpMap: earthBumpMap,
-				// bumpScale: 0.1,
-				specularMap: earthSpecMap,
-				shininess: 0.5
-			})}
-		/>
-
-		<!-- <LineSegments
+	<!-- <LineSegments
 			geometry={new THREE.EdgesGeometry(new THREE.SphereGeometry(earthRadius + 0.01, 100, 100))}
 			material={lineMat}
 		/> -->
 
-		<!-- gps coords pin -->
-		<Mesh
-			position={gps}
-			geometry={new THREE.SphereGeometry(0.02, 36, 36)}
-			material={new THREE.MeshBasicMaterial({ color: gpsColor })}
-		/>
+	<!-- gps coords pin -->
+	<Mesh
+		position={gps}
+		geometry={new THREE.SphereGeometry(0.02, 36, 36)}
+		material={new THREE.MeshBasicMaterial({ color: gpsColor })}
+	/>
 
-		<!-- gps coords path -->
-		<LineSegments
-			position={{ y: gps.y }}
-			rotation={{ x: Math.PI / 2 }}
-			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(gpsRingSize + 0.01, 100))}
-			material={new THREE.LineBasicMaterial({ color: 0xff8c00 })}
-		/>
+	<!-- gps coords path -->
+	<LineSegments
+		position={{ y: gps.y }}
+		rotation={{ x: Math.PI / 2 }}
+		geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(gpsRingSize + 0.01, 100))}
+		material={new THREE.LineBasicMaterial({ color: 0xff8c00 })}
+	/>
 
-		<!-- north and south poles -->
-		<Line
-			points={[
-				[0, -earthRadius - 0.5, 0],
-				[0, earthRadius + 0.5, 0]
-			]}
-			material={equatorMat}
-		/>
+	<!-- north and south poles -->
+	<Line
+		points={[
+			[0, -earthRadius - 0.5, 0],
+			[0, earthRadius + 0.5, 0]
+		]}
+		material={equatorMat}
+	/>
 
-		<!-- equator -->
-		<LineSegments
-			rotation={{ x: Math.PI / 2 }}
-			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100))}
-			material={equatorMat}
-		/>
-	</Group>
+	<!-- equator -->
+	<LineSegments
+		rotation={{ x: Math.PI / 2 }}
+		geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100))}
+		material={equatorMat}
+	/>
+</Group>
 
-	<Group bind:group={axesGroup}>
-		<!-- this one might not be necessary -->
-		<LineSegments
-			rotation={{ x: Math.PI / 2, y: Math.PI / 2 }}
-			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100))}
-			material={axesMat}
-		/>
+<Group bind:group={axesGroup}>
+	<!-- this one might not be necessary -->
+	<LineSegments
+		rotation={{ x: Math.PI / 2, y: Math.PI / 2 }}
+		geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100))}
+		material={axesMat}
+	/>
 
-		<LineSegments
-			rotation={{ x: Math.PI / 2 }}
-			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100))}
-			material={axesMat}
-		/>
-	</Group>
-{/if}
+	<LineSegments
+		rotation={{ x: Math.PI / 2 }}
+		geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100))}
+		material={axesMat}
+	/>
+</Group>
 
 <style>
 </style>

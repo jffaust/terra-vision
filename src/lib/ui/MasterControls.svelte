@@ -1,6 +1,5 @@
 <script lang="ts">
 	import dateFormat from 'dateformat';
-
 	let date = new Date();
 	let displayDate = dateFormat(date, 'mmmm dS, yyyy, h:MM:ss TT');
 </script>

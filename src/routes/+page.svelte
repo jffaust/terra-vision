@@ -3,8 +3,10 @@
 	import ViewContainer from '$lib/ui/ViewContainer.svelte';
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
-	import SpaceSimCanvas from '$lib/ui/SpaceSimCanvas.svelte';
 	import MasterControls from '$lib/ui/MasterControls.svelte';
+	import { Canvas } from '@threlte/core';
+	import SpaceSimScene from '$lib/ui/SpaceSimScene.svelte';
+	import TestScene from '$lib/ui/TestScene.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -13,7 +15,7 @@
 	let views: View[] = [
 		{
 			id: 0,
-			view: ViewTypes.SpaceSim,
+			type: ViewTypes.SpaceSim,
 			region: {
 				left: 0,
 				top: 0,
@@ -23,7 +25,7 @@
 		},
 		{
 			id: 1,
-			view: ViewTypes.SpaceSim,
+			type: ViewTypes.Test,
 			region: {
 				left: 0.5,
 				top: 0,
@@ -79,9 +81,18 @@
 <div class="app">
 	{#if texturesLoaded}
 		{#each views as view (view.id)}
-			{@const pixelRect = getViewPixelRegion(view)}
-			<ViewContainer {...pixelRect}>
-				<SpaceSimCanvas {textures} width={pixelRect.width} height={pixelRect.height} />
+			{@const rect = getViewPixelRegion(view)}
+			<ViewContainer {...rect}>
+				<Canvas
+					rendererParameters={{ antialias: true }}
+					size={{ width: rect.width, height: rect.height }}
+				>
+					{#if view.type == ViewTypes.SpaceSim}
+						<SpaceSimScene {textures} />
+					{:else if view.type == ViewTypes.Test}
+						<TestScene />
+					{/if}
+				</Canvas>
 			</ViewContainer>
 		{/each}
 

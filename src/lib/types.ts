@@ -5,12 +5,13 @@ export enum Textures {
 }
 
 export enum ViewTypes {
-    SpaceSim
+    SpaceSim,
+    Test
 }
 
 export interface View {
     id: number;
-    view: ViewTypes;
+    type: ViewTypes;
     region: Rect; // percentages
 }
 

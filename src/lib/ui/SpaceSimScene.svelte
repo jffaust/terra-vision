@@ -1,24 +1,21 @@
 <script lang="ts">
 	import * as THREE from 'three';
-	import { DEG2RAD, degToRad } from 'three/src/math/MathUtils';
+	import { degToRad } from 'three/src/math/MathUtils';
 	import {
 		PointLight,
-		AmbientLight,
 		Group,
 		Mesh,
 		useFrame,
 		OrbitControls,
 		PerspectiveCamera,
-		type ThrelteContext,
 		LineSegments,
 		type Position,
 		useThrelte,
 		Line
 	} from '@threlte/core';
-	import { beforeUpdate, onMount } from 'svelte';
-	import { mapsCameraView } from './stores';
-	import { DoubleSide } from 'three';
-	import { Textures } from './types';
+	import { onMount } from 'svelte';
+	import { mapsCameraView } from '../stores';
+	import { Textures } from '../types';
 
 	export let textures: Map<Textures, THREE.Texture>;
 

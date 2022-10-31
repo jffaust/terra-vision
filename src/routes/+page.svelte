@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { Textures, ViewTypes, type Rect, type View } from '$lib/types';
-	import ViewContainer from '$lib/ViewContainer.svelte';
+	import ViewContainer from '$lib/ui/ViewContainer.svelte';
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
-	import SpaceSimCanvas from '$lib/SpaceSimCanvas.svelte';
+	import SpaceSimCanvas from '$lib/ui/SpaceSimCanvas.svelte';
+	import MasterControls from '$lib/ui/MasterControls.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -83,6 +84,8 @@
 				<SpaceSimCanvas {textures} width={pixelRect.width} height={pixelRect.height} />
 			</ViewContainer>
 		{/each}
+
+		<MasterControls />
 	{:else}
 		<p>Loading textures...</p>
 	{/if}

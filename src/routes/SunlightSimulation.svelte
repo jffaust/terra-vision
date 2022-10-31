@@ -168,7 +168,7 @@
 {#if texturesLoaded}
 	<!-- milky wayy -->
 	<Mesh
-		geometry={new THREE.SphereGeometry(500000, 1000, 1000)}
+		geometry={new THREE.SphereGeometry(500000, 100, 100)}
 		material={new THREE.MeshStandardMaterial({
 			side: THREE.BackSide,
 			emissive: 0x000000,
@@ -179,7 +179,7 @@
 
 	<!-- sun -->
 	<Mesh
-		geometry={new THREE.SphereGeometry(sunRadius, 400, 200)}
+		geometry={new THREE.SphereGeometry(sunRadius, 50, 50)}
 		material={new THREE.MeshStandardMaterial({
 			emissive: 0xffd700,
 			emissiveIntensity: 1,
@@ -196,7 +196,7 @@
 	<Group bind:group={earthGroup} rotation={earthDayRotation}>
 		<!-- earth -->
 		<Mesh
-			geometry={new THREE.SphereGeometry(earthRadius, 200, 200)}
+			geometry={new THREE.SphereGeometry(earthRadius, 100, 100)}
 			material={new THREE.MeshPhongMaterial({
 				map: earthMap,
 				// normalMap: earthNormalTexture,
@@ -224,7 +224,7 @@
 		<LineSegments
 			position={{ y: gps.y }}
 			rotation={{ x: Math.PI / 2 }}
-			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(gpsRingSize + 0.01, 100, 100))}
+			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(gpsRingSize + 0.01, 100))}
 			material={new THREE.LineBasicMaterial({ color: 0xff8c00 })}
 		/>
 
@@ -240,7 +240,7 @@
 		<!-- equator -->
 		<LineSegments
 			rotation={{ x: Math.PI / 2 }}
-			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100, 100))}
+			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100))}
 			material={equatorMat}
 		/>
 	</Group>
@@ -249,13 +249,13 @@
 		<!-- this one might not be necessary -->
 		<LineSegments
 			rotation={{ x: Math.PI / 2, y: Math.PI / 2 }}
-			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100, 100))}
+			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100))}
 			material={axesMat}
 		/>
 
 		<LineSegments
 			rotation={{ x: Math.PI / 2 }}
-			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100, 100))}
+			geometry={new THREE.EdgesGeometry(new THREE.CircleGeometry(earthRadius + 0.01, 100))}
 			material={axesMat}
 		/>
 	</Group>

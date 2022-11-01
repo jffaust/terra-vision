@@ -3,8 +3,11 @@
 	import dateFormat from 'dateformat';
 	import { onDestroy, onMount } from 'svelte';
 
-	let intervalId: NodeJS.Timer;
 	let previousTime: number;
+	let intervalId: NodeJS.Timer;
+
+	let timeFactor = 100000;
+
 	onMount(() => {
 		$datetime = new Date();
 		previousTime = performance.now();
@@ -23,7 +26,7 @@
 		const now = performance.now();
 		const elapsedMs = now - previousTime;
 
-		$datetime = new Date($datetime.getTime() + elapsedMs);
+		$datetime = new Date($datetime.getTime() + elapsedMs * timeFactor);
 
 		previousTime = now;
 	}

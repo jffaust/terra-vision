@@ -9,17 +9,27 @@
 		PerspectiveCamera,
 		useThrelte,
 		DirectionalLight,
-		AmbientLight
+		AmbientLight,
+		Line,
+		Line2
 	} from '@threlte/core';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { DoubleSide } from 'three';
 	import { pos } from '$lib/sim/simulation';
+	import { writable } from 'svelte/store';
+	import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 
 	const ctx = useThrelte();
 	const { scene } = useThrelte();
 
 	let totalSecondsElapsed = 0;
 	//useFrame((ctx, delta) => {});
+
+	let orbit = writable<THREE.Vector3[]>([]);
+	const unsub = pos.subscribe((p) => {
+		$orbit.push(p);
+		$orbit = $orbit;
+	});
 
 	onMount(async () => {
 		console.log('SpaceSimScene Mounted');
@@ -29,36 +39,41 @@
 
 		scene.add(new THREE.AxesHelper(20));
 	});
+
+	onDestroy(unsub);
+
+	function handleKeyUp(e: KeyboardEvent) {
+		if (e.key == 'o') {
+			$orbit = $orbit;
+			console.log($orbit);
+		}
+	}
 </script>
 
-<PerspectiveCamera position={{ x: 10, y: 10, z: 10 }} fov={24}>
-	<OrbitControls
-		maxPolarAngle={DEG2RAD * 80}
-		autoRotate={false}
-		enableZoom={false}
-		target={{ y: 0.5 }}
-	/>
+<svelte:window on:keyup={handleKeyUp} />
+
+<PerspectiveCamera position={{ x: 20, y: 20, z: 20 }} fov={24}>
+	<OrbitControls target={{ y: 0.5 }} />
 </PerspectiveCamera>
 
-<DirectionalLight position={{ x: -3, y: 10, z: -10 }} intensity={0.2} />
-<AmbientLight intensity={0.2} />
+<AmbientLight intensity={0.5} />
 
-<!-- Cube -->
+<Mesh
+	geometry={new THREE.SphereGeometry(1, 50, 50)}
+	material={new THREE.MeshStandardMaterial({ color: '#FFFF00' })}
+/>
+
 <Group>
 	<Mesh
-		position={{ x: $pos, y: 0.5 }}
-		castShadow
-		geometry={new THREE.BoxGeometry(1, 1, 1)}
-		material={new THREE.MeshStandardMaterial({ color: '#333333' })}
+		position={{ x: $pos.x, y: $pos.y, z: $pos.z }}
+		geometry={new THREE.SphereGeometry(0.1, 50, 50)}
+		material={new THREE.MeshStandardMaterial({ color: '#87CEFA' })}
 	/>
 </Group>
 
-<!-- Floor -->
-<Mesh
-	receiveShadow
-	rotation={{ x: -90 * (Math.PI / 180) }}
-	geometry={new THREE.CircleGeometry(3, 72)}
-	material={new THREE.MeshStandardMaterial({ side: DoubleSide, color: 'white' })}
+<Line2
+	points={$orbit}
+	material={new LineMaterial({ color: 0x333333, worldUnits: true, linewidth: 0.01 })}
 />
 
 <style>

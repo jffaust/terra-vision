@@ -6,19 +6,15 @@
 	let previousTime: number;
 	let intervalId: NodeJS.Timer;
 
-	let timeFactor = 100000;
+	let timeFactor = 10;
+	let playSimulation = true;
 
 	onMount(() => {
 		setStartDate(new Date());
-		previousTime = performance.now();
-		intervalId = setInterval(advance, 1000);
+		setupInterval();
 	});
 
-	onDestroy(() => {
-		if (window) {
-			window.clearInterval(intervalId);
-		}
-	});
+	onDestroy(stopInterval);
 
 	$: displayDate = dateFormat($simCurrentDate, 'mmmm dS, yyyy, h:MM:ss TT');
 
@@ -35,7 +31,33 @@
 
 		previousTime = now;
 	}
+
+	function setupInterval() {
+		previousTime = performance.now();
+		intervalId = setInterval(advance, 1000);
+	}
+
+	function stopInterval() {
+		if (window) {
+			window.clearInterval(intervalId);
+		}
+	}
+
+	function handleKeyUp(e: KeyboardEvent) {
+		//TODO doesnt belong here
+		if (e.code == 'Space') {
+			playSimulation = !playSimulation;
+
+			if (playSimulation) {
+				setupInterval();
+			} else {
+				stopInterval();
+			}
+		}
+	}
 </script>
+
+<svelte:window on:keyup={handleKeyUp} />
 
 <div>
 	<span>{displayDate}</span>

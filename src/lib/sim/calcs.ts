@@ -1,36 +1,28 @@
-import { Vector3 } from 'three';
 import * as astro from 'astronomy-engine';
-import type { SimProps } from '$lib/types';
+import type { SimPropsAstro } from '$lib/types';
 
-export function calculateProperties(date: Date): SimProps {
-    const hVec = astro.HelioVector(astro.Body.Earth, date)
-    const eVec = astro.Ecliptic(hVec).vec;
-    const tPos = new Vector3(eVec.x, eVec.y, eVec.z)
-    return {
-        earth: {
-            pos: tPos.multiplyScalar(astro.KM_PER_AU)
-        }
-    }
+export function calculateProperties(date: Date): SimPropsAstro {
+    const gv = astro.GeoVector(astro.Body.Sun, date, true);
+    const pos = astro.Ecliptic(gv).vec;
+    return { earth: { pos } }
 }
 
 // calculates the orbital points for 6 months before the given date and 
-// to 6 months after
-export function calculateOrbits(date: Date): Vector3[] {
+// to 6 months after (to allow moving backward and forward in the sim)
+export function calculateOrbit(body: astro.Body, date: Date): astro.Vector[] {
     const monthMs = 2629743833.333;
     const yearMs = monthMs * 12;
     const segments = 3600;
 
-    const points: Vector3[] = [];
+    const points: astro.Vector[] = [];
     const segmentDelta = yearMs / segments;
     const firstDate = new Date(date.getTime() - 6 * monthMs);
 
     let nextDate = firstDate;
     for (let i = 0; i <= segments; i++) {
         nextDate = new Date(nextDate.getTime() + segmentDelta);
-        const hVec = astro.HelioVector(astro.Body.Earth, nextDate)
-        const eVec = astro.Ecliptic(hVec).vec;
-        const tPos = new Vector3(eVec.x, eVec.y, eVec.z)
-        points.push(tPos.multiplyScalar(astro.KM_PER_AU))
+        const gv = astro.GeoVector(body, nextDate, true);
+        points.push(astro.Ecliptic(gv).vec)
     }
 
     return points;

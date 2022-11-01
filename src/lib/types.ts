@@ -1,4 +1,5 @@
-import type { Vector3 } from 'three';
+import type * as THREE from 'three';
+import type * as astro from 'astronomy-engine';
 
 export enum Textures {
     MilkyWay,
@@ -24,8 +25,14 @@ export interface Rect {
     height: number
 }
 
+export interface SimPropsAstro {
+    earth: {
+        pos: astro.Vector;
+    }
+}
+
 export interface SimProps {
     earth: {
-        pos: Vector3;
+        pos: THREE.Vector3;
     }
 }

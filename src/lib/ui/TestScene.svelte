@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as THREE from 'three';
-	import { DEG2RAD, degToRad } from 'three/src/math/MathUtils';
+	import Stats from 'three/examples/jsm/libs/stats.module';
 	import {
 		Group,
 		Mesh,
@@ -16,10 +16,11 @@
 		LineSegments
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
-	import { orbit, sim } from '$lib/sim/simulation';
+	import { earthOrbit, sim } from '$lib/sim/simulation';
 	import { EARTH_RADIUS_KM, SUN_RADIUS_KM } from '$lib/constants';
 	import type { SimProps } from '$lib/types';
 
+	const stats = Stats();
 	const ctx = useThrelte();
 	const { scene } = useThrelte();
 	let camera: THREE.PerspectiveCamera;
@@ -34,17 +35,15 @@
 		if (ctx && ctx.renderer) {
 			ctx.renderer.physicallyCorrectLights = true;
 		}
-		//THREE.Object3D.DefaultUp.set(0, 0, 1);
-		if (camera) {
-			//camera.up.set(0, 0, 1);
-		}
 
 		scene.add(new THREE.AxesHelper(200000000));
+		document.body.appendChild(stats.dom);
 	});
 
 	onDestroy(unsub);
 
 	function onSimUpdated(s: SimProps) {
+		stats.update();
 		if (camera) {
 			if (!prevEarthPos) {
 				const initialCamPos = new THREE.Vector3();
@@ -54,9 +53,9 @@
 				camera.position.y = initialCamPos.y;
 				camera.position.z = initialCamPos.z;
 			} else {
-				camera.position.x += s.earth.pos.x - prevEarthPos.x;
-				camera.position.y += s.earth.pos.y - prevEarthPos.y;
-				camera.position.z += s.earth.pos.z - prevEarthPos.z;
+				// camera.position.x += s.earth.pos.x - prevEarthPos.x;
+				// camera.position.y += s.earth.pos.y - prevEarthPos.y;
+				// camera.position.z += s.earth.pos.z - prevEarthPos.z;
 			}
 			prevEarthPos = s.earth.pos;
 		}
@@ -64,7 +63,7 @@
 
 	function handleKeyUp(e: KeyboardEvent) {
 		if (e.key == 'o') {
-			console.log($orbit);
+			console.log($earthOrbit);
 		}
 	}
 </script>
@@ -92,7 +91,8 @@
 	/>
 </Group>
 
-<Line points={$orbit} material={new THREE.LineBasicMaterial({ color: 0xff0000 })} />
+<!-- earth's orbit -->
+<Line points={$earthOrbit} material={new THREE.LineBasicMaterial({ color: 0xff0000 })} />
 
 <style>
 </style>

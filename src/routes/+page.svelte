@@ -14,22 +14,12 @@
 
 	let views: View[] = [
 		{
-			id: 0,
-			type: ViewTypes.SpaceSim,
-			region: {
-				left: 0,
-				top: 0,
-				width: 0.5,
-				height: 1
-			}
-		},
-		{
 			id: 1,
 			type: ViewTypes.Test,
 			region: {
-				left: 0.5,
+				left: 0,
 				top: 0,
-				width: 0.5,
+				width: 1,
 				height: 1
 			}
 		}

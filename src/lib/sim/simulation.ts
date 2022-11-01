@@ -2,7 +2,7 @@ import type { SimProps, SimPropsAstro } from '$lib/types';
 import * as astro from 'astronomy-engine';
 import { derived, get, writable, type Readable } from "svelte/store";
 import * as THREE from 'three';
-import { calculateOrbit, calculateProperties } from './calcs';
+import { calculateEarthOrbit, calculateProperties } from './calcs';
 
 const start = new Date();
 export const simStartDate = writable<Date>(start)
@@ -28,8 +28,7 @@ function transformSimPropsForThreeJS(astroSim: SimPropsAstro): SimProps {
 }
 
 
-
 function calcOrbit(body: astro.Body, date: Date,): THREE.Vector3[] {
-    const astroOrbit = calculateOrbit(body, date);
+    const astroOrbit = calculateEarthOrbit(date);
     return astroOrbit.map(astroToThreeJS);
 }

@@ -53,9 +53,9 @@
 				camera.position.y = initialCamPos.y;
 				camera.position.z = initialCamPos.z;
 			} else {
-				// camera.position.x += s.earth.pos.x - prevEarthPos.x;
-				// camera.position.y += s.earth.pos.y - prevEarthPos.y;
-				// camera.position.z += s.earth.pos.z - prevEarthPos.z;
+				camera.position.x += s.earth.pos.x - prevEarthPos.x;
+				camera.position.y += s.earth.pos.y - prevEarthPos.y;
+				camera.position.z += s.earth.pos.z - prevEarthPos.z;
 			}
 			prevEarthPos = s.earth.pos;
 		}
@@ -92,7 +92,10 @@
 </Group>
 
 <!-- earth's orbit -->
-<Line points={$earthOrbit} material={new THREE.LineBasicMaterial({ color: 0xff0000 })} />
+<Line
+	points={$earthOrbit}
+	material={new THREE.LineBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 })}
+/>
 
 <style>
 </style>

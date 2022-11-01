@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { datetime } from '$lib/sim/simulation';
+	import { simCurrentDate, simStartDate } from '$lib/sim/simulation';
 	import dateFormat from 'dateformat';
 	import { onDestroy, onMount } from 'svelte';
 
@@ -9,7 +9,7 @@
 	let timeFactor = 100000;
 
 	onMount(() => {
-		$datetime = new Date();
+		setStartDate(new Date());
 		previousTime = performance.now();
 		intervalId = setInterval(advance, 1000);
 	});
@@ -20,13 +20,18 @@
 		}
 	});
 
-	$: displayDate = dateFormat($datetime, 'mmmm dS, yyyy, h:MM:ss TT');
+	$: displayDate = dateFormat($simCurrentDate, 'mmmm dS, yyyy, h:MM:ss TT');
+
+	function setStartDate(d: Date) {
+		$simStartDate = d;
+		$simCurrentDate = d;
+	}
 
 	function advance() {
 		const now = performance.now();
 		const elapsedMs = now - previousTime;
 
-		$datetime = new Date($datetime.getTime() + elapsedMs * timeFactor);
+		$simCurrentDate = new Date($simCurrentDate.getTime() + elapsedMs * timeFactor);
 
 		previousTime = now;
 	}

@@ -1,3 +1,5 @@
+import type { Vector3 } from 'three';
+
 export enum Textures {
     MilkyWay,
     Sun,
@@ -20,4 +22,10 @@ export interface Rect {
     top: number;
     width: number;
     height: number
+}
+
+export interface SimProps {
+    earth: {
+        pos: Vector3;
+    }
 }

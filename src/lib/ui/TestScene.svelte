@@ -11,25 +11,18 @@
 		DirectionalLight,
 		AmbientLight,
 		Line,
-		Line2
+		Line2,
+		PointLight,
+		LineSegments
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
-	import { DoubleSide } from 'three';
-	import { pos } from '$lib/sim/simulation';
-	import { writable } from 'svelte/store';
-	import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
+	import { orbit, sim } from '$lib/sim/simulation';
+	import { EARTH_RADIUS_KM, SUN_RADIUS_KM } from '$lib/constants';
 
 	const ctx = useThrelte();
 	const { scene } = useThrelte();
 
-	let totalSecondsElapsed = 0;
 	//useFrame((ctx, delta) => {});
-
-	let orbit = writable<THREE.Vector3[]>([]);
-	const unsub = pos.subscribe((p) => {
-		$orbit.push(p);
-		$orbit = $orbit;
-	});
 
 	onMount(async () => {
 		console.log('SpaceSimScene Mounted');
@@ -37,14 +30,11 @@
 			ctx.renderer.physicallyCorrectLights = true;
 		}
 
-		scene.add(new THREE.AxesHelper(20));
+		scene.add(new THREE.AxesHelper(200000000));
 	});
-
-	onDestroy(unsub);
 
 	function handleKeyUp(e: KeyboardEvent) {
 		if (e.key == 'o') {
-			$orbit = $orbit;
 			console.log($orbit);
 		}
 	}
@@ -52,29 +42,28 @@
 
 <svelte:window on:keyup={handleKeyUp} />
 
-<PerspectiveCamera position={{ x: 20, y: 20, z: 20 }} fov={24}>
-	<OrbitControls target={{ y: 0.5 }} />
+<PerspectiveCamera position={{ x: 150000000, y: 150000000, z: 1500 }} far={900000000}>
+	<OrbitControls target={{ y: 0 }} />
 </PerspectiveCamera>
 
-<AmbientLight intensity={0.5} />
-
+<!-- sun -->
 <Mesh
-	geometry={new THREE.SphereGeometry(1, 50, 50)}
+	geometry={new THREE.SphereGeometry(SUN_RADIUS_KM, 50, 50)}
 	material={new THREE.MeshStandardMaterial({ color: '#FFFF00' })}
 />
 
+<PointLight position={{ x: 0, y: 0, z: 0 }} decay={2} intensity={10000000000000} />
+
 <Group>
+	<!-- earth -->
 	<Mesh
-		position={{ x: $pos.x, y: $pos.y, z: $pos.z }}
-		geometry={new THREE.SphereGeometry(0.1, 50, 50)}
+		position={{ x: $sim.earth.pos.x, y: $sim.earth.pos.y, z: $sim.earth.pos.z }}
+		geometry={new THREE.SphereGeometry(EARTH_RADIUS_KM, 50, 50)}
 		material={new THREE.MeshStandardMaterial({ color: '#87CEFA' })}
 	/>
 </Group>
 
-<Line2
-	points={$orbit}
-	material={new LineMaterial({ color: 0x333333, worldUnits: true, linewidth: 0.01 })}
-/>
+<Line points={$orbit} material={new THREE.LineBasicMaterial({ color: 0xff0000 })} />
 
 <style>
 </style>

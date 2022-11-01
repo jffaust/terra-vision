@@ -3,8 +3,9 @@ import * as astro from 'astronomy-engine';
 import type { SimProps } from '$lib/types';
 
 export function calculateProperties(date: Date): SimProps {
-    const aPos = astro.HelioVector(astro.Body.Earth, date)
-    const tPos = new Vector3(aPos.x, aPos.y, aPos.z)
+    const hVec = astro.HelioVector(astro.Body.Earth, date)
+    const eVec = astro.Ecliptic(hVec).vec;
+    const tPos = new Vector3(eVec.x, eVec.y, eVec.z)
     return {
         earth: {
             pos: tPos.multiplyScalar(astro.KM_PER_AU)
@@ -26,8 +27,9 @@ export function calculateOrbits(date: Date): Vector3[] {
     let nextDate = firstDate;
     for (let i = 0; i <= segments; i++) {
         nextDate = new Date(nextDate.getTime() + segmentDelta);
-        const aPos = astro.HelioVector(astro.Body.Earth, nextDate);
-        const tPos = new Vector3(aPos.x, aPos.y, aPos.z);
+        const hVec = astro.HelioVector(astro.Body.Earth, nextDate)
+        const eVec = astro.Ecliptic(hVec).vec;
+        const tPos = new Vector3(eVec.x, eVec.y, eVec.z)
         points.push(tPos.multiplyScalar(astro.KM_PER_AU))
     }
 

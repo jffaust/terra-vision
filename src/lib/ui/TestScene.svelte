@@ -34,6 +34,10 @@
 		if (ctx && ctx.renderer) {
 			ctx.renderer.physicallyCorrectLights = true;
 		}
+		//THREE.Object3D.DefaultUp.set(0, 0, 1);
+		if (camera) {
+			//camera.up.set(0, 0, 1);
+		}
 
 		scene.add(new THREE.AxesHelper(200000000));
 	});

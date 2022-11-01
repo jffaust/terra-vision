@@ -17,7 +17,7 @@ export function calculateProperties(date: Date): SimProps {
 export function calculateOrbits(date: Date): Vector3[] {
     const monthMs = 2629743833.333;
     const yearMs = monthMs * 12;
-    const segments = 360;
+    const segments = 3600;
 
     const points: Vector3[] = [];
     const segmentDelta = yearMs / segments;

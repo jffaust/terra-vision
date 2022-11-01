@@ -18,9 +18,14 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { orbit, sim } from '$lib/sim/simulation';
 	import { EARTH_RADIUS_KM, SUN_RADIUS_KM } from '$lib/constants';
+	import type { SimProps } from '$lib/types';
 
 	const ctx = useThrelte();
 	const { scene } = useThrelte();
+	let camera: THREE.PerspectiveCamera;
+
+	let prevEarthPos: THREE.Vector3;
+	const unsub = sim.subscribe(onSimUpdated);
 
 	//useFrame((ctx, delta) => {});
 
@@ -33,6 +38,26 @@
 		scene.add(new THREE.AxesHelper(200000000));
 	});
 
+	onDestroy(unsub);
+
+	function onSimUpdated(s: SimProps) {
+		if (camera) {
+			if (!prevEarthPos) {
+				const initialCamPos = new THREE.Vector3();
+				initialCamPos.copy(s.earth.pos);
+				initialCamPos.multiplyScalar(1.005);
+				camera.position.x = initialCamPos.x;
+				camera.position.y = initialCamPos.y;
+				camera.position.z = initialCamPos.z;
+			} else {
+				camera.position.x += s.earth.pos.x - prevEarthPos.x;
+				camera.position.y += s.earth.pos.y - prevEarthPos.y;
+				camera.position.z += s.earth.pos.z - prevEarthPos.z;
+			}
+			prevEarthPos = s.earth.pos;
+		}
+	}
+
 	function handleKeyUp(e: KeyboardEvent) {
 		if (e.key == 'o') {
 			console.log($orbit);
@@ -42,8 +67,8 @@
 
 <svelte:window on:keyup={handleKeyUp} />
 
-<PerspectiveCamera position={{ x: 150000000, y: 150000000, z: 1500 }} far={900000000}>
-	<OrbitControls target={{ y: 0 }} />
+<PerspectiveCamera bind:camera far={900000000}>
+	<OrbitControls target={$sim.earth.pos} />
 </PerspectiveCamera>
 
 <!-- sun -->

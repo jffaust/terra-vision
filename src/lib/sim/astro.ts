@@ -11,9 +11,16 @@ export const astroSim = derived(simCurrentDate, calculateProperties);
 export const astroEarthOrbit = derived(simStartDate, calculateEarthOrbit);
 
 function calculateProperties(date: Date): AstroSimData {
+
+    const ai = astro.RotationAxis(astro.Body.Earth, date);
+    console.log(ai);
+    console.log(astro.Ecliptic(ai.north))
+
+    // Use GeoVector instead of HelioVector to have the position corrected for light travel time and aberration
     const gv = astro.GeoVector(astro.Body.Sun, date, true);
+    // Transform to ecliptic coordinates so the orbit appears on the horizontal plane in the scene
     const ec = astro.Ecliptic(gv).vec;
-    // Inverse the vector to get the Earth's position relative to the sun
+    // Sun will be at the origin so we inverse the vector to get the Earth's position relative to 
     const pos = new astro.Vector(-ec.x, -ec.y, -ec.z, ec.t)
 
     return { earth: { pos } };

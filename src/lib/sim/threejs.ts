@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { derived } from "svelte/store";
 import * as astro from 'astronomy-engine';
 import type { SimData, AstroSimData } from '$lib/types';
-import { astroEarthOrbit, astroSim } from './simulation';
+import { astroEarthOrbit, astroSim } from './astro';
 
 export const sim = derived(astroSim, adaptSimDataForThreeJS);
 export const earthOrbit = derived(astroEarthOrbit, adaptVectorsForThreeJS);

@@ -19,11 +19,13 @@
 	import { earthOrbit, sim } from '$lib/sim/threejs';
 	import { EARTH_RADIUS_KM, SUN_RADIUS_KM } from '$lib/constants';
 	import { Textures, type SimData } from '$lib/types';
-	import { DEG2RAD } from 'three/src/math/MathUtils';
+	import { DEG2RAD, degToRad } from 'three/src/math/MathUtils';
+	import { getSphericalHorizontalRingSize, sphericalToCartesian } from '$lib/math';
+	import { mapsCameraView } from '$lib/stores';
 
 	export let textures: Map<Textures, THREE.Texture>;
 
-	const sunGeom = new THREE.SphereGeometry(SUN_RADIUS_KM, 50, 50);
+	const sunGeom = new THREE.SphereGeometry(SUN_RADIUS_KM, 100, 100);
 	const sunMat = new THREE.MeshStandardMaterial({
 		emissive: 0xffd700,
 		emissiveIntensity: 1,
@@ -35,7 +37,7 @@
 		opacity: 0.5
 	});
 	let earthSpin = new THREE.Euler(0, 0, 23.4 * DEG2RAD, 'XZY'); // 23.4 degrees
-	const earthGeom = new THREE.SphereGeometry(EARTH_RADIUS_KM, 50, 50);
+	const earthGeom = new THREE.SphereGeometry(EARTH_RADIUS_KM, 100, 100);
 	const earthMat = new THREE.MeshPhongMaterial({
 		map: textures.get(Textures.EarthColor)
 		// normalMap: earthNormalTexture,
@@ -46,11 +48,22 @@
 		// shininess: 0.5
 	});
 	const earthPolesPoints: THREE.Vector3Tuple[] = [
-		[0, -EARTH_RADIUS_KM - 50, 0],
-		[0, EARTH_RADIUS_KM + 50, 0]
+		[0, -EARTH_RADIUS_KM - 500, 0],
+		[0, EARTH_RADIUS_KM + 500, 0]
 	];
-	const equatorGeom = new THREE.EdgesGeometry(new THREE.CircleGeometry(EARTH_RADIUS_KM + 0.01, 50));
+	const equatorGeom = new THREE.EdgesGeometry(new THREE.CircleGeometry(EARTH_RADIUS_KM + 1, 100));
 	const equatorMat = new THREE.LineBasicMaterial({ color: 0xff0000 });
+
+	const gpsSphereGeom = new THREE.SphereGeometry(20, 36, 36);
+	const gpsSphereMat = new THREE.MeshBasicMaterial({ color: 0xff00ff });
+	let gps = sphericalToCartesian(
+		$mapsCameraView.center[0],
+		$mapsCameraView.center[1],
+		EARTH_RADIUS_KM
+	);
+	let gpsRingSize = getSphericalHorizontalRingSize($mapsCameraView.center[1], EARTH_RADIUS_KM);
+	let gpsRingGeom = new THREE.EdgesGeometry(new THREE.CircleGeometry(gpsRingSize + 1, 100));
+	const gpsRingMat = new THREE.LineBasicMaterial({ color: 0xff8c00 });
 
 	const stats = Stats();
 	const ctx = useThrelte();
@@ -80,7 +93,7 @@
 			if (!prevEarthPos) {
 				const initialCamPos = new THREE.Vector3();
 				initialCamPos.copy(s.earth.pos);
-				initialCamPos.multiplyScalar(1.005);
+				initialCamPos.multiplyScalar(0.9999);
 				camera.position.x = initialCamPos.x;
 				camera.position.y = initialCamPos.y;
 				camera.position.z = initialCamPos.z;
@@ -91,6 +104,9 @@
 			}
 			prevEarthPos = s.earth.pos;
 		}
+
+		//temporarily
+		earthSpin.y += 0.001;
 	}
 
 	function handleKeyUp(e: KeyboardEvent) {
@@ -102,13 +118,13 @@
 
 <svelte:window on:keyup={handleKeyUp} />
 
-<PerspectiveCamera bind:camera far={900000000}>
+<PerspectiveCamera bind:camera far={310000000}>
 	<OrbitControls target={$sim.earth.pos} />
 </PerspectiveCamera>
 
 <!-- sun -->
 <Mesh geometry={sunGeom} material={sunMat} />
-<PointLight decay={2} intensity={900719925474099} />
+<PointLight decay={2} intensity={1e17} />
 
 <!-- earth's orbit -->
 <Line points={$earthOrbit} material={orbitMat} />
@@ -121,6 +137,17 @@
 	<Line points={earthPolesPoints} material={equatorMat} />
 	<!-- equator -->
 	<LineSegments rotation={{ x: Math.PI / 2 }} geometry={equatorGeom} material={equatorMat} />
+
+	<!-- gps coords pin -->
+	<Mesh position={gps} geometry={gpsSphereGeom} material={gpsSphereMat} />
+
+	<!-- gps coords path -->
+	<LineSegments
+		position={{ y: gps.y }}
+		rotation={{ x: Math.PI / 2 }}
+		geometry={gpsRingGeom}
+		material={gpsRingMat}
+	/>
 </Group>
 
 <style>

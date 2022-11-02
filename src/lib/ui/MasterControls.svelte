@@ -34,7 +34,7 @@
 
 	function setupInterval() {
 		previousTime = performance.now();
-		intervalId = setInterval(advance, 1000);
+		intervalId = setInterval(advance, 100);
 	}
 
 	function stopInterval() {

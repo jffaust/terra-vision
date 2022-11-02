@@ -18,7 +18,39 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { earthOrbit, sim } from '$lib/sim/threejs';
 	import { EARTH_RADIUS_KM, SUN_RADIUS_KM } from '$lib/constants';
-	import type { SimData } from '$lib/types';
+	import { Textures, type SimData } from '$lib/types';
+	import { DEG2RAD } from 'three/src/math/MathUtils';
+
+	export let textures: Map<Textures, THREE.Texture>;
+
+	const sunGeom = new THREE.SphereGeometry(SUN_RADIUS_KM, 50, 50);
+	const sunMat = new THREE.MeshStandardMaterial({
+		emissive: 0xffd700,
+		emissiveIntensity: 1,
+		emissiveMap: textures.get(Textures.Sun)
+	});
+	const orbitMat = new THREE.LineBasicMaterial({
+		color: 0x333333,
+		transparent: true,
+		opacity: 0.5
+	});
+	let earthSpin = new THREE.Euler(0, 0, 23.4 * DEG2RAD, 'XZY'); // 23.4 degrees
+	const earthGeom = new THREE.SphereGeometry(EARTH_RADIUS_KM, 50, 50);
+	const earthMat = new THREE.MeshPhongMaterial({
+		map: textures.get(Textures.EarthColor)
+		// normalMap: earthNormalTexture,
+		// normalScale: 0.5,
+		// bumpMap: earthBumpMap,
+		// bumpScale: 0.1,
+		// specularMap: earthSpecMap,
+		// shininess: 0.5
+	});
+	const earthPolesPoints: THREE.Vector3Tuple[] = [
+		[0, -EARTH_RADIUS_KM - 50, 0],
+		[0, EARTH_RADIUS_KM + 50, 0]
+	];
+	const equatorGeom = new THREE.EdgesGeometry(new THREE.CircleGeometry(EARTH_RADIUS_KM + 0.01, 50));
+	const equatorMat = new THREE.LineBasicMaterial({ color: 0xff0000 });
 
 	const stats = Stats();
 	const ctx = useThrelte();
@@ -75,27 +107,21 @@
 </PerspectiveCamera>
 
 <!-- sun -->
-<Mesh
-	geometry={new THREE.SphereGeometry(SUN_RADIUS_KM, 50, 50)}
-	material={new THREE.MeshStandardMaterial({ color: '#FFFF00' })}
-/>
-
-<PointLight position={{ x: 0, y: 0, z: 0 }} decay={2} intensity={10000000000000} />
-
-<Group>
-	<!-- earth -->
-	<Mesh
-		position={{ x: $sim.earth.pos.x, y: $sim.earth.pos.y, z: $sim.earth.pos.z }}
-		geometry={new THREE.SphereGeometry(EARTH_RADIUS_KM, 50, 50)}
-		material={new THREE.MeshStandardMaterial({ color: '#87CEFA' })}
-	/>
-</Group>
+<Mesh geometry={sunGeom} material={sunMat} />
+<PointLight decay={2} intensity={900719925474099} />
 
 <!-- earth's orbit -->
-<Line
-	points={$earthOrbit}
-	material={new THREE.LineBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 })}
-/>
+<Line points={$earthOrbit} material={orbitMat} />
+
+<Group position={$sim.earth.pos} rotation={earthSpin}>
+	<!-- earth -->
+	<Mesh geometry={earthGeom} material={earthMat} />
+
+	<!-- geographic north and south poles -->
+	<Line points={earthPolesPoints} material={equatorMat} />
+	<!-- equator -->
+	<LineSegments rotation={{ x: Math.PI / 2 }} geometry={equatorGeom} material={equatorMat} />
+</Group>
 
 <style>
 </style>

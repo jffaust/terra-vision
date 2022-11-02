@@ -16,9 +16,9 @@
 		LineSegments
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
-	import { earthOrbit, sim } from '$lib/sim/simulation';
+	import { earthOrbit, sim } from '$lib/sim/threejs';
 	import { EARTH_RADIUS_KM, SUN_RADIUS_KM } from '$lib/constants';
-	import type { SimProps } from '$lib/types';
+	import type { SimData } from '$lib/types';
 
 	const stats = Stats();
 	const ctx = useThrelte();
@@ -42,7 +42,7 @@
 
 	onDestroy(unsub);
 
-	function onSimUpdated(s: SimProps) {
+	function onSimUpdated(s: SimData) {
 		stats.update();
 		if (camera) {
 			if (!prevEarthPos) {

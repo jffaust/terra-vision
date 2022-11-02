@@ -27,7 +27,7 @@ export interface Rect {
 
 // Z-up
 // Ecliptic positions relative to the sun, in Astronomical Units
-export interface SimPropsAstro {
+export interface AstroSimData {
     earth: {
         pos: astro.Vector;
     }
@@ -35,7 +35,7 @@ export interface SimPropsAstro {
 
 // Y-up
 // Ecliptic positions relative to the sun, in Kilometers
-export interface SimProps {
+export interface SimData {
     earth: {
         pos: THREE.Vector3;
     }

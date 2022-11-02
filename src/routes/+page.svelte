@@ -23,6 +23,16 @@
 				height: 1
 			}
 		}
+		// {
+		// 	id: 2,
+		// 	type: ViewTypes.Test,
+		// 	region: {
+		// 		left: 0.5,
+		// 		top: 0,
+		// 		width: 0.5,
+		// 		height: 1
+		// 	}
+		// }
 	];
 
 	onMount(async () => {

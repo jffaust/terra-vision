@@ -93,7 +93,7 @@
 			if (!prevEarthPos) {
 				const initialCamPos = new THREE.Vector3();
 				initialCamPos.copy(s.earth.pos);
-				initialCamPos.multiplyScalar(0.9999);
+				initialCamPos.multiplyScalar(0.99987);
 				camera.position.x = initialCamPos.x;
 				camera.position.y = initialCamPos.y;
 				camera.position.z = initialCamPos.z;

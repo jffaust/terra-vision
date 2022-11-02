@@ -30,7 +30,13 @@ export interface Rect {
 export interface AstroSimData {
     earth: {
         pos: astro.Vector;
+        axis: astro.AxisInfo;
     }
+}
+
+export interface AxisInfo {
+    north: THREE.Vector3;
+    spin: number;
 }
 
 // Y-up
@@ -38,5 +44,6 @@ export interface AstroSimData {
 export interface SimData {
     earth: {
         pos: THREE.Vector3;
+        axis: AxisInfo;
     }
 }

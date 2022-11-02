@@ -11,12 +11,12 @@ export const astroSim = derived(simCurrentDate, calculateProperties);
 export const astroEarthOrbit = derived(simStartDate, calculateEarthOrbit);
 
 function calculateProperties(date: Date): AstroSimData {
-
-    // const ai = astro.RotationAxis(astro.Body.Earth, date);
-    // console.log(ai);
-    // console.log(astro.Ecliptic(ai.north))
-
-    return { earth: { pos: astro.HelioVector(astro.Body.Earth, date) } };
+    return {
+        earth: {
+            pos: astro.HelioVector(astro.Body.Earth, date),
+            axis: astro.RotationAxis(astro.Body.Earth, date)
+        }
+    };
 }
 
 // calculates the orbital points for 6 months before the given date and 

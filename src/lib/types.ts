@@ -1,20 +1,22 @@
 import type * as THREE from 'three';
 import type * as ae from 'astronomy-engine';
 
+export const texturesContextKey = Symbol("textures");
+
 export enum Textures {
     MilkyWay,
     Sun,
     EarthColor,
 }
 
-export enum ViewTypes {
-    SpaceSim,
-    Test
+export enum VizTypes {
+    DefaultSpace,
+    TestNorthRotation
 }
 
 export interface View {
     id: number;
-    type: ViewTypes;
+    type: VizTypes;
     region: Rect; // percentages
 }
 

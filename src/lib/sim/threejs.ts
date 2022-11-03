@@ -1,3 +1,8 @@
+// Here, we transform the simulation data from astronomy-engine to facilitate
+// usage in a ThreeJS environment. ThreeJS uses Y-up whereas AE uses Z-up so 
+// we switch them here. We also transform the astronomical units used by AE
+// into kilometers.
+
 import * as THREE from 'three';
 import { derived } from "svelte/store";
 import * as ae from 'astronomy-engine';

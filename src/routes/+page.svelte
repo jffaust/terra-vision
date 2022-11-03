@@ -1,21 +1,22 @@
 <script lang="ts">
-	import { Textures, ViewTypes, type Rect, type View } from '$lib/types';
-	import ViewContainer from '$lib/ui/ViewContainer.svelte';
-	import { onMount } from 'svelte';
+	import { Textures, texturesContextKey, VizTypes, type Rect, type View } from '$lib/types';
+	import ViewContainer from '$lib/ui/VizContainer.svelte';
+	import { onMount, setContext } from 'svelte';
 	import * as THREE from 'three';
 	import MasterControls from '$lib/ui/MasterControls.svelte';
 	import { Canvas } from '@threlte/core';
-	import SpaceSimScene from '$lib/ui/SpaceSimScene.svelte';
-	import TestScene from '$lib/ui/TestScene.svelte';
+	import AstrometricView from '$lib/viz/3d/DefaultSpace.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
 	const textures = new Map<Textures, THREE.Texture>();
 
+	setContext(texturesContextKey, textures);
+
 	let views: View[] = [
 		{
 			id: 1,
-			type: ViewTypes.Test,
+			type: VizTypes.TestNorthRotation,
 			region: {
 				left: 0,
 				top: 0,
@@ -87,12 +88,10 @@
 					rendererParameters={{ antialias: true }}
 					size={{ width: rect.width, height: rect.height }}
 				>
-					{#if view.type == ViewTypes.SpaceSim}
-						<SpaceSimScene {textures} />
-					{:else if view.type == ViewTypes.Test}
-						<TestScene {textures} />
+					{#if view.type == VizTypes.DefaultSpace}
+						<AstrometricView {textures} />
 					{/if}
-				</Canvas>
+				</Canvas>VizTypes
 			</ViewContainer>
 		{/each}
 

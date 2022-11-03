@@ -11,7 +11,7 @@ export const astroSim = derived(simCurrentDate, calculateProperties);
 export const astroEarthOrbit = derived(simStartDate, calculateEarthOrbit);
 
 function calculateProperties(date: Date): AstroSimData {
-    const pos = ae.Ecliptic(ae.HelioVector(ae.Body.Earth, date)).vec;
+    const pos = calculateEarthPosition(date);
     const info = ae.RotationAxis(ae.Body.Earth, date)
     const eclipticNorth = ae.Ecliptic(info.north).vec
     const axis = new ae.AxisInfo(info.ra, info.dec, info.spin, eclipticNorth);
@@ -32,9 +32,24 @@ function calculateEarthOrbit(date: Date): ae.Vector[] {
     let nextDate = firstDate;
     for (let i = 0; i <= segments; i++) {
         nextDate = new Date(nextDate.getTime() + segmentDelta);
-        const pos = ae.HelioVector(ae.Body.Earth, nextDate)
-        points.push(ae.Ecliptic(pos).vec)
+        points.push(calculateEarthPosition(nextDate))
     }
 
     return points;
+}
+
+// The goal of the simulation is to understand how sunlight affects the Earth.
+// Thus, the positions calculated will be "apparent" positions that are the result of 
+// physically correcting the astrometric/true positions by considering the times it takes
+// for light to travel. This will simplify rendering as light is instantaneous in ThreeJS.
+// Equinoxes and solstices are based on the apparent position too.
+function calculateEarthPosition(date: Date) {
+    // Use GeoVector function instead of HelioVector because GeoVector 
+    // corrects the true position to get the apparent one. 
+    // Not sure if we should correct for aberration or not.
+    const sun = ae.GeoVector(ae.Body.Sun, date, false);
+    // Inverse the vector to get an heliocentric (relative to the sun) position
+    const earth = new ae.Vector(-sun.x, -sun.y, -sun.z, sun.t)
+    // Rotate from EQJ to Ecliptic plane so that simulation appears horizontal
+    return ae.Ecliptic(earth).vec;
 }

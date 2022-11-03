@@ -1,5 +1,5 @@
 import type * as THREE from 'three';
-import type * as astro from 'astronomy-engine';
+import type * as ae from 'astronomy-engine';
 
 export enum Textures {
     MilkyWay,
@@ -29,14 +29,14 @@ export interface Rect {
 // Ecliptic positions relative to the sun, in Astronomical Units
 export interface AstroSimData {
     earth: {
-        pos: astro.Vector;
-        axis: astro.AxisInfo;
+        pos: ae.Vector;
+        axis: ae.AxisInfo;
     }
 }
 
 export interface AxisInfo {
-    north: THREE.Vector3;
-    spin: number;
+    north: THREE.Vector3; // normalized, Y-up
+    spin: number; // radians
 }
 
 // Y-up

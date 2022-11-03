@@ -104,7 +104,7 @@
 		}
 
 		//temporarily
-		earthSpin.y += 0.001;
+		//earthSpin.y += 0.001;
 	}
 
 	function handleKeyUp(e: KeyboardEvent) {

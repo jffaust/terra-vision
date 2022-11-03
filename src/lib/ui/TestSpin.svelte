@@ -22,7 +22,7 @@
 	import { DEG2RAD, degToRad } from 'three/src/math/MathUtils';
 	import { getSphericalHorizontalRingSize, sphericalToCartesian } from '$lib/math';
 	import { mapsCameraView } from '$lib/stores';
-	import * as astro from 'astronomy-engine';
+	import * as ae from 'astronomy-engine';
 
 	export let textures: Map<Textures, THREE.Texture>;
 
@@ -50,7 +50,7 @@
 	let prevEarthPos: THREE.Vector3;
 	const unsub = sim.subscribe(onSimUpdated);
 
-	let ai = astro.RotationAxis(astro.Body.Earth, new Date());
+	let ai = ae.RotationAxis(ae.Body.Earth, new Date());
 	let north = new THREE.Vector3(ai.north.x, ai.north.z, ai.north.y);
 	const earthPolesPoints: THREE.Vector3[] = [
 		north.multiplyScalar(EARTH_RADIUS_KM + 5000),

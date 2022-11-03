@@ -10,8 +10,10 @@
 	let playSimulation = true;
 
 	onMount(() => {
-		setStartDate(new Date());
+		//setStartDate(new Date());
+		setStartDate(new Date(2022, 6, 21));
 		setupInterval();
+		setTimeout(stopInterval, 2000); // temporary
 	});
 
 	onDestroy(stopInterval);

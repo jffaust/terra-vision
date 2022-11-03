@@ -91,7 +91,7 @@
 					{#if view.type == ViewTypes.SpaceSim}
 						<SpaceSimScene {textures} />
 					{:else if view.type == ViewTypes.Test}
-						<TestSpin {textures} />
+						<TestScene {textures} />
 					{/if}
 				</Canvas>
 			</ViewContainer>

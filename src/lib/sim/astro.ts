@@ -1,5 +1,5 @@
 import type { AstroSimData } from '$lib/types';
-import * as astro from 'astronomy-engine';
+import * as ae from 'astronomy-engine';
 import { derived, writable } from "svelte/store";
 
 const start = new Date();
@@ -11,29 +11,29 @@ export const astroSim = derived(simCurrentDate, calculateProperties);
 export const astroEarthOrbit = derived(simStartDate, calculateEarthOrbit);
 
 function calculateProperties(date: Date): AstroSimData {
-    return {
-        earth: {
-            pos: astro.HelioVector(astro.Body.Earth, date),
-            axis: astro.RotationAxis(astro.Body.Earth, date)
-        }
-    };
+    const pos = ae.Ecliptic(ae.HelioVector(ae.Body.Earth, date)).vec;
+    const info = ae.RotationAxis(ae.Body.Earth, date)
+    const eclipticNorth = ae.Ecliptic(info.north).vec
+    const axis = new ae.AxisInfo(info.ra, info.dec, info.spin, eclipticNorth);
+    return { earth: { pos, axis } };
 }
 
 // calculates the orbital points for 6 months before the given date and 
 // to 6 months after (to allow moving backward and forward in the sim)
-function calculateEarthOrbit(date: Date): astro.Vector[] {
+function calculateEarthOrbit(date: Date): ae.Vector[] {
     const monthMs = 2629743833.333;
     const yearMs = monthMs * 12;
     const segments = 3600;
 
-    const points: astro.Vector[] = [];
+    const points: ae.Vector[] = [];
     const segmentDelta = yearMs / segments;
     const firstDate = new Date(date.getTime() - 6 * monthMs);
 
     let nextDate = firstDate;
     for (let i = 0; i <= segments; i++) {
         nextDate = new Date(nextDate.getTime() + segmentDelta);
-        points.push(astro.HelioVector(astro.Body.Earth, nextDate))
+        const pos = ae.HelioVector(ae.Body.Earth, nextDate)
+        points.push(ae.Ecliptic(pos).vec)
     }
 
     return points;

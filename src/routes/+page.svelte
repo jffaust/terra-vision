@@ -6,6 +6,7 @@
 	import MasterControls from '$lib/ui/MasterControls.svelte';
 	import { Canvas } from '@threlte/core';
 	import DefaultSpace from '$lib/viz/3d/DefaultSpace.svelte';
+	import TestNorthRotation from '$lib/viz/3d/TestNorthRotation.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -16,7 +17,7 @@
 	let views: View[] = [
 		{
 			id: 1,
-			type: VizTypes.DefaultSpace,
+			type: VizTypes.TestNorthRotation,
 			region: {
 				left: 0,
 				top: 0,
@@ -90,6 +91,8 @@
 				>
 					{#if view.type == VizTypes.DefaultSpace}
 						<DefaultSpace />
+					{:else if view.type == VizTypes.TestNorthRotation}
+						<TestNorthRotation />
 					{/if}
 				</Canvas>VizTypes
 			</ViewContainer>

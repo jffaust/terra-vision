@@ -13,7 +13,7 @@
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
 	import { earthOrbit, sim } from '$lib/sim/threejs';
-	import { EARTH_RADIUS_KM, SUN_RADIUS_KM } from '$lib/constants';
+	import { EARTH_RADIUS_KM } from '$lib/constants';
 	import type { SimData } from '$lib/types';
 	import { getSphericalHorizontalRingSize, sphericalToCartesian } from '$lib/math';
 	import { mapsCameraView } from '$lib/stores';

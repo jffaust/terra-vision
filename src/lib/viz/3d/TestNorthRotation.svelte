@@ -2,81 +2,62 @@
 	import * as THREE from 'three';
 	import Stats from 'three/examples/jsm/libs/stats.module';
 	import {
-		Group,
 		Mesh,
-		useFrame,
 		OrbitControls,
 		PerspectiveCamera,
 		useThrelte,
-		DirectionalLight,
 		AmbientLight,
 		Line,
 		Line2,
-		PointLight,
-		LineSegments
+		LineSegments,
+		Group
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
 	import { earthOrbit, sim } from '$lib/sim/threejs';
 	import { EARTH_RADIUS_KM, SUN_RADIUS_KM } from '$lib/constants';
-	import { Textures, type SimData } from '$lib/types';
-	import { DEG2RAD, degToRad } from 'three/src/math/MathUtils';
+	import type { SimData } from '$lib/types';
 	import { getSphericalHorizontalRingSize, sphericalToCartesian } from '$lib/math';
 	import { mapsCameraView } from '$lib/stores';
+	import Earth from '$lib/gaphics/3d/Earth.svelte';
+	import Sun from '$lib/gaphics/3d/Sun.svelte';
 
-	export let textures: Map<Textures, THREE.Texture>;
+	// When we load the texture of the Earth onto a sphere, by default the north
+	// pole will be from the center of the sphere towards and follow the Y axis.
+	// This component is used to test the logic of rotating the default north pole
+	// so that it matches a given north pole axis. We can expect the normalized
+	// vector returned by AE to always have a positive Y so it is a matter of
+	// finding the right angles for X and Z in the euler transformation. Because
+	// we'll want to make the Earth spin, the Y rotation should be last.
 
-	const sunGeom = new THREE.SphereGeometry(SUN_RADIUS_KM, 100, 100);
-	const sunMat = new THREE.MeshStandardMaterial({
-		emissive: 0xffd700,
-		emissiveIntensity: 1,
-		emissiveMap: textures.get(Textures.Sun)
-	});
-	const orbitMat = new THREE.LineBasicMaterial({
-		color: 0x333333,
-		transparent: true,
-		opacity: 0.5
-	});
-
+	let play = false;
 	let earthSpin = new THREE.Euler(0, 0, 0, 'XZY');
-	const earthGeom = new THREE.SphereGeometry(EARTH_RADIUS_KM, 100, 100);
-	const earthMat = new THREE.MeshPhongMaterial({
-		map: textures.get(Textures.EarthColor)
-		// normalMap: earthNormalTexture,
-		// normalScale: 0.5,
-		// bumpMap: earthBumpMap,
-		// bumpScale: 0.1,
-		// specularMap: earthSpecMap,
-		// shininess: 0.5
-	});
-	const earthPolesPoints: THREE.Vector3Tuple[] = [
-		[0, -EARTH_RADIUS_KM - 500, 0],
-		[0, EARTH_RADIUS_KM + 500, 0]
+	let progressiveSpin = new THREE.Euler(0, 0, 0, 'XZY');
+
+	let x = Math.random() * 2 - 1;
+	let y = Math.random();
+	let z = Math.random() * 2 - 1;
+	let randomNorth = new THREE.Vector3(x, y, z).normalize();
+
+	let randomNorthPoints: THREE.Vector3[] = [
+		new THREE.Vector3(),
+		randomNorth.clone().multiplyScalar(EARTH_RADIUS_KM + 1000)
 	];
-	const equatorGeom = new THREE.EdgesGeometry(new THREE.CircleGeometry(EARTH_RADIUS_KM + 1, 100));
-	const equatorMat = new THREE.LineBasicMaterial({ color: 0xff0000 });
 
-	let astroNorthPoints: THREE.Vector3[] = [];
-	const astroNorthMat = new THREE.LineBasicMaterial({ color: 0x9932cc });
+	earthSpin.x = Math.atan(randomNorth.z / randomNorth.y);
+	earthSpin.z = -Math.atan(randomNorth.x / randomNorth.y);
+	//earthSpin.y = s.earth.axis.spin;
+	const northMat = new THREE.LineBasicMaterial({ color: 0x9932cc });
 
-	const gpsSphereGeom = new THREE.SphereGeometry(20, 36, 36);
-	const gpsSphereMat = new THREE.MeshBasicMaterial({ color: 0xff00ff });
-	let gps = sphericalToCartesian(
-		$mapsCameraView.center[0],
-		$mapsCameraView.center[1],
-		EARTH_RADIUS_KM
-	);
-	let gpsRingSize = getSphericalHorizontalRingSize($mapsCameraView.center[1], EARTH_RADIUS_KM);
-	let gpsRingGeom = new THREE.EdgesGeometry(new THREE.CircleGeometry(gpsRingSize + 1, 100));
-	const gpsRingMat = new THREE.LineBasicMaterial({ color: 0xff8c00 });
+	let stepXProgress = 0;
+	let stepZProgress = 0;
+	const stepX = earthSpin.x / 10;
+	const stepZ = earthSpin.z / 10;
+	let interval: NodeJS.Timer;
 
 	const stats = Stats();
 	const ctx = useThrelte();
 	const { scene } = useThrelte();
 	let camera: THREE.PerspectiveCamera;
-
-	let prevEarthPos: THREE.Vector3;
-	let earthAxesHelper = new THREE.AxesHelper(10000);
-	const unsub = sim.subscribe(onSimUpdated);
 
 	onMount(async () => {
 		console.log('SpaceSimScene Mounted');
@@ -84,95 +65,59 @@
 			ctx.renderer.physicallyCorrectLights = true;
 		}
 
-		scene.add(new THREE.AxesHelper(200000000));
-		scene.add(earthAxesHelper);
+		scene.add(new THREE.AxesHelper(20000));
 
 		document.body.appendChild(stats.dom);
-	});
 
-	onDestroy(unsub);
-
-	function onSimUpdated(s: SimData) {
-		stats.update();
 		if (camera) {
-			if (!prevEarthPos) {
-				const initialCamPos = new THREE.Vector3();
-				initialCamPos.copy(s.earth.pos);
-				initialCamPos.multiplyScalar(0.99987);
-				camera.position.x = initialCamPos.x;
-				camera.position.y = initialCamPos.y;
-				camera.position.z = initialCamPos.z;
-			} else {
-				camera.position.x += s.earth.pos.x - prevEarthPos.x;
-				camera.position.y += s.earth.pos.y - prevEarthPos.y;
-				camera.position.z += s.earth.pos.z - prevEarthPos.z;
-			}
-			prevEarthPos = s.earth.pos;
+			camera.position.x = 10000;
+			camera.position.y = 10000;
+			camera.position.z = 10000;
 		}
 
-		earthAxesHelper.position.x = s.earth.pos.x;
-		earthAxesHelper.position.y = s.earth.pos.y;
-		earthAxesHelper.position.z = s.earth.pos.z;
+		interval = setInterval(progress, 500);
+	});
 
-		console.log(s.earth.axis);
+	onDestroy(() => {
+		if (window) {
+			window.clearInterval(interval);
+		}
+	});
 
-		const plus = s.earth.axis.north.clone().multiplyScalar(EARTH_RADIUS_KM + 1000);
-		const minus = plus.clone().multiplyScalar(-1);
-
-		astroNorthPoints = [plus, minus];
-
-		const north = s.earth.axis.north;
-		earthSpin.x = Math.atan(north.z / north.y);
-		earthSpin.z = -Math.atan(north.x / north.y);
-		earthSpin.y = s.earth.axis.spin;
+	function progress() {
+		if (play) {
+			if (stepXProgress < 10) {
+				progressiveSpin.x += stepX;
+				stepXProgress++;
+			} else if (stepZProgress < 10) {
+				progressiveSpin.z += stepZ;
+				stepZProgress++;
+			}
+		}
 	}
 
 	function handleKeyUp(e: KeyboardEvent) {
-		if (e.key == 'o') {
-			console.log($earthOrbit);
+		if (e.code == 'Space') {
+			play = !play;
 		}
 	}
 </script>
 
 <svelte:window on:keyup={handleKeyUp} />
 
-<PerspectiveCamera bind:camera far={310000000}>
-	<OrbitControls target={$sim.earth.pos} />
+<PerspectiveCamera bind:camera far={31000}>
+	<OrbitControls target={{ x: 0, y: 0, z: 0 }} />
 </PerspectiveCamera>
 
-<!-- sun -->
-<Mesh geometry={sunGeom} material={sunMat} />
-<PointLight decay={2} intensity={1e17} />
-<!-- <AmbientLight /> -->
+<Sun />
 
-<!-- earth's orbit -->
-<Line points={$earthOrbit} material={orbitMat} />
+<AmbientLight />
 
-<!-- north axis / provides the rotation we need -->
-<!-- <Group position={$sim.earth.pos}>
-	<Line points={astroNorthPoints} material={astroNorthMat} />
-</Group> -->
-
-<Group position={$sim.earth.pos} rotation={earthSpin}>
-	<!-- earth -->
-	<Mesh geometry={earthGeom} material={earthMat} />
-
-	<!-- geographic north and south poles -->
-	<Line points={earthPolesPoints} material={equatorMat} />
-	<!-- equator -->
-	<LineSegments rotation={{ x: Math.PI / 2 }} geometry={equatorGeom} material={equatorMat} />
-
-	<!-- gps coords pin -->
-	<Mesh position={gps} geometry={gpsSphereGeom} material={gpsSphereMat} />
-
-	<!-- gps coords path -->
-	<LineSegments
-		position={{ y: gps.y }}
-		rotation={{ x: Math.PI / 2 }}
-		geometry={gpsRingGeom}
-		material={gpsRingMat}
-	/>
+<Group>
+	<Line points={randomNorthPoints} material={northMat} />
 </Group>
+
+<Earth rotation={progressiveSpin} />
 
 <style>
 </style>

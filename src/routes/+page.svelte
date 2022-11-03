@@ -5,7 +5,7 @@
 	import * as THREE from 'three';
 	import MasterControls from '$lib/ui/MasterControls.svelte';
 	import { Canvas } from '@threlte/core';
-	import AstrometricView from '$lib/viz/3d/DefaultSpace.svelte';
+	import DefaultSpace from '$lib/viz/3d/DefaultSpace.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -16,7 +16,7 @@
 	let views: View[] = [
 		{
 			id: 1,
-			type: VizTypes.TestNorthRotation,
+			type: VizTypes.DefaultSpace,
 			region: {
 				left: 0,
 				top: 0,
@@ -89,7 +89,7 @@
 					size={{ width: rect.width, height: rect.height }}
 				>
 					{#if view.type == VizTypes.DefaultSpace}
-						<AstrometricView {textures} />
+						<DefaultSpace />
 					{/if}
 				</Canvas>VizTypes
 			</ViewContainer>

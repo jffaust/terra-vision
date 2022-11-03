@@ -2,35 +2,24 @@
 	import * as THREE from 'three';
 	import Stats from 'three/examples/jsm/libs/stats.module';
 	import {
-		Group,
 		Mesh,
-		useFrame,
 		OrbitControls,
 		PerspectiveCamera,
 		useThrelte,
-		DirectionalLight,
 		AmbientLight,
 		Line,
 		Line2,
-		PointLight,
 		LineSegments
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
 	import { earthOrbit, sim } from '$lib/sim/threejs';
 	import { EARTH_RADIUS_KM, SUN_RADIUS_KM } from '$lib/constants';
-	import { Textures, type SimData } from '$lib/types';
-	import { DEG2RAD, degToRad } from 'three/src/math/MathUtils';
+	import type { SimData } from '$lib/types';
 	import { getSphericalHorizontalRingSize, sphericalToCartesian } from '$lib/math';
 	import { mapsCameraView } from '$lib/stores';
+	import Earth from '$lib/gaphics/3d/Earth.svelte';
+	import Sun from '$lib/gaphics/3d/Sun.svelte';
 
-	export let textures: Map<Textures, THREE.Texture>;
-
-	const sunGeom = new THREE.SphereGeometry(SUN_RADIUS_KM, 100, 100);
-	const sunMat = new THREE.MeshStandardMaterial({
-		emissive: 0xffd700,
-		emissiveIntensity: 1,
-		emissiveMap: textures.get(Textures.Sun)
-	});
 	const orbitMat = new THREE.LineBasicMaterial({
 		color: 0x333333,
 		transparent: true,
@@ -38,22 +27,6 @@
 	});
 
 	let earthSpin = new THREE.Euler(0, 0, 0, 'XZY');
-	const earthGeom = new THREE.SphereGeometry(EARTH_RADIUS_KM, 100, 100);
-	const earthMat = new THREE.MeshPhongMaterial({
-		map: textures.get(Textures.EarthColor)
-		// normalMap: earthNormalTexture,
-		// normalScale: 0.5,
-		// bumpMap: earthBumpMap,
-		// bumpScale: 0.1,
-		// specularMap: earthSpecMap,
-		// shininess: 0.5
-	});
-	const earthPolesPoints: THREE.Vector3Tuple[] = [
-		[0, -EARTH_RADIUS_KM - 500, 0],
-		[0, EARTH_RADIUS_KM + 500, 0]
-	];
-	const equatorGeom = new THREE.EdgesGeometry(new THREE.CircleGeometry(EARTH_RADIUS_KM + 1, 100));
-	const equatorMat = new THREE.LineBasicMaterial({ color: 0xff0000 });
 
 	const gpsSphereGeom = new THREE.SphereGeometry(20, 36, 36);
 	const gpsSphereMat = new THREE.MeshBasicMaterial({ color: 0xff00ff });
@@ -124,23 +97,14 @@
 	<OrbitControls target={$sim.earth.pos} />
 </PerspectiveCamera>
 
-<!-- sun -->
-<Mesh geometry={sunGeom} material={sunMat} />
-<PointLight decay={2} intensity={1e17} />
+<Sun />
+
 <!-- <AmbientLight /> -->
 
 <!-- earth's orbit -->
 <Line points={$earthOrbit} material={orbitMat} />
 
-<Group position={$sim.earth.pos} rotation={earthSpin}>
-	<!-- earth -->
-	<Mesh geometry={earthGeom} material={earthMat} />
-
-	<!-- geographic north and south poles -->
-	<Line points={earthPolesPoints} material={equatorMat} />
-	<!-- equator -->
-	<LineSegments rotation={{ x: Math.PI / 2 }} geometry={equatorGeom} material={equatorMat} />
-
+<Earth position={$sim.earth.pos} rotation={earthSpin}>
 	<!-- gps coords pin -->
 	<Mesh position={gps} geometry={gpsSphereGeom} material={gpsSphereMat} />
 
@@ -151,7 +115,7 @@
 		geometry={gpsRingGeom}
 		material={gpsRingMat}
 	/>
-</Group>
+</Earth>
 
 <style>
 </style>

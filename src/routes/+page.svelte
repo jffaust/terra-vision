@@ -7,6 +7,7 @@
 	import { Canvas } from '@threlte/core';
 	import DefaultSpace from '$lib/viz/3d/DefaultSpace.svelte';
 	import TestNorthRotation from '$lib/viz/3d/TestNorthRotation.svelte';
+	import Euler from '$lib/viz/3d/Euler.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -92,7 +93,7 @@
 					{#if view.type == VizTypes.DefaultSpace}
 						<DefaultSpace />
 					{:else if view.type == VizTypes.TestNorthRotation}
-						<TestNorthRotation />
+						<Euler />
 					{/if}
 				</Canvas>VizTypes
 			</ViewContainer>

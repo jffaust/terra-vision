@@ -13,38 +13,26 @@
 		Group
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
-	import { earthOrbit, sim } from '$lib/sim/threejs';
-	import { EARTH_RADIUS_KM, SUN_RADIUS_KM } from '$lib/constants';
-	import type { SimData } from '$lib/types';
-	import { getSphericalHorizontalRingSize, sphericalToCartesian } from '$lib/math';
-	import { mapsCameraView } from '$lib/stores';
-	import Earth from '$lib/gaphics/3d/Earth.svelte';
-	import Sun from '$lib/gaphics/3d/Sun.svelte';
 
-	// When we load the texture of the Earth onto a sphere, by default the north
-	// pole will be from the center of the sphere towards and follow the Y axis.
-	// This component is used to test the logic of rotating the default north pole
-	// so that it matches a given north pole axis. We can expect the normalized
-	// vector returned by AE to always have a positive Y so it is a matter of
-	// finding the right angles for X and Z in the euler transformation. Because
-	// we'll want to make the Earth spin, the Y rotation should be last.
+	const axisX: THREE.Vector3[] = [new THREE.Vector3(), new THREE.Vector3(2, 0, 0)];
+	const axisY: THREE.Vector3[] = [new THREE.Vector3(), new THREE.Vector3(0, 2, 0)];
+	const axisZ: THREE.Vector3[] = [new THREE.Vector3(), new THREE.Vector3(0, 0, 2)];
 
 	let play = false;
 	let earthSpin = new THREE.Euler(0, 0, 0, 'XZY');
 	let progressiveSpin = new THREE.Euler(0, 0, 0, 'XZY');
 
-	let x = Math.random() * 2 - 1;
+	let x = Math.random();
 	let y = Math.random();
 	let z = Math.random() * 2 - 1;
 	let randomNorth = new THREE.Vector3(x, y, z).normalize();
+	console.log(randomNorth);
 
-	let randomNorthPoints: THREE.Vector3[] = [
-		new THREE.Vector3(),
-		randomNorth.clone().multiplyScalar(EARTH_RADIUS_KM + 1000)
-	];
+	let randomNorthPoints: THREE.Vector3[] = [new THREE.Vector3(), randomNorth.clone()];
 
 	earthSpin.x = Math.atan(randomNorth.z / randomNorth.y);
-	earthSpin.z = -Math.atan(randomNorth.x / randomNorth.y);
+
+	earthSpin.z = Math.atan(randomNorth.x / randomNorth.y);
 	//earthSpin.y = s.earth.axis.spin;
 	const northMat = new THREE.LineBasicMaterial({ color: 0x9932cc });
 
@@ -54,25 +42,16 @@
 	const stepZ = earthSpin.z / 10;
 	let interval: NodeJS.Timer;
 
-	const stats = Stats();
-	const ctx = useThrelte();
 	const { scene } = useThrelte();
 	let camera: THREE.PerspectiveCamera;
 
 	onMount(async () => {
-		console.log('SpaceSimScene Mounted');
-		if (ctx && ctx.renderer) {
-			ctx.renderer.physicallyCorrectLights = true;
-		}
-
-		scene.add(new THREE.AxesHelper(20000));
-
-		document.body.appendChild(stats.dom);
+		scene.add(new THREE.AxesHelper(2));
 
 		if (camera) {
-			camera.position.x = 10000;
-			camera.position.y = 10000;
-			camera.position.z = 10000;
+			camera.position.x = 3;
+			camera.position.y = 3;
+			camera.position.z = 3;
 		}
 
 		interval = setInterval(progress, 500);
@@ -115,7 +94,11 @@
 	<Line points={randomNorthPoints} material={northMat} />
 </Group>
 
-<Earth rotation={earthSpin} />
+<Group rotation={progressiveSpin}>
+	<Line points={axisX} material={new THREE.LineBasicMaterial({ color: 0xff5555 })} />
+	<Line points={axisY} material={new THREE.LineBasicMaterial({ color: 0x55ff55 })} />
+	<Line points={axisZ} material={new THREE.LineBasicMaterial({ color: 0x5555ff })} />
+</Group>
 
 <style>
 </style>

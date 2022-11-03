@@ -7,7 +7,6 @@
 	import { Canvas } from '@threlte/core';
 	import SpaceSimScene from '$lib/ui/SpaceSimScene.svelte';
 	import TestScene from '$lib/ui/TestScene.svelte';
-	import TestSpin from '$lib/ui/TestSpin.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();

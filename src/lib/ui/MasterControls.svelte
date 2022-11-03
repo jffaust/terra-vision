@@ -10,9 +10,9 @@
 	let playSimulation = true;
 
 	onMount(() => {
-		//setStartDate(new Date());
-		// setStartDate(new Date(2022, 11, 21)); // zero-based ahhhh
-		setStartDate(new Date(2022, 5, 21)); // zero-based ahhhh
+		setStartDate(new Date());
+		//setStartDate(new Date(2022, 11, 21)); // zero-based ahhhh
+		//setStartDate(new Date(2022, 5, 21)); // zero-based ahhhh
 		setupInterval();
 		//setTimeout(stopInterval, 1000); // temporary
 	});

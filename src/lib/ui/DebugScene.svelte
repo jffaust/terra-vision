@@ -55,6 +55,9 @@
 	const equatorGeom = new THREE.EdgesGeometry(new THREE.CircleGeometry(EARTH_RADIUS_KM + 1, 100));
 	const equatorMat = new THREE.LineBasicMaterial({ color: 0xff0000 });
 
+	let astroNorthPoints: THREE.Vector3[] = [];
+	const astroNorthMat = new THREE.LineBasicMaterial({ color: 0x9932cc });
+
 	const gpsSphereGeom = new THREE.SphereGeometry(20, 36, 36);
 	const gpsSphereMat = new THREE.MeshBasicMaterial({ color: 0xff00ff });
 	let gps = sphericalToCartesian(
@@ -72,6 +75,7 @@
 	let camera: THREE.PerspectiveCamera;
 
 	let prevEarthPos: THREE.Vector3;
+	let earthAxesHelper = new THREE.AxesHelper(10000);
 	const unsub = sim.subscribe(onSimUpdated);
 
 	onMount(async () => {
@@ -81,6 +85,7 @@
 		}
 
 		scene.add(new THREE.AxesHelper(200000000));
+		scene.add(earthAxesHelper);
 
 		document.body.appendChild(stats.dom);
 	});
@@ -104,6 +109,17 @@
 			}
 			prevEarthPos = s.earth.pos;
 		}
+
+		earthAxesHelper.position.x = s.earth.pos.x;
+		earthAxesHelper.position.y = s.earth.pos.y;
+		earthAxesHelper.position.z = s.earth.pos.z;
+
+		console.log(s.earth.axis);
+
+		const plus = s.earth.axis.north.clone().multiplyScalar(EARTH_RADIUS_KM + 1000);
+		const minus = plus.clone().multiplyScalar(-1);
+
+		astroNorthPoints = [plus, minus];
 
 		const north = s.earth.axis.north;
 		earthSpin.x = Math.atan(north.z / north.y);
@@ -131,6 +147,11 @@
 
 <!-- earth's orbit -->
 <Line points={$earthOrbit} material={orbitMat} />
+
+<!-- north axis / provides the rotation we need -->
+<!-- <Group position={$sim.earth.pos}>
+	<Line points={astroNorthPoints} material={astroNorthMat} />
+</Group> -->
 
 <Group position={$sim.earth.pos} rotation={earthSpin}>
 	<!-- earth -->

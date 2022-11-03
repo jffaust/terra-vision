@@ -54,6 +54,9 @@
 	const equatorGeom = new THREE.EdgesGeometry(new THREE.CircleGeometry(EARTH_RADIUS_KM + 1, 100));
 	const equatorMat = new THREE.LineBasicMaterial({ color: 0xff0000 });
 
+	let astroNorthPoints: THREE.Vector3[] = [];
+	const astroNorthMat = new THREE.LineBasicMaterial({ color: 0x9932cc });
+
 	const gpsSphereGeom = new THREE.SphereGeometry(20, 36, 36);
 	const gpsSphereMat = new THREE.MeshBasicMaterial({ color: 0xff00ff });
 	let gps = sphericalToCartesian(
@@ -71,6 +74,7 @@
 	let camera: THREE.PerspectiveCamera;
 
 	let prevEarthPos: THREE.Vector3;
+	let earthAxesHelper = new THREE.AxesHelper(10000);
 	const unsub = sim.subscribe(onSimUpdated);
 
 	onMount(async () => {
@@ -80,6 +84,8 @@
 		}
 
 		scene.add(new THREE.AxesHelper(200000000));
+		scene.add(earthAxesHelper);
+
 		document.body.appendChild(stats.dom);
 	});
 
@@ -103,6 +109,16 @@
 			prevEarthPos = s.earth.pos;
 		}
 
+		earthAxesHelper.position.x = s.earth.pos.x;
+		earthAxesHelper.position.y = s.earth.pos.y;
+		earthAxesHelper.position.z = s.earth.pos.z;
+
+		const plus = s.earth.axis.north.clone().multiplyScalar(EARTH_RADIUS_KM + 1000);
+		const minus = plus.clone().multiplyScalar(-1);
+
+		astroNorthPoints = [plus, minus];
+		console.log(astroNorthPoints);
+
 		//temporarily
 		//earthSpin.y += 0.001;
 	}
@@ -123,11 +139,17 @@
 <!-- sun -->
 <Mesh geometry={sunGeom} material={sunMat} />
 <PointLight decay={2} intensity={1e17} />
+<!-- temp -->
+<AmbientLight />
 
 <!-- earth's orbit -->
 <Line points={$earthOrbit} material={orbitMat} />
 
-<Group position={$sim.earth.pos} rotation={earthSpin}>
+<Group position={$sim.earth.pos}>
+	<Line points={astroNorthPoints} material={astroNorthMat} />
+</Group>
+
+<Group position={$sim.earth.pos}>
 	<!-- earth -->
 	<Mesh geometry={earthGeom} material={earthMat} />
 
@@ -140,12 +162,12 @@
 	<Mesh position={gps} geometry={gpsSphereGeom} material={gpsSphereMat} />
 
 	<!-- gps coords path -->
-	<LineSegments
+	<!-- <LineSegments
 		position={{ y: gps.y }}
 		rotation={{ x: Math.PI / 2 }}
 		geometry={gpsRingGeom}
 		material={gpsRingMat}
-	/>
+	/> -->
 </Group>
 
 <style>

@@ -36,7 +36,8 @@
 		transparent: true,
 		opacity: 0.5
 	});
-	let earthSpin = new THREE.Euler(0, 0, 23.4 * DEG2RAD, 'XZY'); // 23.4 degrees
+
+	let earthSpin = new THREE.Euler(0, 0, 0, 'XZY');
 	const earthGeom = new THREE.SphereGeometry(EARTH_RADIUS_KM, 100, 100);
 	const earthMat = new THREE.MeshPhongMaterial({
 		map: textures.get(Textures.EarthColor)
@@ -113,14 +114,17 @@
 		earthAxesHelper.position.y = s.earth.pos.y;
 		earthAxesHelper.position.z = s.earth.pos.z;
 
+		console.log(s.earth.axis);
+
 		const plus = s.earth.axis.north.clone().multiplyScalar(EARTH_RADIUS_KM + 1000);
 		const minus = plus.clone().multiplyScalar(-1);
 
 		astroNorthPoints = [plus, minus];
-		console.log(astroNorthPoints);
 
-		//temporarily
-		//earthSpin.y += 0.001;
+		const north = s.earth.axis.north;
+		earthSpin.x = Math.atan(north.z / north.y);
+		earthSpin.z = -Math.atan(north.x / north.y);
+		earthSpin.y = s.earth.axis.spin;
 	}
 
 	function handleKeyUp(e: KeyboardEvent) {
@@ -139,17 +143,17 @@
 <!-- sun -->
 <Mesh geometry={sunGeom} material={sunMat} />
 <PointLight decay={2} intensity={1e17} />
-<!-- temp -->
-<AmbientLight />
+<!-- <AmbientLight /> -->
 
 <!-- earth's orbit -->
 <Line points={$earthOrbit} material={orbitMat} />
 
-<Group position={$sim.earth.pos}>
+<!-- north axis / provides the rotation we need -->
+<!-- <Group position={$sim.earth.pos}>
 	<Line points={astroNorthPoints} material={astroNorthMat} />
-</Group>
+</Group> -->
 
-<Group position={$sim.earth.pos}>
+<Group position={$sim.earth.pos} rotation={earthSpin}>
 	<!-- earth -->
 	<Mesh geometry={earthGeom} material={earthMat} />
 
@@ -162,12 +166,12 @@
 	<Mesh position={gps} geometry={gpsSphereGeom} material={gpsSphereMat} />
 
 	<!-- gps coords path -->
-	<!-- <LineSegments
+	<LineSegments
 		position={{ y: gps.y }}
 		rotation={{ x: Math.PI / 2 }}
 		geometry={gpsRingGeom}
 		material={gpsRingMat}
-	/> -->
+	/>
 </Group>
 
 <style>

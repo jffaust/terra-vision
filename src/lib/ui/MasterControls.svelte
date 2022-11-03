@@ -6,7 +6,7 @@
 	let previousTime: number;
 	let intervalId: NodeJS.Timer;
 
-	let timeFactor = 1;
+	let timeFactor = 1000;
 	let playSimulation = true;
 
 	onMount(() => {
@@ -14,7 +14,7 @@
 		// setStartDate(new Date(2022, 11, 21)); // zero-based ahhhh
 		setStartDate(new Date(2022, 5, 21)); // zero-based ahhhh
 		setupInterval();
-		setTimeout(stopInterval, 1000); // temporary
+		//setTimeout(stopInterval, 1000); // temporary
 	});
 
 	onDestroy(stopInterval);
@@ -37,7 +37,7 @@
 
 	function setupInterval() {
 		previousTime = performance.now();
-		intervalId = setInterval(advance, 100);
+		intervalId = setInterval(advance, 50);
 	}
 
 	function stopInterval() {

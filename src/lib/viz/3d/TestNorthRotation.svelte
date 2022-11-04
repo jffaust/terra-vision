@@ -1,28 +1,19 @@
 <script lang="ts">
 	import * as THREE from 'three';
-	import Stats from 'three/examples/jsm/libs/stats.module';
 	import {
-		Mesh,
 		OrbitControls,
 		PerspectiveCamera,
 		useThrelte,
 		AmbientLight,
 		Line,
-		Line2,
-		LineSegments,
 		Group
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
-	import { earthOrbit, sim } from '$lib/sim/threejs';
-	import { EARTH_RADIUS_KM, SUN_RADIUS_KM } from '$lib/constants';
-	import type { SimData } from '$lib/types';
-	import { getSphericalHorizontalRingSize, sphericalToCartesian } from '$lib/math';
-	import { mapsCameraView } from '$lib/stores';
+	import { EARTH_RADIUS_KM } from '$lib/constants';
 	import Earth from '$lib/gaphics/3d/Earth.svelte';
-	import Sun from '$lib/gaphics/3d/Sun.svelte';
 
 	// When we load the texture of the Earth onto a sphere, by default the north
-	// pole will be from the center of the sphere towards and follow the Y axis.
+	// pole will start at the center of the sphere and follow the Y axis.
 	// This component is used to test the logic of rotating the default north pole
 	// so that it matches a given north pole axis. We can expect the normalized
 	// vector returned by AE to always have a positive Y so it is a matter of
@@ -44,8 +35,11 @@
 	];
 
 	earthSpin.x = Math.atan(randomNorth.z / randomNorth.y);
-	earthSpin.z = -Math.atan(randomNorth.x / randomNorth.y);
-	//earthSpin.y = s.earth.axis.spin;
+	// Apply the inverse rotation so we can get the right Y-value to use
+	// in the second rotation
+	const invRotatedNorth = randomNorth.clone();
+	invRotatedNorth.applyEuler(new THREE.Euler(-earthSpin.x));
+	earthSpin.z = -Math.atan(randomNorth.x / invRotatedNorth.y); // x value doesn't change
 	const northMat = new THREE.LineBasicMaterial({ color: 0x9932cc });
 
 	let stepXProgress = 0;
@@ -54,7 +48,6 @@
 	const stepZ = earthSpin.z / 10;
 	let interval: NodeJS.Timer;
 
-	const stats = Stats();
 	const ctx = useThrelte();
 	const { scene } = useThrelte();
 	let camera: THREE.PerspectiveCamera;
@@ -66,8 +59,6 @@
 		}
 
 		scene.add(new THREE.AxesHelper(20000));
-
-		document.body.appendChild(stats.dom);
 
 		if (camera) {
 			camera.position.x = 10000;
@@ -115,7 +106,7 @@
 	<Line points={randomNorthPoints} material={northMat} />
 </Group>
 
-<Earth rotation={earthSpin} />
+<Earth rotation={progressiveSpin} />
 
 <style>
 </style>

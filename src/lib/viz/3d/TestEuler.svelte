@@ -1,15 +1,11 @@
 <script lang="ts">
 	import * as THREE from 'three';
-	import Stats from 'three/examples/jsm/libs/stats.module';
 	import {
-		Mesh,
 		OrbitControls,
 		PerspectiveCamera,
 		useThrelte,
 		AmbientLight,
 		Line,
-		Line2,
-		LineSegments,
 		Group
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
@@ -22,18 +18,18 @@
 	let earthSpin = new THREE.Euler(0, 0, 0, 'XZY');
 	let progressiveSpin = new THREE.Euler(0, 0, 0, 'XZY');
 
-	let x = Math.random();
+	let x = Math.random() * 2 - 1;
 	let y = Math.random();
 	let z = Math.random() * 2 - 1;
 	let randomNorth = new THREE.Vector3(x, y, z).normalize();
-	console.log(randomNorth);
-
 	let randomNorthPoints: THREE.Vector3[] = [new THREE.Vector3(), randomNorth.clone()];
 
 	earthSpin.x = Math.atan(randomNorth.z / randomNorth.y);
-
-	earthSpin.z = Math.atan(randomNorth.x / randomNorth.y);
-	//earthSpin.y = s.earth.axis.spin;
+	// Apply the inverse rotation so we can get the right Y-value to use
+	// in the second rotation
+	const invRotatedNorth = randomNorth.clone();
+	invRotatedNorth.applyEuler(new THREE.Euler(-earthSpin.x));
+	earthSpin.z = -Math.atan(randomNorth.x / invRotatedNorth.y); // x value doesn't change
 	const northMat = new THREE.LineBasicMaterial({ color: 0x9932cc });
 
 	let stepXProgress = 0;

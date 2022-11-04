@@ -79,8 +79,13 @@
 		}
 
 		const north = s.earth.axis.north;
+
 		earthSpin.x = Math.atan(north.z / north.y);
-		earthSpin.z = -Math.atan(north.x / north.y);
+		// Apply the inverse rotation so we can get the right Y-value to use
+		// in the second rotation
+		const invRotatedNorth = north.clone();
+		invRotatedNorth.applyEuler(new THREE.Euler(-earthSpin.x));
+		earthSpin.z = -Math.atan(north.x / invRotatedNorth.y); // x value doesn't change
 		earthSpin.y = s.earth.axis.spin;
 	}
 

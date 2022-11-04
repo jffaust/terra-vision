@@ -8,6 +8,7 @@
 	import DefaultSpace from '$lib/viz/3d/DefaultSpace.svelte';
 	import TestNorthRotation from '$lib/viz/3d/TestNorthRotation.svelte';
 	import Euler from '$lib/viz/3d/TestEuler.svelte';
+	import TestGps from '$lib/viz/3d/TestGPS.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -18,7 +19,7 @@
 	let views: View[] = [
 		{
 			id: 1,
-			type: VizTypes.TestNorthRotation,
+			type: VizTypes.DefaultSpace,
 			region: {
 				left: 0,
 				top: 0,
@@ -87,7 +88,7 @@
 					{#if view.type == VizTypes.DefaultSpace}
 						<DefaultSpace />
 					{:else if view.type == VizTypes.TestNorthRotation}
-						<TestNorthRotation />
+						<TestGps />
 					{/if}
 				</Canvas>VizTypes
 			</ViewContainer>

@@ -12,6 +12,8 @@
 	import { EARTH_RADIUS_KM } from '$lib/constants';
 	import Earth from '$lib/gaphics/3d/Earth.svelte';
 	import { sim } from '$lib/sim/threejs';
+	import GPSMarker from '$lib/gaphics/3d/GPSMarker.svelte';
+	import { mapsCamera } from '$lib/stores';
 
 	// When we load the texture of the Earth onto a sphere, by default the north
 	// pole will start at the center of the sphere and follow the Y axis.
@@ -108,7 +110,9 @@
 
 <AmbientLight />
 
-<Earth />
+<Earth>
+	<GPSMarker gps={{ lon: $mapsCamera.center.lon, lat: $mapsCamera.center.lat }} />
+</Earth>
 
 <style>
 </style>

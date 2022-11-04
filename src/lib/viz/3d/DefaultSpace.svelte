@@ -1,24 +1,14 @@
 <script lang="ts">
 	import * as THREE from 'three';
 	import Stats from 'three/examples/jsm/libs/stats.module';
-	import {
-		Mesh,
-		OrbitControls,
-		PerspectiveCamera,
-		useThrelte,
-		AmbientLight,
-		Line,
-		Line2,
-		LineSegments
-	} from '@threlte/core';
+	import { OrbitControls, PerspectiveCamera, useThrelte, Line } from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
 	import { earthOrbit, sim } from '$lib/sim/threejs';
-	import { EARTH_RADIUS_KM } from '$lib/constants';
 	import type { SimData } from '$lib/types';
-	import { , sphericalToCartesian } from '$lib/math';
-	import { mapsCameraView } from '$lib/stores';
 	import Earth from '$lib/gaphics/3d/Earth.svelte';
 	import Sun from '$lib/gaphics/3d/Sun.svelte';
+	import { mapsCamera } from '$lib/stores';
+	import GpsMarker from '$lib/gaphics/3d/GPSMarker.svelte';
 
 	const stats = Stats();
 	const ctx = useThrelte();
@@ -97,7 +87,9 @@
 <!-- earth's orbit -->
 <Line points={$earthOrbit} material={orbitMat} />
 
-<Earth position={$sim.earth.pos} rotation={earthSpin} />
+<Earth position={$sim.earth.pos} rotation={earthSpin}>
+	<GpsMarker gps={{ lon: $mapsCamera.center.lon, lat: $mapsCamera.center.lat }} />
+</Earth>
 
 <style>
 </style>

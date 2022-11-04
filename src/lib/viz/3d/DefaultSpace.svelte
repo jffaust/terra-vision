@@ -15,34 +15,22 @@
 	import { earthOrbit, sim } from '$lib/sim/threejs';
 	import { EARTH_RADIUS_KM } from '$lib/constants';
 	import type { SimData } from '$lib/types';
-	import { getSphericalHorizontalRingSize, sphericalToCartesian } from '$lib/math';
+	import { , sphericalToCartesian } from '$lib/math';
 	import { mapsCameraView } from '$lib/stores';
 	import Earth from '$lib/gaphics/3d/Earth.svelte';
 	import Sun from '$lib/gaphics/3d/Sun.svelte';
-
-	const orbitMat = new THREE.LineBasicMaterial({
-		color: 0x333333,
-		transparent: true,
-		opacity: 0.5
-	});
-
-	let earthSpin = new THREE.Euler(0, 0, 0, 'XZY');
-
-	const gpsSphereGeom = new THREE.SphereGeometry(20, 36, 36);
-	const gpsSphereMat = new THREE.MeshBasicMaterial({ color: 0xff00ff });
-	let gps = sphericalToCartesian(
-		$mapsCameraView.center[0],
-		$mapsCameraView.center[1],
-		EARTH_RADIUS_KM
-	);
-	let gpsRingSize = getSphericalHorizontalRingSize($mapsCameraView.center[1], EARTH_RADIUS_KM);
-	let gpsRingGeom = new THREE.EdgesGeometry(new THREE.CircleGeometry(gpsRingSize + 1, 100));
-	const gpsRingMat = new THREE.LineBasicMaterial({ color: 0xff8c00 });
 
 	const stats = Stats();
 	const ctx = useThrelte();
 	const { scene } = useThrelte();
 	let camera: THREE.PerspectiveCamera;
+
+	let earthSpin = new THREE.Euler(0, 0, 0, 'XZY');
+	const orbitMat = new THREE.LineBasicMaterial({
+		color: 0x333333,
+		transparent: true,
+		opacity: 0.5
+	});
 
 	let prevEarthPos: THREE.Vector3;
 	const unsub = sim.subscribe(onSimUpdated);
@@ -109,18 +97,7 @@
 <!-- earth's orbit -->
 <Line points={$earthOrbit} material={orbitMat} />
 
-<Earth position={$sim.earth.pos} rotation={earthSpin}>
-	<!-- gps coords pin -->
-	<Mesh position={gps} geometry={gpsSphereGeom} material={gpsSphereMat} />
-
-	<!-- gps coords path -->
-	<LineSegments
-		position={{ y: gps.y }}
-		rotation={{ x: Math.PI / 2 }}
-		geometry={gpsRingGeom}
-		material={gpsRingMat}
-	/>
-</Earth>
+<Earth position={$sim.earth.pos} rotation={earthSpin} />
 
 <style>
 </style>

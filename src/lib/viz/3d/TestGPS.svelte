@@ -108,11 +108,7 @@
 
 <AmbientLight />
 
-<Group>
-	<Line points={randomNorthPoints} material={northMat} />
-</Group>
-
-<Earth rotation={progressiveSpin} />
+<Earth />
 
 <style>
 </style>

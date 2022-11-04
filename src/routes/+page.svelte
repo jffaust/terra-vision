@@ -18,7 +18,7 @@
 	let views: View[] = [
 		{
 			id: 1,
-			type: VizTypes.DefaultSpace,
+			type: VizTypes.TestNorthRotation,
 			region: {
 				left: 0,
 				top: 0,
@@ -47,16 +47,10 @@
 			textures.set(Textures.Sun, await tLoader.loadAsync('/space/sun.jpg'));
 			// https://visibleearth.nasa.gov/images/73701/may-blue-marble-next-generation-w-topography-and-bathymetry/73710l
 			const earthMap = await tLoader.loadAsync('/space/earth_blue_marble_may_small.jpg');
-			earthMap.wrapS = THREE.RepeatWrapping;
-			earthMap.offset.x = 0.25; // not sure why :)
 			textures.set(Textures.EarthColor, earthMap);
 			// earthSpecMap = await tLoader.loadAsync('/space/8k_earth_specular_map.jpg');
-			// earthSpecMap.wrapS = THREE.RepeatWrapping;
-			// earthSpecMap.offset.x = 0.25; // not sure why :)
 			// https://www.shadedrelief.com/natural3/pages/extra.html
 			// earthBumpMap = await tLoader.loadAsync('/space/earth_bump_16k.jpg');
-			// earthBumpMap.wrapS = THREE.RepeatWrapping;
-			// earthBumpMap.offset.x = 0.25;
 			texturesLoaded = true;
 			console.log('Textures loaded');
 		} catch (e) {

@@ -3,6 +3,11 @@ import type * as ae from 'astronomy-engine';
 
 export const texturesContextKey = Symbol("textures");
 
+export interface GPS {
+    lon: number;
+    lat: number;
+}
+
 export enum Textures {
     MilkyWay,
     Sun,

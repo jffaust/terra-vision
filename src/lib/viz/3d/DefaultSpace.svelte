@@ -9,6 +9,7 @@
 	import Sun from '$lib/gaphics/3d/Sun.svelte';
 	import { mapsCamera } from '$lib/stores';
 	import GpsMarker from '$lib/gaphics/3d/GPSMarker.svelte';
+	import type { Unsubscriber } from 'svelte/store';
 
 	const stats = Stats();
 	const ctx = useThrelte();
@@ -23,7 +24,7 @@
 	});
 
 	let prevEarthPos: THREE.Vector3;
-	const unsub = sim.subscribe(onSimUpdated);
+	let unsub: Unsubscriber;
 
 	onMount(async () => {
 		console.log('SpaceSimScene Mounted');
@@ -34,11 +35,18 @@
 		scene.add(new THREE.AxesHelper(200000000));
 
 		document.body.appendChild(stats.dom);
+
+		unsub = sim.subscribe(onSimUpdated);
 	});
 
-	onDestroy(unsub);
+	onDestroy(() => {
+		if (unsub) {
+			unsub();
+		}
+	});
 
 	function onSimUpdated(s: SimData) {
+		console.log('onSimUpdated');
 		stats.update();
 		if (camera) {
 			if (!prevEarthPos) {

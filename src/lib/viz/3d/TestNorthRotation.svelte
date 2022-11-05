@@ -9,9 +9,8 @@
 		Group
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
-	import { EARTH_RADIUS_KM } from '$lib/constants';
 	import Earth from '$lib/gaphics/3d/Earth.svelte';
-	import { sim } from '$lib/sim/threejs';
+	import { EARTH_RADIUS, sim } from '$lib/sim/threejs';
 
 	// When we load the texture of the Earth onto a sphere, by default the north
 	// pole will start at the center of the sphere and follow the Y axis.
@@ -35,7 +34,7 @@
 
 	let randomNorthPoints: THREE.Vector3[] = [
 		new THREE.Vector3(),
-		testNorth.clone().multiplyScalar(EARTH_RADIUS_KM + 1000)
+		testNorth.clone().multiplyScalar(EARTH_RADIUS * 1.3)
 	];
 
 	earthSpin.x = Math.atan(testNorth.z / testNorth.y);
@@ -65,9 +64,9 @@
 		scene.add(new THREE.AxesHelper(20000));
 
 		if (camera) {
-			camera.position.x = 10000;
-			camera.position.y = 10000;
-			camera.position.z = 10000;
+			camera.position.x = EARTH_RADIUS * 2;
+			camera.position.y = EARTH_RADIUS * 2;
+			camera.position.z = EARTH_RADIUS * 2;
 		}
 
 		interval = setInterval(progress, 500);

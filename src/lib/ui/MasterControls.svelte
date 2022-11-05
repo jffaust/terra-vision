@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { simCurrentDate, simStartDate } from '$lib/sim/astro';
+	import { simCurrentDate, simStartDate } from '$lib/sim/sim';
 	import dateFormat from 'dateformat';
 	import { onDestroy, onMount } from 'svelte';
 

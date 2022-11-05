@@ -47,9 +47,10 @@
 			// https://www.solarsystemscope.com/textures/ CC attribution international license
 			textures.set(Textures.Sun, await tLoader.loadAsync('/space/sun.jpg'));
 			// https://visibleearth.nasa.gov/images/73701/may-blue-marble-next-generation-w-topography-and-bathymetry/73710l
-			const earthMap = await tLoader.loadAsync('/space/earth_blue_marble_may_small.jpg');
+			const earthMap = await tLoader.loadAsync('/space/earth_blue_marble_may_large.jpg');
 			textures.set(Textures.EarthColor, earthMap);
-			// earthSpecMap = await tLoader.loadAsync('/space/8k_earth_specular_map.jpg');
+			const earthSpecMap = await tLoader.loadAsync('/space/8k_earth_specular_map.jpg');
+			textures.set(Textures.EarthSpecular, earthSpecMap);
 			// https://www.shadedrelief.com/natural3/pages/extra.html
 			// earthBumpMap = await tLoader.loadAsync('/space/earth_bump_16k.jpg');
 			texturesLoaded = true;

@@ -1,20 +1,20 @@
 <script lang="ts">
 	import * as THREE from 'three';
 	import { Mesh } from '@threlte/core';
-	import { EARTH_RADIUS_KM } from '$lib/constants';
 	import { getGPSRingSize, gpsToCartesian } from '$lib/math';
 	import type { GPS } from '$lib/types';
 	import Ring from './Ring.svelte';
 	import { mapsCamera } from '$lib/stores';
+	import { EARTH_RADIUS } from '$lib/sim/threejs';
 
 	export let gps: GPS;
 	//export let showTrajectory = true;
 
-	const gpsSphereGeom = new THREE.SphereGeometry(20, 36, 36);
+	const gpsSphereGeom = new THREE.SphereGeometry(EARTH_RADIUS / 1000, 36, 36);
 	const gpsSphereMat = new THREE.MeshBasicMaterial({ color: 0xff00ff });
 
-	let gpsPoint = gpsToCartesian(gps?.lon, gps?.lat, EARTH_RADIUS_KM + 5);
-	let ringSize = getGPSRingSize($mapsCamera.center.lat, EARTH_RADIUS_KM + 5);
+	let gpsPoint = gpsToCartesian(gps?.lon, gps?.lat, EARTH_RADIUS);
+	let ringSize = getGPSRingSize($mapsCamera.center.lat, EARTH_RADIUS * 1.001);
 </script>
 
 <!-- gps coords pin -->

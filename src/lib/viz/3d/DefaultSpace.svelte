@@ -3,8 +3,8 @@
 	import Stats from 'three/examples/jsm/libs/stats.module';
 	import { OrbitControls, PerspectiveCamera, useThrelte, Line } from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
-	import { earthOrbit, sim } from '$lib/sim/threejs';
-	import type { SimData } from '$lib/types';
+	import { earthOrbit, EARTH_ORBIT_RADIUS, sim } from '$lib/sim/threejs';
+	import type { SimData } from '$lib/sim/threejs';
 	import Earth from '$lib/gaphics/3d/Earth.svelte';
 	import Sun from '$lib/gaphics/3d/Sun.svelte';
 	import { mapsCamera } from '$lib/stores';
@@ -32,7 +32,7 @@
 			ctx.renderer.physicallyCorrectLights = true;
 		}
 
-		scene.add(new THREE.AxesHelper(200000000));
+		scene.add(new THREE.AxesHelper(EARTH_ORBIT_RADIUS));
 
 		document.body.appendChild(stats.dom);
 
@@ -84,7 +84,7 @@
 
 <svelte:window on:keyup={handleKeyUp} />
 
-<PerspectiveCamera bind:camera far={310000000}>
+<PerspectiveCamera bind:camera far={EARTH_ORBIT_RADIUS * 2.5}>
 	<OrbitControls target={$sim.earth.pos} />
 </PerspectiveCamera>
 

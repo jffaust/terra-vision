@@ -1,15 +1,26 @@
-import type { AstroSimData } from '$lib/types';
 import * as ae from 'astronomy-engine';
-import { derived, writable } from "svelte/store";
+import { derived } from "svelte/store";
+import { simCurrentDate, simStartDate } from './sim';
 
-const start = new Date();
-export const simStartDate = writable<Date>(start)
-export const simCurrentDate = writable<Date>(start);
+export const ASTRO_SUN_INTENSITY = 500000; // arbitrary value that will scale too
+export const ASTRO_SUN_RADIUS = 0.004650467// 695700÷149597870.7 (km / au)
+export const ASTRO_EARTH_RADIUS = 0.000042588; // 6371÷149597870.7 (km / au)
+export const ASTRO_EARTH_ORBIT_RADIUS = 1; // approx radius of Earth's orbit
+
+// Z-up
+// Ecliptic positions relative to the sun, in Astronomical Units
+export interface AstroSimData {
+    earth: {
+        pos: ae.Vector;
+        axis: ae.AxisInfo;
+    }
+}
 
 // not to be consumed by ThreeJS directly (z-up, in astronomical units)
 export const astroSim = derived(simCurrentDate, calculateProperties);
 export const astroEarthOrbit = derived(simStartDate, calculateEarthOrbit);
 
+// calculate simulation properties: earth's position and axis (north pole and spin)
 function calculateProperties(date: Date): AstroSimData {
     const pos = calculateEarthPosition(date);
     const info = ae.RotationAxis(ae.Body.Earth, date)

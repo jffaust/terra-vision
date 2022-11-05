@@ -6,9 +6,18 @@
 	let previousTime: number;
 	let intervalId: NodeJS.Timer;
 
-	let timeFactor = 100000;
 	let playSimulation = false;
 
+	let timeFactorIdx = 0;
+	let timeFactors = [
+		{ text: '1 X', value: 1 },
+		{ text: '10 X', value: 10 },
+		{ text: '1K X', value: 1000 },
+		{ text: '1M X', value: 1000000 }
+	];
+
+	$: timeFactorValue = timeFactors[timeFactorIdx].value;
+	$: timeFactorText = timeFactors[timeFactorIdx].text;
 	onMount(() => {
 		initStartDate();
 		// setStartDate(new Date(2022, 11, 21)); // zero-based ahhhh
@@ -49,14 +58,14 @@
 		const now = performance.now();
 		const elapsedMs = now - previousTime;
 
-		$simCurrentDate = new Date($simCurrentDate.getTime() + elapsedMs * timeFactor);
+		$simCurrentDate = new Date($simCurrentDate.getTime() + elapsedMs * timeFactorValue);
 
 		previousTime = now;
 	}
 
 	function setupInterval() {
 		previousTime = performance.now();
-		intervalId = setInterval(advance, 50);
+		intervalId = setInterval(advance, 33.33);
 	}
 
 	function stopInterval() {
@@ -79,12 +88,22 @@
 			$simCurrentDate = $simStartDate;
 		}
 	}
+
+	function cycleTimeFactors() {
+		if (timeFactorIdx < timeFactors.length - 1) {
+			timeFactorIdx++;
+		} else {
+			timeFactorIdx = 0;
+		}
+	}
 </script>
 
 <svelte:window on:keyup={handleKeyUp} />
 
 <div>
 	<span>{displayDate}</span>
+
+	<span class="time-factor" on:click={cycleTimeFactors}>{timeFactorText} </span>
 </div>
 
 <style>
@@ -94,5 +113,13 @@
 		left: 0px;
 		color: white;
 		padding: 0 8px;
+	}
+
+	.time-factor {
+		margin-left: 10px;
+		cursor: pointer;
+		border: 1px solid white;
+		padding: 2px;
+		padding-right: 4px;
 	}
 </style>

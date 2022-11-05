@@ -10,7 +10,7 @@
 	let playSimulation = false;
 
 	onMount(() => {
-		setStartDate(new Date());
+		initStartDate();
 		// setStartDate(new Date(2022, 11, 21)); // zero-based ahhhh
 		// setStartDate(new Date(2022, 5, 21)); // zero-based ahhhh
 		if (playSimulation) {
@@ -22,6 +22,23 @@
 	onDestroy(stopInterval);
 
 	$: displayDate = dateFormat($simCurrentDate, 'mmmm dS, yyyy, h:MM:ss TT');
+
+	function initStartDate() {
+		const urlParams = new URLSearchParams(window.location.search);
+
+		// 	2022-11-05T16:14:25Z
+		// https://tc39.es/ecma262/#sec-date-time-string-format
+		const dateString = urlParams.get('date');
+		if (dateString) {
+			try {
+				setStartDate(new Date(dateString));
+			} catch (e) {
+				setStartDate(new Date());
+			}
+		} else {
+			setStartDate(new Date());
+		}
+	}
 
 	function setStartDate(d: Date) {
 		$simStartDate = d;

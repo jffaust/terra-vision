@@ -6,7 +6,7 @@
 	let previousTime: number;
 	let intervalId: NodeJS.Timer;
 
-	let timeFactor = 1000;
+	let timeFactor = 100000;
 	let playSimulation = false;
 
 	onMount(() => {

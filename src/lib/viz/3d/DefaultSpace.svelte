@@ -11,6 +11,8 @@
 	import GpsMarker from '$lib/gaphics/3d/GPSMarker.svelte';
 	import type { Unsubscriber } from 'svelte/store';
 
+	let showStats = false;
+
 	const stats = Stats();
 	const ctx = useThrelte();
 	const { scene } = useThrelte();
@@ -34,7 +36,7 @@
 
 		scene.add(new THREE.AxesHelper(EARTH_ORBIT_RADIUS));
 
-		document.body.appendChild(stats.dom);
+		if (showStats) document.body.appendChild(stats.dom);
 
 		unsub = sim.subscribe(onSimUpdated);
 	});
@@ -46,7 +48,6 @@
 	});
 
 	function onSimUpdated(s: SimData) {
-		console.log('onSimUpdated');
 		stats.update();
 		if (camera) {
 			if (!prevEarthPos) {

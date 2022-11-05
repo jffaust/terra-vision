@@ -38,11 +38,11 @@
 
 	<!-- equator -->
 	<!-- <LineSegments rotation={{ x: Math.PI / 2 }} geometry={edgesCircleGeom} material={redLine} /> -->
-	<Ring radius={EARTH_RADIUS * 1.001} rotation={{ x: Math.PI / 2 }} />
+	<!-- <Ring radius={EARTH_RADIUS * 1.001} rotation={{ x: Math.PI / 2 }} /> -->
 
 	<!-- prime meridian -->
 	<!-- <LineSegments geometry={edgesCircleGeom} material={redLine} /> -->
-	<Ring radius={EARTH_RADIUS * 1.001} />
+	<!-- <Ring radius={EARTH_RADIUS * 1.001} /> -->
 
 	<slot />
 </Group>

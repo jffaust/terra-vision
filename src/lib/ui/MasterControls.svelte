@@ -49,7 +49,7 @@
 	}
 
 	function handleKeyUp(e: KeyboardEvent) {
-		//TODO doesnt belong here
+		e.preventDefault();
 		if (e.code == 'Space') {
 			playSimulation = !playSimulation;
 
@@ -58,6 +58,8 @@
 			} else {
 				stopInterval();
 			}
+		} else if (e.code == 'Backspace') {
+			$simCurrentDate = $simStartDate;
 		}
 	}
 </script>
@@ -74,6 +76,6 @@
 		bottom: 0px;
 		left: 0px;
 		color: white;
-		padding: 5px;
+		padding: 0 8px;
 	}
 </style>

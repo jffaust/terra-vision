@@ -42,7 +42,7 @@
 
 	<!-- prime meridian -->
 	<!-- <LineSegments geometry={edgesCircleGeom} material={redLine} /> -->
-	<!-- <Ring radius={EARTH_RADIUS * 1.001} /> -->
+	<Ring radius={EARTH_RADIUS * 1.001} />
 
 	<slot />
 </Group>

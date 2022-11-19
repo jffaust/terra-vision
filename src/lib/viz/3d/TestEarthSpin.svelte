@@ -11,6 +11,7 @@
 	import { onDestroy, onMount } from 'svelte';
 	import Earth from '$lib/gaphics/3d/Earth.svelte';
 	import { EARTH_RADIUS, sim } from '$lib/sim/threejs';
+	import Ring from '$lib/gaphics/3d/Ring.svelte';
 
 	// When we load the texture of the Earth onto a sphere, by default the north
 	// pole will start at the center of the sphere and follow the Y axis.

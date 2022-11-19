@@ -6,9 +6,9 @@
 	import MasterControls from '$lib/ui/MasterControls.svelte';
 	import { Canvas } from '@threlte/core';
 	import DefaultSpace from '$lib/viz/3d/DefaultSpace.svelte';
-	import TestNorthRotation from '$lib/viz/3d/TestNorthRotation.svelte';
+	import TestEarthSpin from '$lib/viz/3d/TestEarthSpin.svelte';
 	import Euler from '$lib/viz/3d/TestEuler.svelte';
-	import TestGps from '$lib/viz/3d/TestGPS.svelte';
+	import TestGPS from '$lib/viz/3d/TestGPS.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -19,7 +19,7 @@
 	let views: View[] = [
 		{
 			id: 1,
-			type: VizTypes.DefaultSpace,
+			type: VizTypes.TestEarthSpin,
 			region: {
 				left: 0,
 				top: 0,
@@ -47,7 +47,8 @@
 			// https://www.solarsystemscope.com/textures/ CC attribution international license
 			textures.set(Textures.Sun, await tLoader.loadAsync('/space/sun.jpg'));
 			// https://visibleearth.nasa.gov/images/73701/may-blue-marble-next-generation-w-topography-and-bathymetry/73710l
-			const earthMap = await tLoader.loadAsync('/space/earth_blue_marble_may_large.jpg');
+			//const earthMap = await tLoader.loadAsync('/space/earth_blue_marble_may_large.jpg');
+			const earthMap = await tLoader.loadAsync('/space/earth_blue_marble_may_small.jpg');
 			textures.set(Textures.EarthColor, earthMap);
 			const earthSpecMap = await tLoader.loadAsync('/space/8k_earth_specular_map.jpg');
 			textures.set(Textures.EarthSpecular, earthSpecMap);
@@ -88,8 +89,10 @@
 				>
 					{#if view.type == VizTypes.DefaultSpace}
 						<DefaultSpace />
-					{:else if view.type == VizTypes.TestNorthRotation}
-						<TestGps />
+					{:else if view.type == VizTypes.TestEarthSpin}
+						<TestEarthSpin />
+					{:else if view.type == VizTypes.TestGPS}
+						<TestGPS />
 					{/if}
 				</Canvas>VizTypes
 			</ViewContainer>

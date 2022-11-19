@@ -93,9 +93,8 @@
 		const north = s.earth.axis.north;
 
 		earthSpin.x = Math.atan(north.z / north.y);
-		// Apply the inverse rotation so we can get the right Y-value to use
-		// in the second rotation
 		const invRotatedNorth = north.clone();
+		// Apply the inverse rotation to calculate the angle for z
 		invRotatedNorth.applyEuler(new THREE.Euler(-earthSpin.x));
 		earthSpin.z = -Math.atan(north.x / invRotatedNorth.y); // x value doesn't change
 		earthSpin.y = s.earth.axis.spin;
@@ -111,7 +110,7 @@
 <svelte:window on:keyup={handleKeyUp} />
 
 <PerspectiveCamera bind:camera far={EARTH_ORBIT_RADIUS * 2.5}>
-	<OrbitControls target={$sim.earth.pos} />
+	<OrbitControls target={$sim.earth.pos} zoomSpeed={0.5} />
 </PerspectiveCamera>
 
 <Sun />
@@ -119,7 +118,7 @@
 <!-- <AmbientLight /> -->
 
 <!-- earth's orbit -->
-<Line points={$earthOrbit} material={orbitMat} />
+<!-- <Line points={$earthOrbit} material={orbitMat} /> -->
 
 <Earth position={$sim.earth.pos} rotation={earthSpin}>
 	{#if showGPS}

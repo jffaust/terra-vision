@@ -6,7 +6,7 @@
 	let previousTime: number;
 	let intervalId: NodeJS.Timer;
 
-	let playSimulation = false;
+	let playSimulation = true;
 
 	let timeFactorIdx = 0;
 	let timeFactors = [

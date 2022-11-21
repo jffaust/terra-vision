@@ -11,8 +11,6 @@
 	import { onDestroy, onMount } from 'svelte';
 	import Earth from '$lib/gaphics/3d/Earth.svelte';
 	import { EARTH_RADIUS, sim } from '$lib/sim/threejs';
-	import GPSMarker from '$lib/gaphics/3d/GPSMarker.svelte';
-	import { mapsCamera } from '$lib/stores';
 
 	// When we load the texture of the Earth onto a sphere, by default the north
 	// pole will start at the center of the sphere and follow the Y axis.
@@ -53,17 +51,11 @@
 	const stepZ = earthSpin.z / 10;
 	let interval: NodeJS.Timer;
 
-	const ctx = useThrelte();
 	const { scene } = useThrelte();
 	let camera: THREE.PerspectiveCamera;
 
 	onMount(async () => {
-		console.log('SpaceSimScene Mounted');
-		if (ctx && ctx.renderer) {
-			ctx.renderer.physicallyCorrectLights = true;
-		}
-
-		scene.add(new THREE.AxesHelper(20000));
+		scene.add(new THREE.AxesHelper(100));
 
 		if (camera) {
 			camera.position.x = EARTH_RADIUS * 2;
@@ -103,15 +95,17 @@
 
 <svelte:window on:keyup={handleKeyUp} />
 
-<PerspectiveCamera bind:camera far={31000}>
+<PerspectiveCamera bind:camera far={100}>
 	<OrbitControls target={{ x: 0, y: 0, z: 0 }} />
 </PerspectiveCamera>
 
 <AmbientLight />
 
-<Earth>
-	<GPSMarker gps={{ lon: $mapsCamera.center.lon, lat: $mapsCamera.center.lat }} />
-</Earth>
+<Group>
+	<Line points={randomNorthPoints} material={northMat} />
+</Group>
+
+<Earth rotation={progressiveSpin} />
 
 <style>
 </style>

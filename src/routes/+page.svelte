@@ -7,8 +7,7 @@
 	import { Canvas } from '@threlte/core';
 	import DefaultSpace from '$lib/viz/3d/DefaultSpace.svelte';
 	import TestEarthSpin from '$lib/viz/3d/TestEarthSpin.svelte';
-	import Euler from '$lib/viz/3d/TestEuler.svelte';
-	import TestGPS from '$lib/viz/3d/TestGPS.svelte';
+	import TestEarthTilt from '$lib/viz/3d/TestEarthTilt.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -19,7 +18,7 @@
 	let views: View[] = [
 		{
 			id: 1,
-			type: VizTypes.TestEarthSpin,
+			type: VizTypes.DefaultSpace,
 			region: {
 				left: 0,
 				top: 0,
@@ -91,8 +90,8 @@
 						<DefaultSpace />
 					{:else if view.type == VizTypes.TestEarthSpin}
 						<TestEarthSpin />
-					{:else if view.type == VizTypes.TestGPS}
-						<TestGPS />
+					{:else if view.type == VizTypes.TestEarthTilt}
+						<TestEarthTilt />
 					{/if}
 				</Canvas>VizTypes
 			</ViewContainer>

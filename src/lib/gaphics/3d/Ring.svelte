@@ -5,7 +5,7 @@
 	export let radius: number = 1;
 	export let position: Position = new THREE.Vector3();
 	export let rotation: Rotation = new THREE.Euler(0, 0, 0, 'XYZ');
-	export let color: THREE.ColorRepresentation = 0xff0000;
+	export let color: THREE.ColorRepresentation = 0xffff00;
 
 	const circleGeom = new THREE.CircleGeometry(radius, 100);
 	const ringGeom = new THREE.EdgesGeometry(circleGeom);

@@ -11,6 +11,7 @@
 	import GpsMarker from '$lib/gaphics/3d/GPSMarker.svelte';
 	import type { Unsubscriber } from 'svelte/store';
 	import type { GPS } from '$lib/types';
+	import { astroSim } from '$lib/sim/astro';
 
 	let showStats = false;
 
@@ -97,12 +98,12 @@
 		// Apply the inverse rotation to calculate the angle for z
 		invRotatedNorth.applyEuler(new THREE.Euler(-earthSpin.x));
 		earthSpin.z = -Math.atan(north.x / invRotatedNorth.y); // x value doesn't change
-		earthSpin.y = s.earth.axis.spin;
+		//earthSpin.y = s.earth.axis.spin;
 	}
 
 	function handleKeyUp(e: KeyboardEvent) {
 		if (e.key == 'o') {
-			console.log($earthOrbit);
+			console.log($astroSim.earth.axis.spin % 360);
 		}
 	}
 </script>

@@ -30,7 +30,7 @@
 	// let testNorth = new THREE.Vector3(x, y, z).normalize();
 
 	// can also test with the current north
-	const testNorth = $sim.earth.axis.north;
+	const testNorth = $sim.earth.north;
 
 	let randomNorthPoints: THREE.Vector3[] = [
 		new THREE.Vector3(),

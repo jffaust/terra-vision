@@ -12,6 +12,7 @@
 	import type { Unsubscriber } from 'svelte/store';
 	import type { GPS } from '$lib/types';
 	import { astroSim } from '$lib/sim/astro';
+	import { DEG2RAD } from 'three/src/math/MathUtils';
 
 	let showStats = false;
 
@@ -91,19 +92,25 @@
 			prevEarthPos = s.earth.pos;
 		}
 
-		const north = s.earth.axis.north;
+		const north = s.earth.north;
+		const zeroZero = s.earth.zeroZero;
 
 		earthSpin.x = Math.atan(north.z / north.y);
 		const invRotatedNorth = north.clone();
 		// Apply the inverse rotation to calculate the angle for z
 		invRotatedNorth.applyEuler(new THREE.Euler(-earthSpin.x));
 		earthSpin.z = -Math.atan(north.x / invRotatedNorth.y); // x value doesn't change
-		//earthSpin.y = s.earth.axis.spin;
+
+		// have to use -z instead of y because of astro to threejs transformation
+		let angle = Math.atan(-zeroZero.z / zeroZero.x);
+		if (zeroZero.x < 0) {
+			angle -= 180 * DEG2RAD;
+		}
+		earthSpin.y = angle;
 	}
 
 	function handleKeyUp(e: KeyboardEvent) {
 		if (e.key == 'o') {
-			console.log($astroSim.earth.axis.spin % 360);
 		}
 	}
 </script>

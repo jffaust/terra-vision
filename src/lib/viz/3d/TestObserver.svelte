@@ -18,7 +18,8 @@
 	let earthSpin = new THREE.Euler(0, 0, 0, 'XZY');
 	let progressiveSpin = new THREE.Euler(0, 0, 0, 'XZY');
 
-	const now = new Date();
+	let now = new Date();
+	now.setHours(now.getHours() + 12);
 	let eqdLat0lon0Vec = ae.ObserverVector(now, new ae.Observer(0, 0, 0), true);
 	let eqdLat90lon0Vec = ae.ObserverVector(now, new ae.Observer(90, 0, 0), true);
 

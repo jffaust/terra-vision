@@ -18,7 +18,7 @@
 	let views: View[] = [
 		{
 			id: 1,
-			type: VizTypes.TestObserver,
+			type: VizTypes.DefaultSpace,
 			region: {
 				left: 0,
 				top: 0,

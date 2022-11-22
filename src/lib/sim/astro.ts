@@ -12,7 +12,8 @@ export const ASTRO_EARTH_ORBIT_RADIUS = 1; // approx radius of Earth's orbit
 export interface AstroSimData {
     earth: {
         pos: ae.Vector;
-        axis: ae.AxisInfo;
+        north: ae.Vector;
+        zeroZero: ae.Vector; // 0 latitude & 0 longitude
     }
 }
 
@@ -23,10 +24,14 @@ export const astroEarthOrbit = derived(simStartDate, calculateEarthOrbit);
 // calculate simulation properties: earth's position and axis (north pole and spin)
 function calculateProperties(date: Date): AstroSimData {
     const pos = calculateEarthPosition(date);
-    const info = ae.RotationAxis(ae.Body.Earth, date)
-    const eclipticNorth = ae.Ecliptic(info.north).vec
-    const axis = new ae.AxisInfo(info.ra, info.dec, info.spin, eclipticNorth);
-    return { earth: { pos, axis } };
+
+    const eqdNorth = ae.ObserverVector(date, new ae.Observer(90, 0, 0), true);
+    const eqdZeroZero = ae.ObserverVector(date, new ae.Observer(0, 0, 0), true);
+
+    let eqd2ecl = ae.Rotation_EQD_ECL(date);
+    const north = ae.RotateVector(eqd2ecl, eqdNorth);
+    let zeroZero = ae.RotateVector(eqd2ecl, eqdZeroZero);
+    return { earth: { pos, north, zeroZero } };
 }
 
 // calculates the orbital points for 6 months before the given date and 
@@ -64,3 +69,4 @@ function calculateEarthPosition(date: Date) {
     // Rotate from EQJ to Ecliptic plane so that simulation appears horizontal
     return ae.Ecliptic(earth).vec;
 }
+

@@ -15,7 +15,7 @@
 	import { DEG2RAD } from 'three/src/math/MathUtils';
 	import * as ae from 'astronomy-engine';
 
-	let earthRot = getNorthPoleEulerRotation($sim.earth.axis.north);
+	let earthRot = getNorthPoleEulerRotation($sim.earth.north);
 
 	const { scene } = useThrelte();
 	let camera: THREE.PerspectiveCamera;

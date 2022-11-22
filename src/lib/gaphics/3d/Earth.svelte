@@ -34,7 +34,7 @@
 	<Mesh geometry={earthGeom} material={earthMat} />
 
 	<!-- geographic north and south poles -->
-	<!-- <Line points={earthPolesPoints} material={redLine} /> -->
+	<Line points={earthPolesPoints} material={redLine} />
 
 	<!-- equator -->
 	<!-- <LineSegments rotation={{ x: Math.PI / 2 }} geometry={edgesCircleGeom} material={redLine} /> -->

@@ -12,6 +12,7 @@
 	import Earth from '$lib/gaphics/3d/Earth.svelte';
 	import { astroVectorToThreeJS, EARTH_RADIUS, sim } from '$lib/sim/threejs';
 	import * as ae from 'astronomy-engine';
+	import { DEG2RAD } from 'three/src/math/MathUtils';
 
 	let play = false;
 	let earthSpin = new THREE.Euler(0, 0, 0, 'XZY');
@@ -20,37 +21,45 @@
 	const now = new Date();
 	let eqdLat0lon0Vec = ae.ObserverVector(now, new ae.Observer(0, 0, 0), true);
 	let eqdLat90lon0Vec = ae.ObserverVector(now, new ae.Observer(90, 0, 0), true);
-	let eqdLat0lon90Vec = ae.ObserverVector(now, new ae.Observer(0, 90, 0), true);
 
-	console.table([eqdLat0lon0Vec, eqdLat90lon0Vec, eqdLat0lon90Vec]);
+	console.table([eqdLat0lon0Vec, eqdLat90lon0Vec]);
 
 	let eqd2ecl = ae.Rotation_EQD_ECL(now);
 	let eclLat0Lon0Vec = ae.RotateVector(eqd2ecl, eqdLat0lon0Vec);
 	let eclLat90Lon0Vec = ae.RotateVector(eqd2ecl, eqdLat90lon0Vec);
-	let eclLat0Lon90Vec = ae.RotateVector(eqd2ecl, eqdLat0lon90Vec);
 
-	console.table([eclLat0Lon0Vec, eclLat90Lon0Vec, eclLat0Lon90Vec]);
+	console.table([eclLat0Lon0Vec, eclLat90Lon0Vec]);
 
 	let lat0Lon0Vec = astroVectorToThreeJS(eclLat0Lon0Vec);
 	let lat90Lon0Vec = astroVectorToThreeJS(eclLat90Lon0Vec);
-	let lat0Lon90Vec = astroVectorToThreeJS(eclLat0Lon90Vec);
 
 	let lat0Lon0Points = [new THREE.Vector3(), lat0Lon0Vec.multiplyScalar(1.3)];
 	let lat90Lon0Points = [new THREE.Vector3(), lat90Lon0Vec.multiplyScalar(1.3)];
-	let lat0Lon90Points = [new THREE.Vector3(), lat0Lon90Vec.multiplyScalar(1.3)];
 
-	// earthSpin.x = Math.atan(testNorth.z / testNorth.y);
-	// // Apply the inverse rotation so we can get the right Y-value to use
-	// // in the second rotation
-	// const invRotatedNorth = testNorth.clone();
-	// invRotatedNorth.applyEuler(new THREE.Euler(-earthSpin.x));
-	// earthSpin.z = -Math.atan(testNorth.x / invRotatedNorth.y); // x value doesn't change
-	const lineMat = new THREE.LineBasicMaterial({ color: 0xf00000 });
+	earthSpin.x = Math.atan(lat90Lon0Vec.z / lat90Lon0Vec.y);
+	// Apply the inverse rotation so we can get the right Y-value to use
+	// in the second rotation
+	const invRotatedNorth = lat90Lon0Vec.clone();
+	invRotatedNorth.applyEuler(new THREE.Euler(-earthSpin.x));
+	earthSpin.z = -Math.atan(lat90Lon0Vec.x / invRotatedNorth.y); // x value doesn't change
 
+	// Initially, the gps at lat=0 & lon=0 aligns with the X axis in ThreeJS
+	// We calculate the angle between this vector and the corresponding Observer vector
+	let angle = Math.atan(eqdLat0lon0Vec.y / eqdLat0lon0Vec.x);
+	if (eqdLat0lon0Vec.x < 0) {
+		angle -= 180 * DEG2RAD;
+	}
+	earthSpin.y = angle;
+
+	const lineMat = new THREE.LineBasicMaterial({ color: 0xf03000 });
+
+	let maxSteps = 5;
 	let stepXProgress = 0;
 	let stepZProgress = 0;
-	const stepX = earthSpin.x / 10;
-	const stepZ = earthSpin.z / 10;
+	let stepYProgress = 0;
+	const stepX = earthSpin.x / maxSteps;
+	const stepZ = earthSpin.z / maxSteps;
+	const stepY = earthSpin.y / maxSteps;
 	let interval: NodeJS.Timer;
 
 	const { scene } = useThrelte();
@@ -76,14 +85,15 @@
 
 	function progress() {
 		if (play) {
-			if (stepXProgress < 10) {
+			if (stepXProgress < maxSteps) {
 				progressiveSpin.x += stepX;
 				stepXProgress++;
-			} else if (stepZProgress < 10) {
+			} else if (stepZProgress < maxSteps) {
 				progressiveSpin.z += stepZ;
 				stepZProgress++;
-			} else {
-				progressiveSpin.y += 0.05;
+			} else if (stepYProgress < maxSteps) {
+				progressiveSpin.y += stepY;
+				stepYProgress++;
 			}
 		}
 	}
@@ -106,7 +116,6 @@
 <Group>
 	<Line points={lat0Lon0Points} material={lineMat} />
 	<Line points={lat90Lon0Points} material={lineMat} />
-	<Line points={lat0Lon90Points} material={lineMat} />
 </Group>
 
 <Earth rotation={progressiveSpin} />

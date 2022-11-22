@@ -44,7 +44,7 @@
 	const eclAxis = ae.Ecliptic(j2000axis.north).vec;
 	const fixedJ2000North = new THREE.Vector3(eclAxis.x, eclAxis.z, -eclAxis.y);
 	const eqjRot = getNorthPoleEulerRotation(fixedJ2000North);
-	eqjRot.x += 120 * DEG2RAD;
+	eqjRot.x += 90 * DEG2RAD;
 
 	const eqjPlane = new THREE.CircleGeometry(8, 72);
 	const eqjMat = new THREE.MeshBasicMaterial({

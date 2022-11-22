@@ -50,7 +50,7 @@ function adaptVectorsForThreeJS(arr: ae.Vector[]): THREE.Vector3[] {
     return arr.map(astroVectorToThreeJS);
 }
 
-function astroVectorToThreeJS(input: ae.Vector): THREE.Vector3 {
+export function astroVectorToThreeJS(input: ae.Vector): THREE.Vector3 {
     const threeV = new THREE.Vector3(input.x, input.z, -input.y) // switch Y and Z and inverse new Z
     return threeV.multiplyScalar(SCALE_FACTOR); // Astronomical Units to Kilometers
 }

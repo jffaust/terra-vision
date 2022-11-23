@@ -11,6 +11,8 @@
 	import GpsMarker from '$lib/gaphics/3d/GPSMarker.svelte';
 	import type { Unsubscriber } from 'svelte/store';
 	import type { GPS } from '$lib/types';
+	import { astroSim } from '$lib/sim/astro';
+	import { DEG2RAD } from 'three/src/math/MathUtils';
 
 	let showStats = false;
 
@@ -90,20 +92,25 @@
 			prevEarthPos = s.earth.pos;
 		}
 
-		const north = s.earth.axis.north;
+		const north = s.earth.north;
+		const zeroZero = s.earth.zeroZero;
 
 		earthSpin.x = Math.atan(north.z / north.y);
-		// Apply the inverse rotation so we can get the right Y-value to use
-		// in the second rotation
 		const invRotatedNorth = north.clone();
+		// Apply the inverse rotation to calculate the angle for z
 		invRotatedNorth.applyEuler(new THREE.Euler(-earthSpin.x));
 		earthSpin.z = -Math.atan(north.x / invRotatedNorth.y); // x value doesn't change
-		earthSpin.y = s.earth.axis.spin;
+
+		// have to use -z instead of y because of astro to threejs transformation
+		let angle = Math.atan(-zeroZero.z / zeroZero.x);
+		if (zeroZero.x < 0) {
+			angle -= 180 * DEG2RAD;
+		}
+		earthSpin.y = angle;
 	}
 
 	function handleKeyUp(e: KeyboardEvent) {
 		if (e.key == 'o') {
-			console.log($earthOrbit);
 		}
 	}
 </script>
@@ -111,7 +118,7 @@
 <svelte:window on:keyup={handleKeyUp} />
 
 <PerspectiveCamera bind:camera far={EARTH_ORBIT_RADIUS * 2.5}>
-	<OrbitControls target={$sim.earth.pos} />
+	<OrbitControls target={$sim.earth.pos} zoomSpeed={0.5} />
 </PerspectiveCamera>
 
 <Sun />
@@ -119,7 +126,7 @@
 <!-- <AmbientLight /> -->
 
 <!-- earth's orbit -->
-<Line points={$earthOrbit} material={orbitMat} />
+<!-- <Line points={$earthOrbit} material={orbitMat} /> -->
 
 <Earth position={$sim.earth.pos} rotation={earthSpin}>
 	{#if showGPS}

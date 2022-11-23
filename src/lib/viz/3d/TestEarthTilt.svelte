@@ -30,7 +30,7 @@
 	// let testNorth = new THREE.Vector3(x, y, z).normalize();
 
 	// can also test with the current north
-	const testNorth = $sim.earth.axis.north;
+	const testNorth = $sim.earth.north;
 
 	let randomNorthPoints: THREE.Vector3[] = [
 		new THREE.Vector3(),
@@ -51,17 +51,11 @@
 	const stepZ = earthSpin.z / 10;
 	let interval: NodeJS.Timer;
 
-	const ctx = useThrelte();
 	const { scene } = useThrelte();
 	let camera: THREE.PerspectiveCamera;
 
 	onMount(async () => {
-		console.log('SpaceSimScene Mounted');
-		if (ctx && ctx.renderer) {
-			ctx.renderer.physicallyCorrectLights = true;
-		}
-
-		scene.add(new THREE.AxesHelper(20000));
+		scene.add(new THREE.AxesHelper(100));
 
 		if (camera) {
 			camera.position.x = EARTH_RADIUS * 2;
@@ -101,7 +95,7 @@
 
 <svelte:window on:keyup={handleKeyUp} />
 
-<PerspectiveCamera bind:camera far={31000}>
+<PerspectiveCamera bind:camera far={100}>
 	<OrbitControls target={{ x: 0, y: 0, z: 0 }} />
 </PerspectiveCamera>
 

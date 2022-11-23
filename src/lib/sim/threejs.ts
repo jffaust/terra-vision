@@ -20,17 +20,13 @@ export const SUN_RADIUS = ASTRO_SUN_RADIUS * SCALE_FACTOR;
 export const EARTH_RADIUS = ASTRO_EARTH_RADIUS * SCALE_FACTOR;
 export const EARTH_ORBIT_RADIUS = ASTRO_EARTH_ORBIT_RADIUS * SCALE_FACTOR;
 
-export interface AxisInfo {
-    north: THREE.Vector3; // normalized, Y-up
-    spin: number; // radians
-}
-
 // Y-up
 // Ecliptic positions relative to the sun, in world units
 export interface SimData {
     earth: {
         pos: THREE.Vector3;
-        axis: AxisInfo;
+        north: THREE.Vector3;
+        zeroZero: THREE.Vector3;
     }
 }
 
@@ -41,7 +37,8 @@ function adaptSimDataForThreeJS(astroSim: AstroSimData): SimData {
     return {
         earth: {
             pos: astroVectorToThreeJS(astroSim.earth.pos),
-            axis: adaptAxisInfoForThreeJS(astroSim.earth.axis)
+            north: astroVectorToThreeJS(astroSim.earth.north),
+            zeroZero: astroVectorToThreeJS(astroSim.earth.zeroZero)
         }
     }
 }
@@ -50,15 +47,7 @@ function adaptVectorsForThreeJS(arr: ae.Vector[]): THREE.Vector3[] {
     return arr.map(astroVectorToThreeJS);
 }
 
-function astroVectorToThreeJS(input: ae.Vector): THREE.Vector3 {
+export function astroVectorToThreeJS(input: ae.Vector): THREE.Vector3 {
     const threeV = new THREE.Vector3(input.x, input.z, -input.y) // switch Y and Z and inverse new Z
     return threeV.multiplyScalar(SCALE_FACTOR); // Astronomical Units to Kilometers
-}
-
-function adaptAxisInfoForThreeJS(i: ae.AxisInfo): AxisInfo {
-    return {
-        // Normalized vector, don't scale
-        north: new THREE.Vector3(i.north.x, i.north.z, -i.north.y),  // switch Y and Z and inverse new Z
-        spin: DEG2RAD * i.spin
-    }
 }

@@ -14,7 +14,9 @@ export enum Textures {
 
 export enum VizTypes {
     DefaultSpace,
-    TestNorthRotation
+    TestEarthTilt,
+    TestEarthSpin,
+    TestObserver
 }
 
 export interface View {

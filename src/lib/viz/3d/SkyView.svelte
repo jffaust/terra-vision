@@ -11,7 +11,7 @@
 		useFrame
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
-	import { earthOrbit, EARTH_ORBIT_RADIUS, sim, SUN_RADIUS } from '$lib/sim/threejs';
+	import { earthOrbit, EARTH_ORBIT_RADIUS, EARTH_RADIUS, sim, SUN_RADIUS } from '$lib/sim/threejs';
 	import type { SimData } from '$lib/sim/threejs';
 	import Earth from '$lib/gaphics/3d/Earth.svelte';
 	import Sun from '$lib/gaphics/3d/Sun.svelte';
@@ -32,7 +32,6 @@
 	const ctx = useThrelte();
 	const { scene, renderer } = useThrelte();
 	let camera: THREE.PerspectiveCamera;
-	const clock = new THREE.Clock();
 
 	let prevEarthPos: THREE.Vector3;
 	let unsub: Unsubscriber;
@@ -87,16 +86,15 @@
 
 <svelte:window on:keyup={handleKeyUp} />
 
-<PerspectiveCamera
-	bind:camera
-	far={EARTH_ORBIT_RADIUS * 2.5}
-	position={{ x: SUN_RADIUS * 10, y: 0, z: 0 }}
-	lookAt={{ x: 0, y: 0, z: 0 }}
-/>
-
 <Sun />
 
-<Earth position={$sim.earth.pos} rotation={$sim.earth.rotation}>
+<Earth position={$sim.earth.pos}>
+	<PerspectiveCamera
+		bind:camera
+		far={EARTH_ORBIT_RADIUS * 2.5}
+		position={{ x: EARTH_RADIUS * 1.1, y: 0, z: 0 }}
+		lookAt={{ x: 0, y: 0, z: 0 }}
+	/>
 	<GpsMarker {gps} />
 </Earth>
 

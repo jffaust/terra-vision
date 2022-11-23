@@ -18,15 +18,14 @@
 	import GpsMarker from '$lib/gaphics/3d/GPSMarker.svelte';
 	import type { Unsubscriber } from 'svelte/store';
 	import type { GPS, Point2D } from '$lib/types';
-	import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
+	import { FPControls } from '$lib/FPControls';
 	import { gpsToCartesian } from '$lib/math';
 	import { Clock } from 'three';
 
 	// SHOULD NOT USE CURRENT SIM AS THE ROTATING EARTH WOULD COMPLICATE
 	// CAMERA MOVEMENTS?
 
-	let dragging = false;
-	let lastPointerPos: Point2D | null = null;
+	let fpControls: FPControls;
 	let showStats = false;
 
 	const stats = Stats();
@@ -50,15 +49,14 @@
 		if (showStats) document.body.appendChild(stats.dom);
 
 		unsub = sim.subscribe(onSimUpdated);
-
-		renderer?.domElement.addEventListener('pointerdown', onPointerDown);
+		fpControls = new FPControls(camera, renderer?.domElement);
 	});
 
 	onDestroy(() => {
 		if (unsub) {
 			unsub();
 		}
-		renderer?.domElement.removeEventListener('pointerdown', onPointerDown);
+		fpControls.dispose();
 	});
 
 	function onSimUpdated(s: SimData) {
@@ -85,27 +83,9 @@
 			console.log(camera.position);
 		}
 	}
-
-	function onPointerDown(e: PointerEvent) {
-		dragging = true;
-		lastPointerPos = { x: e.clientX, y: e.clientY };
-	}
-
-	function onPointerMove(e: PointerEvent) {
-		if (dragging && lastPointerPos) {
-			const diffX = e.clientX - lastPointerPos.x;
-			const diffY = e.clientY - lastPointerPos.y;
-			camera.ro;
-		}
-	}
-
-	function onPointerUp() {
-		dragging = false;
-		lastPointerPos = null;
-	}
 </script>
 
-<svelte:window on:keyup={handleKeyUp} on:pointermove={onPointerMove} on:pointerup={onPointerUp} />
+<svelte:window on:keyup={handleKeyUp} />
 
 <PerspectiveCamera
 	bind:camera

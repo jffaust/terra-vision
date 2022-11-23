@@ -8,12 +8,13 @@ export const ASTRO_EARTH_RADIUS = 0.000042588; // 6371÷149597870.7 (km / au)
 export const ASTRO_EARTH_ORBIT_RADIUS = 1; // approx radius of Earth's orbit
 
 // Z-up
-// Ecliptic positions relative to the sun, in Astronomical Units
+// Ecliptic positions (unless specified) relative to the sun, in Astronomical Units
 export interface AstroSimData {
     earth: {
         pos: ae.Vector;
         north: ae.Vector;
         zeroZero: ae.Vector; // 0 latitude & 0 longitude
+        eqdZeroZero: ae.Vector; // 0 latitude & 0 longitude
     }
 }
 
@@ -31,7 +32,7 @@ function calculateProperties(date: Date): AstroSimData {
     let eqd2ecl = ae.Rotation_EQD_ECL(date);
     const north = ae.RotateVector(eqd2ecl, eqdNorth);
     let zeroZero = ae.RotateVector(eqd2ecl, eqdZeroZero);
-    return { earth: { pos, north, zeroZero } };
+    return { earth: { pos, north, zeroZero, eqdZeroZero } };
 }
 
 // calculates the orbital points for 6 months before the given date and 

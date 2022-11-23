@@ -19,24 +19,24 @@
 	let views: View[] = [
 		{
 			id: 1,
-			type: VizTypes.DefaultSpace,
+			type: VizTypes.SkyView,
 			region: {
 				left: 0,
 				top: 0,
-				width: 0.5,
-				height: 1
-			}
-		},
-		{
-			id: 2,
-			type: VizTypes.SkyView,
-			region: {
-				left: 0.5,
-				top: 0,
-				width: 0.5,
+				width: 1,
 				height: 1
 			}
 		}
+		// {
+		// 	id: 2,
+		// 	type: VizTypes.SkyView,
+		// 	region: {
+		// 		left: 0.5,
+		// 		top: 0,
+		// 		width: 0.5,
+		// 		height: 1
+		// 	}
+		// }
 	];
 
 	onMount(async () => {

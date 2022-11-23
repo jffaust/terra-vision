@@ -17,7 +17,7 @@
 	import Sun from '$lib/gaphics/3d/Sun.svelte';
 	import GpsMarker from '$lib/gaphics/3d/GPSMarker.svelte';
 	import type { Unsubscriber } from 'svelte/store';
-	import type { GPS } from '$lib/types';
+	import type { GPS, Point2D } from '$lib/types';
 	import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js';
 	import { gpsToCartesian } from '$lib/math';
 	import { Clock } from 'three';
@@ -25,13 +25,14 @@
 	// SHOULD NOT USE CURRENT SIM AS THE ROTATING EARTH WOULD COMPLICATE
 	// CAMERA MOVEMENTS?
 
+	let dragging = false;
+	let lastPointerPos: Point2D | null = null;
 	let showStats = false;
 
 	const stats = Stats();
 	const ctx = useThrelte();
 	const { scene, renderer } = useThrelte();
 	let camera: THREE.PerspectiveCamera;
-	let fpsControls: FirstPersonControls;
 	const clock = new THREE.Clock();
 
 	let prevEarthPos: THREE.Vector3;
@@ -50,20 +51,14 @@
 
 		unsub = sim.subscribe(onSimUpdated);
 
-		fpsControls = new FirstPersonControls(camera, renderer?.domElement);
-		fpsControls.movementSpeed = 0;
-		fpsControls.enabled = false;
-		fpsControls.lookSpeed = 0.1;
+		renderer?.domElement.addEventListener('pointerdown', onPointerDown);
 	});
 
 	onDestroy(() => {
 		if (unsub) {
 			unsub();
 		}
-	});
-
-	useFrame(() => {
-		fpsControls.update(clock.getDelta());
+		renderer?.domElement.removeEventListener('pointerdown', onPointerDown);
 	});
 
 	function onSimUpdated(s: SimData) {
@@ -91,16 +86,26 @@
 		}
 	}
 
-	function onPointerDown() {
-		fpsControls.enabled = true;
+	function onPointerDown(e: PointerEvent) {
+		dragging = true;
+		lastPointerPos = { x: e.clientX, y: e.clientY };
+	}
+
+	function onPointerMove(e: PointerEvent) {
+		if (dragging && lastPointerPos) {
+			const diffX = e.clientX - lastPointerPos.x;
+			const diffY = e.clientY - lastPointerPos.y;
+			camera.ro;
+		}
 	}
 
 	function onPointerUp() {
-		fpsControls.enabled = false;
+		dragging = false;
+		lastPointerPos = null;
 	}
 </script>
 
-<svelte:window on:keyup={handleKeyUp} on:pointerdown={onPointerDown} on:pointerup={onPointerUp} />
+<svelte:window on:keyup={handleKeyUp} on:pointermove={onPointerMove} on:pointerup={onPointerUp} />
 
 <PerspectiveCamera
 	bind:camera

@@ -1,5 +1,10 @@
 export const texturesContextKey = Symbol("textures");
 
+export interface Point2D {
+    x: number;
+    y: number;
+}
+
 export interface GPS {
     lon: number;
     lat: number;

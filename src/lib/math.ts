@@ -1,9 +1,10 @@
 import { degToRad } from "three/src/math/MathUtils";
 import * as THREE from 'three';
 
+// Maybe use astro.ObserverVector instead
 export function gpsToCartesian(lon: number, lat: number, radius: number): THREE.Vector3 {
-    // This assumes that the equator is parallel to the Y-up plane and
-    // that the prime meridian is parallel to the Z plane
+    // This assumes that the equator is perpendicular to the Y-up plane and
+    // that the prime meridian is perpendicular to the Z plane
     const gpsZeroZero = new THREE.Vector3(radius, 0, 0)
     const rotation = new THREE.Euler(0, degToRad(lon), degToRad(lat))
     return gpsZeroZero.applyEuler(rotation);

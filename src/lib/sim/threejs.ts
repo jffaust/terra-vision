@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { derived } from "svelte/store";
 import type * as ae from 'astronomy-engine';
-import { ASTRO_SUN_INTENSITY, ASTRO_SUN_RADIUS, ASTRO_EARTH_RADIUS, type AstroSimData, ASTRO_EARTH_ORBIT_RADIUS, astroSkySim } from './astro';
+import { ASTRO_SUN_INTENSITY, ASTRO_SUN_RADIUS, ASTRO_EARTH_RADIUS, type AstroSimData, ASTRO_EARTH_ORBIT_RADIUS, astroSkySim, ASTRO_METER } from './astro';
 import { astroSpaceEarthOrbit, astroSpaceSim } from './astro';
 import { DEG2RAD } from 'three/src/math/MathUtils';
 
@@ -13,12 +13,13 @@ import { DEG2RAD } from 'three/src/math/MathUtils';
 // Probably because of the astro vectors are using ecliptic coordinates. See
 // https://en.wikipedia.org/wiki/Ecliptic_coordinate_system#/media/File:Heliocentric_rectangular_ecliptic.png
 
-export const SCALE_FACTOR = 100000;
+export const AU_SCALE_FACTOR = 100000;
 
-export const SUN_INTENSITY = ASTRO_SUN_INTENSITY * SCALE_FACTOR;
-export const SUN_RADIUS = ASTRO_SUN_RADIUS * SCALE_FACTOR;
-export const EARTH_RADIUS = ASTRO_EARTH_RADIUS * SCALE_FACTOR;
-export const EARTH_ORBIT_RADIUS = ASTRO_EARTH_ORBIT_RADIUS * SCALE_FACTOR;
+export const METER = ASTRO_METER * AU_SCALE_FACTOR;
+export const SUN_INTENSITY = ASTRO_SUN_INTENSITY * AU_SCALE_FACTOR;
+export const SUN_RADIUS = ASTRO_SUN_RADIUS * AU_SCALE_FACTOR;
+export const EARTH_RADIUS = ASTRO_EARTH_RADIUS * AU_SCALE_FACTOR;
+export const EARTH_ORBIT_RADIUS = ASTRO_EARTH_ORBIT_RADIUS * AU_SCALE_FACTOR;
 
 // Y-up
 // Ecliptic positions relative to the sun, in world units
@@ -51,7 +52,7 @@ function mapVectorsForThreeJS(arr: ae.Vector[]): THREE.Vector3[] {
 
 export function astroVectorToThreeJS(input: ae.Vector): THREE.Vector3 {
     const threeV = new THREE.Vector3(input.x, input.z, -input.y) // switch Y and Z and inverse new Z
-    return threeV.multiplyScalar(SCALE_FACTOR); // Astronomical Units to Kilometers
+    return threeV.multiplyScalar(AU_SCALE_FACTOR); // Astronomical Units to Kilometers
 }
 
 // The rotation is calculated based on how the texture is applied to the sphere,
@@ -81,6 +82,6 @@ function adaptSkySimData(coords: ae.HorizontalCoordinates): THREE.Vector3 {
     // phi is polar angle whereas we receive altitude from AE
     const phi = (90 - coords.altitude) * DEG2RAD;
     const theta = coords.azimuth * DEG2RAD;
-    vec.setFromSphericalCoords(SCALE_FACTOR, phi, theta);
+    vec.setFromSphericalCoords(AU_SCALE_FACTOR, phi, theta);
     return vec;
 }

@@ -9,10 +9,11 @@
 		useFrame
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
-	import { EARTH_ORBIT_RADIUS, skySim } from '$lib/sim/threejs';
+	import { EARTH_ORBIT_RADIUS, EARTH_RADIUS, METER, skySim } from '$lib/sim/threejs';
 	import { FPControls } from '$lib/FPControls';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
 	import Sun from '$lib/gaphics/3d/Sun.svelte';
+	import Earth from '$lib/gaphics/3d/Earth.svelte';
 
 	let fpControls: FPControls;
 
@@ -20,17 +21,23 @@
 	const { scene, renderer } = useThrelte();
 	let camera: THREE.PerspectiveCamera;
 
-	const groundGeom = new THREE.CircleGeometry(10, 36);
-	const groundMat = new THREE.MeshBasicMaterial({ color: 0x136d15 });
+	const groundGeom = new THREE.CircleGeometry(10, 3600);
+	const groundMat = new THREE.MeshPhysicalMaterial({ color: 0x136d15 });
+
+	const geometry = new THREE.PlaneGeometry(1, 1, 1000, 1000);
+	const material = new THREE.MeshPhysicalMaterial({ color: 0x136d15 });
+	const plane = new THREE.Mesh(geometry, material);
+	plane.rotateX(-90 * DEG2RAD);
 
 	onMount(async () => {
 		if (ctx && ctx.renderer) {
 			ctx.renderer.physicallyCorrectLights = true;
 		}
 
-		scene.add(new THREE.AxesHelper(10));
+		scene.add(new THREE.AxesHelper(10000));
+		scene.add(plane);
 
-		camera.lookAt(new THREE.Vector3(1, 1, 0));
+		camera.lookAt(new THREE.Vector3(1, 1.75 * METER, 0));
 		fpControls = new FPControls(camera, renderer?.domElement);
 	});
 
@@ -51,12 +58,24 @@
 
 <Sun position={$skySim} />
 
-<!-- <AmbientLight /> -->
+<AmbientLight intensity={0.15} />
 
-<PerspectiveCamera bind:camera far={EARTH_ORBIT_RADIUS * 1.5} position={{ x: 0, y: 1, z: 0 }} />
+<PerspectiveCamera
+	bind:camera
+	near={0.00000001}
+	far={EARTH_ORBIT_RADIUS * 1.5}
+	position={{ x: 0, y: 1.75 * METER, z: 0 }}
+/>
 
-<Mesh geometry={groundGeom} material={groundMat} rotation={{ x: -90 * DEG2RAD }} />
+<!-- <Mesh geometry={groundGeom} material={groundMat} rotation={{ x: -90 * DEG2RAD }} /> -->
 
-<!-- <Sun /> -->
+<!-- Can also potentially place the Eart below us -->
+
+<!-- <Earth
+	position={{ x: 0, y: -EARTH_RADIUS, z: 0 }}
+	showEquator={false}
+	showPrimeMeridian={false}
+	showRotationAxis={false}
+/> -->
 <style>
 </style>

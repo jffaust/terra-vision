@@ -3,6 +3,7 @@ import * as ae from 'astronomy-engine';
 import { derived } from "svelte/store";
 import { simCurrentDate, simGPS, simStartDate } from './sim';
 
+export const ASTRO_METER = 1 / 149597870700;
 export const ASTRO_SUN_INTENSITY = 500000; // arbitrary value that will scale too
 export const ASTRO_SUN_RADIUS = 0.004650467// 695700÷149597870.7 (km / au)
 export const ASTRO_EARTH_RADIUS = 0.000042588; // 6371÷149597870.7 (km / au)

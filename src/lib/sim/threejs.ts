@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { derived } from "svelte/store";
 import type * as ae from 'astronomy-engine';
-import { ASTRO_SUN_INTENSITY, ASTRO_SUN_RADIUS, ASTRO_EARTH_RADIUS, type AstroSimData, ASTRO_EARTH_ORBIT_RADIUS } from './astro';
-import { astroEarthOrbit, astroSim } from './astro';
+import { ASTRO_SUN_INTENSITY, ASTRO_SUN_RADIUS, ASTRO_EARTH_RADIUS, type AstroSimData, ASTRO_EARTH_ORBIT_RADIUS, astroSkySim } from './astro';
+import { astroSpaceEarthOrbit, astroSpaceSim } from './astro';
 import { DEG2RAD } from 'three/src/math/MathUtils';
 
 // Here, we transform the simulation data from astronomy-engine to facilitate
@@ -31,10 +31,11 @@ export interface SimData {
     }
 }
 
-export const sim = derived(astroSim, adaptSimDataForThreeJS);
-export const earthOrbit = derived(astroEarthOrbit, mapVectorsForThreeJS);
+export const spaceSim = derived(astroSpaceSim, adaptSpaceSimData);
+export const spaceEarthOrbit = derived(astroSpaceEarthOrbit, mapVectorsForThreeJS);
+export const skySim = derived(astroSkySim, adaptSkySimData)
 
-function adaptSimDataForThreeJS(d: AstroSimData): SimData {
+function adaptSpaceSimData(d: AstroSimData): SimData {
     const pos = astroVectorToThreeJS(d.earth.pos)
     const north = astroVectorToThreeJS(d.earth.north)
     const zeroZero = astroVectorToThreeJS(d.earth.zeroZero)
@@ -73,4 +74,13 @@ function calcEarthRotation(north: THREE.Vector3, eqdZeroZero: ae.Vector): THREE.
     rotation.y = angle;
 
     return rotation;
+}
+
+function adaptSkySimData(coords: ae.HorizontalCoordinates): THREE.Vector3 {
+    const vec = new THREE.Vector3();
+    // phi is polar angle whereas we receive altitude from AE
+    const phi = (90 - coords.altitude) * DEG2RAD;
+    const theta = coords.azimuth * DEG2RAD;
+    vec.setFromSphericalCoords(SCALE_FACTOR, phi, theta);
+    return vec;
 }

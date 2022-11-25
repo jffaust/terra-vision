@@ -10,7 +10,7 @@
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
 	import Earth from '$lib/gaphics/3d/Earth.svelte';
-	import { EARTH_RADIUS, sim } from '$lib/sim/threejs';
+	import { EARTH_RADIUS, spaceSim } from '$lib/sim/threejs';
 
 	// When we load the texture of the Earth onto a sphere, by default the north
 	// pole will start at the center of the sphere and follow the Y axis.
@@ -30,7 +30,7 @@
 	// let testNorth = new THREE.Vector3(x, y, z).normalize();
 
 	// can also test with the current north
-	const testNorth = $sim.earth.north;
+	const testNorth = $spaceSim.earth.north;
 
 	let randomNorthPoints: THREE.Vector3[] = [
 		new THREE.Vector3(),

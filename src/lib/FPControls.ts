@@ -44,6 +44,14 @@ export class FPControls {
         this.domElement?.addEventListener('pointerdown', this._onPointerDown);
         this.domElement?.addEventListener('pointermove', this._onPointerMove);
         this.domElement?.addEventListener('pointerup', this._onPointerUp);
+
+        this.setOrientation();
+    }
+
+    dispose() {
+        this.domElement?.removeEventListener('pointerdown', this._onPointerDown);
+        this.domElement?.removeEventListener('pointermove', this._onPointerMove);
+        this.domElement?.removeEventListener('pointerup', this._onPointerUp);
     }
 
     onPointerDown(e: PointerEvent) {
@@ -87,9 +95,15 @@ export class FPControls {
         this.object.lookAt(targetPosition);
     }
 
-    dispose() {
-        this.domElement?.removeEventListener('pointerdown', this._onPointerDown);
-        this.domElement?.removeEventListener('pointermove', this._onPointerMove);
-        this.domElement?.removeEventListener('pointerup', this._onPointerUp);
+    setOrientation() {
+
+        const quaternion = this.object.quaternion;
+
+        this._lookDirection.set(0, 0, - 1).applyQuaternion(quaternion);
+        this._spherical.setFromVector3(this._lookDirection);
+
+        this.lat = 90 - MathUtils.radToDeg(this._spherical.phi);
+        this.lon = MathUtils.radToDeg(this._spherical.theta);
+
     }
 }

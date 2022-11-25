@@ -9,12 +9,10 @@
 		useFrame
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
-	import { EARTH_ORBIT_RADIUS, sim } from '$lib/sim/threejs';
-	import type { SimData } from '$lib/sim/threejs';
-	import type { Unsubscriber } from 'svelte/store';
-	import type { GPS } from '$lib/types';
+	import { EARTH_ORBIT_RADIUS, skySim } from '$lib/sim/threejs';
 	import { FPControls } from '$lib/FPControls';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
+	import Sun from '$lib/gaphics/3d/Sun.svelte';
 
 	let fpControls: FPControls;
 
@@ -22,34 +20,25 @@
 	const { scene, renderer } = useThrelte();
 	let camera: THREE.PerspectiveCamera;
 
-	let unsub: Unsubscriber;
-
-	let gps: GPS = { lat: 45.5114752, lon: -73.4363648 };
-	const groundGeom = new THREE.CircleGeometry(100, 100);
-	const groundMat = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+	const groundGeom = new THREE.CircleGeometry(10, 36);
+	const groundMat = new THREE.MeshBasicMaterial({ color: 0x136d15 });
 
 	onMount(async () => {
 		if (ctx && ctx.renderer) {
 			ctx.renderer.physicallyCorrectLights = true;
 		}
 
-		scene.add(new THREE.AxesHelper(20));
+		scene.add(new THREE.AxesHelper(10));
 
-		unsub = sim.subscribe(onSimUpdated);
-		camera.lookAt(new THREE.Vector3(0, 0, 0));
+		camera.lookAt(new THREE.Vector3(1, 1, 0));
 		fpControls = new FPControls(camera, renderer?.domElement);
 	});
 
 	onDestroy(() => {
-		if (unsub) {
-			unsub();
-		}
 		fpControls.dispose();
 	});
 
 	useFrame(() => {});
-
-	function onSimUpdated(s: SimData) {}
 
 	function handleKeyUp(e: KeyboardEvent) {
 		if (e.key == 'o') {
@@ -60,13 +49,13 @@
 
 <svelte:window on:keyup={handleKeyUp} />
 
-<AmbientLight />
+<Sun position={$skySim} />
 
-<Group>
-	<PerspectiveCamera bind:camera far={EARTH_ORBIT_RADIUS * 2.5} position={{ x: 1, y: 1, z: 0 }} />
-</Group>
+<!-- <AmbientLight /> -->
 
-<Mesh geometry={groundGeom} material={groundMat} rotation={{ x: 90 * DEG2RAD }} />
+<PerspectiveCamera bind:camera far={EARTH_ORBIT_RADIUS * 1.5} position={{ x: 0, y: 1, z: 0 }} />
+
+<Mesh geometry={groundGeom} material={groundMat} rotation={{ x: -90 * DEG2RAD }} />
 
 <!-- <Sun /> -->
 <style>

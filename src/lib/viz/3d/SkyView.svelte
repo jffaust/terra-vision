@@ -56,6 +56,8 @@
 
 <svelte:window on:keyup={handleKeyUp} />
 
+<!-- TODO: Optionally change the color of the light based on the angle (orange/red for low altitude, whiter near 90 degrees) -->
+<!-- similarly, change the color of the scene's background from black to blue -->
 <Sun position={$skySim} />
 
 <AmbientLight intensity={0.15} />

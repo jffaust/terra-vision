@@ -18,5 +18,6 @@ https://www.timeanddate.com/calendar/autumnal-equinox.html
 
 
 ## TODO
-- Earth is not a perfect sphere but an oblate spheriod
+- Earth is not a perfect sphere but an oblate spheroid
+- Add the Earth's moon
 - 

@@ -2,7 +2,7 @@
 	import * as THREE from 'three';
 	import Stats from 'three/examples/jsm/libs/stats.module';
 	import { OrbitControls, PerspectiveCamera, useThrelte, Line } from '@threlte/core';
-	import { onDestroy, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { EARTH_ORBIT_RADIUS, spaceSim } from '$lib/sim/threejs';
 	import type { SimData } from '$lib/sim/threejs';
 	import Earth from '$lib/gaphics/3d/Earth.svelte';
@@ -10,6 +10,7 @@
 	import GpsMarker from '$lib/gaphics/3d/GPSMarker.svelte';
 	import type { Unsubscriber } from 'svelte/store';
 	import type { GPS } from '$lib/types';
+	import MilkyWay from '$lib/gaphics/3d/MilkyWay.svelte';
 
 	let showStats = false;
 
@@ -97,9 +98,11 @@
 
 <svelte:window on:keyup={handleKeyUp} />
 
-<PerspectiveCamera bind:camera far={EARTH_ORBIT_RADIUS * 2.5}>
+<PerspectiveCamera bind:camera far={EARTH_ORBIT_RADIUS * 5}>
 	<OrbitControls target={$spaceSim.earth.pos} zoomSpeed={0.5} />
 </PerspectiveCamera>
+
+<MilkyWay />
 
 <Sun />
 

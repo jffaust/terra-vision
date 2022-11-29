@@ -7,7 +7,7 @@
 
 	const textures = getContext<Map<Textures, THREE.Texture>>(CTX_TEXTURES);
 
-	const geometry = new THREE.SphereGeometry(EARTH_ORBIT_RADIUS * 4, 100, 100);
+	const geometry = new THREE.SphereGeometry(EARTH_ORBIT_RADIUS * 4, 20, 20);
 	const material = new THREE.MeshStandardMaterial({
 		map: textures.get(Textures.MilkyWay),
 		side: THREE.DoubleSide

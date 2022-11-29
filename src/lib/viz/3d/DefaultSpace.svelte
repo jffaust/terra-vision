@@ -12,7 +12,7 @@
 	import type { GPS } from '$lib/types';
 	import MilkyWay from '$lib/gaphics/3d/MilkyWay.svelte';
 
-	let showStats = false;
+	let showStats = true;
 
 	const stats = Stats();
 	const ctx = useThrelte();
@@ -98,7 +98,7 @@
 
 <svelte:window on:keyup={handleKeyUp} />
 
-<PerspectiveCamera bind:camera far={EARTH_ORBIT_RADIUS * 5}>
+<PerspectiveCamera bind:camera far={EARTH_ORBIT_RADIUS * 10}>
 	<OrbitControls target={$spaceSim.earth.pos} zoomSpeed={0.5} />
 </PerspectiveCamera>
 

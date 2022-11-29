@@ -1,13 +1,16 @@
 <script lang="ts">
 	import * as THREE from 'three';
-	import { Group, Mesh, Line, LineSegments } from '@threlte/core';
+	import { Group, Mesh, Line, LineSegments, type Position, type Rotation } from '@threlte/core';
 	import { getContext } from 'svelte';
 	import { Textures, texturesContextKey } from '$lib/types';
 	import Ring from './Ring.svelte';
 	import { EARTH_RADIUS } from '$lib/sim/threejs';
 
-	export let position = new THREE.Vector3();
-	export let rotation = new THREE.Euler(0, 0, 0, 'XZY');
+	export let showEquator = true;
+	export let showPrimeMeridian = true;
+	export let showRotationAxis = true;
+	export let position: Position = new THREE.Vector3();
+	export let rotation: Rotation = new THREE.Euler(0, 0, 0, 'XZY');
 
 	const textures = getContext<Map<Textures, THREE.Texture>>(texturesContextKey);
 
@@ -33,16 +36,20 @@
 	<!-- earth -->
 	<Mesh geometry={earthGeom} material={earthMat} />
 
-	<!-- geographic north and south poles -->
-	<Line points={earthPolesPoints} material={redLine} />
+	{#if showRotationAxis}
+		<!-- rotation axis (geographic north and south poles) -->
+		<Line points={earthPolesPoints} material={redLine} />
+	{/if}
 
-	<!-- equator -->
-	<!-- <LineSegments rotation={{ x: Math.PI / 2 }} geometry={edgesCircleGeom} material={redLine} /> -->
-	<Ring radius={EARTH_RADIUS * 1.001} rotation={{ x: Math.PI / 2 }} />
+	{#if showEquator}
+		<Ring radius={EARTH_RADIUS * 1.001} rotation={{ x: Math.PI / 2 }} />
+	{/if}
 
-	<!-- prime meridian TODO: should be half a ring-->
-	<!-- <LineSegments geometry={edgesCircleGeom} material={redLine} /> -->
-	<Ring radius={EARTH_RADIUS * 1.001} />
+	{#if showPrimeMeridian}
+		<!-- prime meridian TODO: should be half a ring-->
+		<!-- <LineSegments geometry={edgesCircleGeom} material={redLine} /> -->
+		<Ring radius={EARTH_RADIUS * 1.001} />
+	{/if}
 
 	<slot />
 </Group>

@@ -8,6 +8,7 @@
 	import DefaultSpace from '$lib/viz/3d/DefaultSpace.svelte';
 	import TestEarthSpin from '$lib/viz/3d/TestEarthSpin.svelte';
 	import TestObserver from '$lib/viz/3d/TestObserver.svelte';
+	import SkyView from '$lib/viz/3d/SkyView.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -18,7 +19,7 @@
 	let views: View[] = [
 		{
 			id: 1,
-			type: VizTypes.DefaultSpace,
+			type: VizTypes.SkyView,
 			region: {
 				left: 0,
 				top: 0,
@@ -28,7 +29,7 @@
 		}
 		// {
 		// 	id: 2,
-		// 	type: ViewTypes.Test,
+		// 	type: VizTypes.SkyView,
 		// 	region: {
 		// 		left: 0.5,
 		// 		top: 0,
@@ -88,12 +89,14 @@
 				>
 					{#if view.type == VizTypes.DefaultSpace}
 						<DefaultSpace />
+					{:else if view.type == VizTypes.SkyView}
+						<SkyView />
 					{:else if view.type == VizTypes.TestEarthSpin}
 						<TestEarthSpin />
 					{:else if view.type == VizTypes.TestObserver}
 						<TestObserver />
 					{/if}
-				</Canvas>VizTypes
+				</Canvas>
 			</ViewContainer>
 		{/each}
 

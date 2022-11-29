@@ -3,16 +3,13 @@
 	import Stats from 'three/examples/jsm/libs/stats.module';
 	import { OrbitControls, PerspectiveCamera, useThrelte, Line } from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
-	import { earthOrbit, EARTH_ORBIT_RADIUS, sim } from '$lib/sim/threejs';
+	import { EARTH_ORBIT_RADIUS, spaceSim } from '$lib/sim/threejs';
 	import type { SimData } from '$lib/sim/threejs';
 	import Earth from '$lib/gaphics/3d/Earth.svelte';
 	import Sun from '$lib/gaphics/3d/Sun.svelte';
-	import { mapsCamera } from '$lib/stores';
 	import GpsMarker from '$lib/gaphics/3d/GPSMarker.svelte';
 	import type { Unsubscriber } from 'svelte/store';
 	import type { GPS } from '$lib/types';
-	import { astroSim } from '$lib/sim/astro';
-	import { DEG2RAD } from 'three/src/math/MathUtils';
 
 	let showStats = false;
 
@@ -21,7 +18,6 @@
 	const { scene } = useThrelte();
 	let camera: THREE.PerspectiveCamera;
 
-	let earthSpin = new THREE.Euler(0, 0, 0, 'XZY');
 	const orbitMat = new THREE.LineBasicMaterial({
 		color: 0x333333,
 		transparent: true,
@@ -44,7 +40,7 @@
 
 		if (showStats) document.body.appendChild(stats.dom);
 
-		unsub = sim.subscribe(onSimUpdated);
+		unsub = spaceSim.subscribe(onSimUpdated);
 
 		initGPSMarker();
 	});
@@ -91,22 +87,6 @@
 			}
 			prevEarthPos = s.earth.pos;
 		}
-
-		const north = s.earth.north;
-		const zeroZero = s.earth.zeroZero;
-
-		earthSpin.x = Math.atan(north.z / north.y);
-		const invRotatedNorth = north.clone();
-		// Apply the inverse rotation to calculate the angle for z
-		invRotatedNorth.applyEuler(new THREE.Euler(-earthSpin.x));
-		earthSpin.z = -Math.atan(north.x / invRotatedNorth.y); // x value doesn't change
-
-		// have to use -z instead of y because of astro to threejs transformation
-		let angle = Math.atan(-zeroZero.z / zeroZero.x);
-		if (zeroZero.x < 0) {
-			angle -= 180 * DEG2RAD;
-		}
-		earthSpin.y = angle;
 	}
 
 	function handleKeyUp(e: KeyboardEvent) {
@@ -118,7 +98,7 @@
 <svelte:window on:keyup={handleKeyUp} />
 
 <PerspectiveCamera bind:camera far={EARTH_ORBIT_RADIUS * 2.5}>
-	<OrbitControls target={$sim.earth.pos} zoomSpeed={0.5} />
+	<OrbitControls target={$spaceSim.earth.pos} zoomSpeed={0.5} />
 </PerspectiveCamera>
 
 <Sun />
@@ -128,7 +108,7 @@
 <!-- earth's orbit -->
 <!-- <Line points={$earthOrbit} material={orbitMat} /> -->
 
-<Earth position={$sim.earth.pos} rotation={earthSpin}>
+<Earth position={$spaceSim.earth.pos} rotation={$spaceSim.earth.rotation}>
 	{#if showGPS}
 		<GpsMarker {gps} />
 	{/if}

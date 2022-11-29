@@ -11,11 +11,11 @@
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
 	import Earth from '$lib/gaphics/3d/Earth.svelte';
-	import { EARTH_RADIUS, sim } from '$lib/sim/threejs';
+	import { EARTH_RADIUS, spaceSim } from '$lib/sim/threejs';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
 	import * as ae from 'astronomy-engine';
 
-	let earthRot = getNorthPoleEulerRotation($sim.earth.north);
+	let earthRot = getNorthPoleEulerRotation($spaceSim.earth.north);
 
 	const { scene } = useThrelte();
 	let camera: THREE.PerspectiveCamera;

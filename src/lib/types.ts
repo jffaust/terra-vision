@@ -1,4 +1,4 @@
-export const texturesContextKey = Symbol("textures");
+export const CTX_TEXTURES = Symbol("textures");
 
 export interface Point2D {
     x: number;

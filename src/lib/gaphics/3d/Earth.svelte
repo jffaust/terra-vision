@@ -2,7 +2,7 @@
 	import * as THREE from 'three';
 	import { Group, Mesh, Line, LineSegments, type Position, type Rotation } from '@threlte/core';
 	import { getContext } from 'svelte';
-	import { Textures, texturesContextKey } from '$lib/types';
+	import { Textures, CTX_TEXTURES } from '$lib/types';
 	import Ring from './Ring.svelte';
 	import { EARTH_RADIUS } from '$lib/sim/threejs';
 
@@ -12,7 +12,7 @@
 	export let position: Position = new THREE.Vector3();
 	export let rotation: Rotation = new THREE.Euler(0, 0, 0, 'XZY');
 
-	const textures = getContext<Map<Textures, THREE.Texture>>(texturesContextKey);
+	const textures = getContext<Map<Textures, THREE.Texture>>(CTX_TEXTURES);
 
 	const earthGeom = new THREE.SphereGeometry(EARTH_RADIUS, 100, 100);
 	const earthMat = new THREE.MeshPhongMaterial({

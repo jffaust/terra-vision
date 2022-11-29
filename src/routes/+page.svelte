@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Textures, texturesContextKey, VizTypes, type Rect, type View } from '$lib/types';
+	import { Textures, CTX_TEXTURES, VizTypes, type Rect, type View } from '$lib/types';
 	import ViewContainer from '$lib/ui/VizContainer.svelte';
 	import { onMount, setContext } from 'svelte';
 	import * as THREE from 'three';
@@ -14,12 +14,12 @@
 	const tLoader = new THREE.TextureLoader();
 	const textures = new Map<Textures, THREE.Texture>();
 
-	setContext(texturesContextKey, textures);
+	setContext(CTX_TEXTURES, textures);
 
 	let views: View[] = [
 		{
 			id: 1,
-			type: VizTypes.SkyView,
+			type: VizTypes.DefaultSpace,
 			region: {
 				left: 0,
 				top: 0,

@@ -11,6 +11,7 @@
 	import type { Unsubscriber } from 'svelte/store';
 	import type { GPS } from '$lib/types';
 	import MilkyWay from '$lib/gaphics/3d/MilkyWay.svelte';
+	import { DEG2RAD } from 'three/src/math/MathUtils';
 
 	let showStats = false;
 
@@ -75,9 +76,12 @@
 		stats.update();
 		if (camera) {
 			if (!prevEarthPos) {
-				const initialCamPos = new THREE.Vector3();
-				initialCamPos.copy(s.earth.pos);
-				initialCamPos.multiplyScalar(0.99987);
+				const initialCamPos = new THREE.Vector3().copy(s.earth.pos);
+				const rotatedOffset = new THREE.Vector3().copy(s.earth.pos);
+				rotatedOffset.multiplyScalar(-0.00015);
+				rotatedOffset.applyEuler(new THREE.Euler(0, 60 * DEG2RAD, 0));
+
+				initialCamPos.add(rotatedOffset);
 				camera.position.x = initialCamPos.x;
 				camera.position.y = initialCamPos.y;
 				camera.position.z = initialCamPos.z;

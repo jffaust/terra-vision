@@ -88,13 +88,7 @@
 	function handleKeyUp(e: KeyboardEvent) {
 		e.preventDefault();
 		if (e.code == 'Space') {
-			playSimulation = !playSimulation;
-
-			if (playSimulation) {
-				setupInterval();
-			} else {
-				stopInterval();
-			}
+			togglePlayPause();
 		} else if (e.code == 'Backspace') {
 			$simCurrentDate = $simStartDate;
 		}
@@ -107,6 +101,16 @@
 			timeFactorIdx = 0;
 		}
 	}
+
+	function togglePlayPause() {
+		playSimulation = !playSimulation;
+
+		if (playSimulation) {
+			setupInterval();
+		} else {
+			stopInterval();
+		}
+	}
 </script>
 
 <svelte:window on:keyup={handleKeyUp} />
@@ -114,6 +118,12 @@
 <div>
 	<span>{displayDate}</span>
 
+	<button type="button" on:click={togglePlayPause}>
+		<img src="/icons/{playSimulation ? 'pause' : 'play'}.svg" alt="Play/Pause" />
+	</button>
+	<button type="button" on:click={togglePlayPause}>
+		<img src="icons/clock-speed.svg" alt="Time factor" />
+	</button>
 	<span class="time-factor" on:click={cycleTimeFactors}>{timeFactorText} </span>
 </div>
 
@@ -126,11 +136,27 @@
 		padding: 0 8px;
 	}
 
+	span {
+		margin-right: 5px;
+		font-size: 20px;
+	}
+
 	.time-factor {
 		margin-left: 10px;
 		cursor: pointer;
 		border: 1px solid white;
 		padding: 2px;
 		padding-right: 4px;
+	}
+
+	button {
+		background-color: transparent;
+		border: none;
+		padding: 4px;
+		cursor: pointer;
+	}
+	img {
+		width: 24px;
+		height: 24px;
 	}
 </style>

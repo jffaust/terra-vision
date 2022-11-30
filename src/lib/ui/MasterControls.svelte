@@ -18,14 +18,12 @@
 
 	$: timeFactorValue = timeFactors[timeFactorIdx].value;
 	$: timeFactorText = timeFactors[timeFactorIdx].text;
+
 	onMount(() => {
 		initStartDate();
-		// setStartDate(new Date(2022, 11, 21)); // zero-based ahhhh
-		// setStartDate(new Date(2022, 5, 21)); // zero-based ahhhh
 		if (playSimulation) {
 			setupInterval();
 		}
-		//setTimeout(stopInterval, 1000); // temporary
 	});
 
 	onDestroy(stopInterval);
@@ -40,27 +38,40 @@
 		const dateString = urlParams.get('date');
 		if (dateString) {
 			try {
-				setStartDate(new Date(dateString));
+				setStartDate(new Date(dateString), false, false);
 			} catch (e) {
-				setStartDate(new Date());
+				setStartDate(new Date(), false, false);
 			}
 		} else {
-			setStartDate(new Date());
+			setStartDate(new Date(), false, false);
 		}
 	}
 
-	function setStartDate(d: Date) {
+	function setStartDate(d: Date, updateSearchParams: boolean, replaceState: boolean) {
 		$simStartDate = d;
 		$simCurrentDate = d;
+
+		if (updateSearchParams) {
+			var searchParams = new URLSearchParams(window.location.search);
+			searchParams.set('date', d.toISOString());
+
+			let newLocation = new URL(window.location.href);
+			newLocation.search = searchParams.toString();
+
+			if (replaceState) {
+				window.history.replaceState(null, document.title, newLocation.href);
+			} else {
+				window.history.pushState(null, document.title, newLocation.href);
+			}
+		}
 	}
 
 	function advance() {
 		const now = performance.now();
 		const elapsedMs = now - previousTime;
+		previousTime = now;
 
 		$simCurrentDate = new Date($simCurrentDate.getTime() + elapsedMs * timeFactorValue);
-
-		previousTime = now;
 	}
 
 	function setupInterval() {

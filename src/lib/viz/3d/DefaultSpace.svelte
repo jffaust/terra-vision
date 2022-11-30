@@ -12,7 +12,7 @@
 	import type { GPS } from '$lib/types';
 	import MilkyWay from '$lib/gaphics/3d/MilkyWay.svelte';
 
-	let showStats = true;
+	let showStats = false;
 
 	const stats = Stats();
 	const ctx = useThrelte();

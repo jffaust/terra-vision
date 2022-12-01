@@ -124,7 +124,6 @@
 	<button type="button" on:click={togglePlayPause}>
 		<img src="icons/clock-speed.svg" alt="Time factor" />
 	</button>
-	<span class="time-factor" on:click={cycleTimeFactors}>{timeFactorText} </span>
 </div>
 
 <style>

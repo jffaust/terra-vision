@@ -38,7 +38,7 @@
 			ctx.renderer.physicallyCorrectLights = true;
 		}
 
-		scene.add(new THREE.AxesHelper(EARTH_ORBIT_RADIUS));
+		//scene.add(new THREE.AxesHelper(EARTH_ORBIT_RADIUS));
 
 		if (showStats) document.body.appendChild(stats.dom);
 
@@ -115,7 +115,13 @@
 <!-- earth's orbit -->
 <!-- <Line points={$earthOrbit} material={orbitMat} /> -->
 
-<Earth position={$spaceSim.earth.pos} rotation={$spaceSim.earth.rotation}>
+<Earth
+	position={$spaceSim.earth.pos}
+	rotation={$spaceSim.earth.rotation}
+	showEquator={false}
+	showPrimeMeridian={false}
+	showRotationAxis={false}
+>
 	{#if showGPS}
 		<GpsMarker {gps} />
 	{/if}

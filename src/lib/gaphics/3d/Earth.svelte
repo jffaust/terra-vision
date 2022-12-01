@@ -25,8 +25,8 @@
 		shininess: 0.5
 	});
 	const earthPolesPoints: THREE.Vector3Tuple[] = [
-		[0, -EARTH_RADIUS * 1.2, 0],
-		[0, EARTH_RADIUS * 1.2, 0]
+		[0, -EARTH_RADIUS * 1.1, 0],
+		[0, EARTH_RADIUS * 1.1, 0]
 	];
 
 	const redLine = new THREE.LineBasicMaterial({ color: 0xff0000 });

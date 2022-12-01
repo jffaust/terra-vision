@@ -7,6 +7,7 @@
 	let intervalId: NodeJS.Timer;
 
 	let playSimulation = true;
+	let showClockSpeedInput = false;
 
 	let timeFactorIdx = 0;
 	let timeFactors = [
@@ -16,7 +17,8 @@
 		{ text: '1M X', value: 1000000 }
 	];
 
-	$: timeFactorValue = timeFactors[timeFactorIdx].value;
+	let timeFactorValue = 1;
+	//$: timeFactorValue = timeFactors[timeFactorIdx].value;
 	$: timeFactorText = timeFactors[timeFactorIdx].text;
 
 	onMount(() => {
@@ -115,19 +117,24 @@
 
 <svelte:window on:keyup={handleKeyUp} />
 
-<div>
+<div class="controls">
 	<span>{displayDate}</span>
 
 	<button type="button" on:click={togglePlayPause}>
 		<img src="/icons/{playSimulation ? 'pause' : 'play'}.svg" alt="Play/Pause" />
 	</button>
-	<button type="button" on:click={togglePlayPause}>
-		<img src="icons/clock-speed.svg" alt="Time factor" />
-	</button>
+	<div class="speed-control">
+		<button type="button" on:click={() => (showClockSpeedInput = !showClockSpeedInput)}>
+			<img src="icons/clock-speed.svg" alt="Time factor" />
+		</button>
+		{#if showClockSpeedInput}
+			<input class="speed" type="range" min="0" max="10" value={timeFactorValue} />
+		{/if}
+	</div>
 </div>
 
 <style>
-	div {
+	div.controls {
 		position: fixed;
 		bottom: 0px;
 		left: 0px;
@@ -135,17 +142,21 @@
 		padding: 0 8px;
 	}
 
+	div.speed-control {
+		display: inline-flex;
+	}
+
+	input.speed {
+		display: inline;
+		width: 150px !important;
+		position: relative;
+		transform: translate(-50%, -80%);
+		left: -20px;
+	}
+
 	span {
 		margin-right: 5px;
 		font-size: 20px;
-	}
-
-	.time-factor {
-		margin-left: 10px;
-		cursor: pointer;
-		border: 1px solid white;
-		padding: 2px;
-		padding-right: 4px;
 	}
 
 	button {

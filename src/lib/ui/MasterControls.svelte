@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { simCurrentDate, simStartDate } from '$lib/sim/sim';
+	import { updateSearchParams } from '$lib/utils';
 	import dateFormat from 'dateformat';
 	import { onDestroy, onMount } from 'svelte';
 
@@ -38,22 +39,12 @@
 		}
 	}
 
-	function setStartDate(d: Date, updateSearchParams: boolean, replaceState: boolean) {
+	function setStartDate(d: Date, updateSearch: boolean, replaceState: boolean) {
 		$simStartDate = d;
 		$simCurrentDate = d;
 
-		if (updateSearchParams) {
-			var searchParams = new URLSearchParams(window.location.search);
-			searchParams.set('date', d.toISOString());
-
-			let newLocation = new URL(window.location.href);
-			newLocation.search = searchParams.toString();
-
-			if (replaceState) {
-				window.history.replaceState(null, document.title, newLocation.href);
-			} else {
-				window.history.pushState(null, document.title, newLocation.href);
-			}
+		if (updateSearch) {
+			updateSearchParams('date', d.toISOString(), replaceState);
 		}
 	}
 

@@ -12,6 +12,8 @@
 	import type { GPS } from '$lib/types';
 	import MilkyWay from '$lib/gaphics/3d/MilkyWay.svelte';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
+	import { simGPS } from '$lib/sim/sim';
+	import { updateSearchParams } from '$lib/utils';
 
 	let showStats = false;
 
@@ -30,10 +32,8 @@
 	let unsub: Unsubscriber;
 
 	let showGPS = false;
-	let gps: GPS = { lat: 0, lon: 0 };
 
 	onMount(async () => {
-		console.log('SpaceSimScene Mounted');
 		if (ctx && ctx.renderer) {
 			ctx.renderer.physicallyCorrectLights = true;
 		}
@@ -61,7 +61,7 @@
 
 		if (latStr && lonStr) {
 			try {
-				gps = {
+				$simGPS = {
 					lat: parseFloat(latStr),
 					lon: parseFloat(lonStr)
 				};
@@ -69,6 +69,17 @@
 			} catch (e) {
 				console.log();
 			}
+		} else if ('geolocation' in navigator) {
+			navigator.geolocation.getCurrentPosition((pos) => {
+				$simGPS = {
+					lat: pos.coords.latitude,
+					lon: pos.coords.longitude
+				};
+				showGPS = true;
+
+				updateSearchParams('lat', $simGPS.lat.toString(), true);
+				updateSearchParams('lon', $simGPS.lon.toString(), true);
+			});
 		}
 	}
 
@@ -123,7 +134,7 @@
 	showRotationAxis={false}
 >
 	{#if showGPS}
-		<GpsMarker {gps} />
+		<GpsMarker gps={$simGPS} />
 	{/if}
 </Earth>
 

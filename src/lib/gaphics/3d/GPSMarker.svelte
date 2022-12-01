@@ -11,7 +11,7 @@
 	//export let showTrajectory = true;
 
 	const gpsSphereGeom = new THREE.SphereGeometry(EARTH_RADIUS / 1000, 36, 36);
-	const gpsSphereMat = new THREE.MeshBasicMaterial({ color: 0x800080 });
+	const gpsSphereMat = new THREE.MeshBasicMaterial({ color: 'red' });
 
 	let gpsPoint = gpsToCartesian(gps?.lon, gps?.lat, EARTH_RADIUS);
 	let ringSize = getGPSRingSize($mapsCamera.center.lat, EARTH_RADIUS * 1.001);
@@ -22,8 +22,9 @@
 
 <!-- trajectory path -->
 <Ring
+	dashed={false}
 	radius={ringSize}
 	position={{ y: gpsPoint.y }}
 	rotation={{ x: Math.PI / 2 }}
-	color={0xdc143c}
+	color={'white'}
 />

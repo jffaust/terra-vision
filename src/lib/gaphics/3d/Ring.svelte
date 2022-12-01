@@ -3,13 +3,16 @@
 	import { Line2, LineSegments, type Rotation, type Position } from '@threlte/core';
 
 	export let radius: number = 1;
+	export let dashed: boolean = false;
 	export let position: Position = new THREE.Vector3();
 	export let rotation: Rotation = new THREE.Euler(0, 0, 0, 'XYZ');
 	export let color: THREE.ColorRepresentation = 0xffff00;
 
-	const circleGeom = new THREE.CircleGeometry(radius, 100);
+	const circleGeom = new THREE.CircleGeometry(radius, 200);
 	const ringGeom = new THREE.EdgesGeometry(circleGeom);
-	const lineMat = new THREE.LineBasicMaterial({ color });
+	const lineMat = dashed
+		? new THREE.LineDashedMaterial({ color, dashSize: 0.1, gapSize: 0.1, scale: 0.1 })
+		: new THREE.LineBasicMaterial({ color });
 
 	// let angleDiff = (2 * Math.PI) / segments;
 	// let euler = new THREE.Euler(0, 0, angleDiff);

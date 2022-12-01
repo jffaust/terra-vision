@@ -6,20 +6,11 @@
 	let previousTime: number;
 	let intervalId: NodeJS.Timer;
 
+	let timeFactorValue = 1;
 	let playSimulation = true;
 	let showClockSpeedInput = false;
 
-	let timeFactorIdx = 0;
-	let timeFactors = [
-		{ text: '1 X', value: 1 },
-		{ text: '10 X', value: 10 },
-		{ text: '1K X', value: 1000 },
-		{ text: '1M X', value: 1000000 }
-	];
-
-	let timeFactorValue = 1;
-	//$: timeFactorValue = timeFactors[timeFactorIdx].value;
-	$: timeFactorText = timeFactors[timeFactorIdx].text;
+	$: displayDate = dateFormat($simCurrentDate, 'mmmm dS, yyyy, h:MM:ss TT');
 
 	onMount(() => {
 		initStartDate();
@@ -29,8 +20,6 @@
 	});
 
 	onDestroy(stopInterval);
-
-	$: displayDate = dateFormat($simCurrentDate, 'mmmm dS, yyyy, h:MM:ss TT');
 
 	function initStartDate() {
 		const urlParams = new URLSearchParams(window.location.search);
@@ -96,14 +85,6 @@
 		}
 	}
 
-	function cycleTimeFactors() {
-		if (timeFactorIdx < timeFactors.length - 1) {
-			timeFactorIdx++;
-		} else {
-			timeFactorIdx = 0;
-		}
-	}
-
 	function togglePlayPause() {
 		playSimulation = !playSimulation;
 
@@ -128,7 +109,7 @@
 			<img src="icons/clock-speed.svg" alt="Time factor" />
 		</button>
 		{#if showClockSpeedInput}
-			<input class="speed" type="range" min="0" max="10" value={timeFactorValue} />
+			<input class="speed" type="range" min="1" max="100000" bind:value={timeFactorValue} />
 		{/if}
 	</div>
 </div>
@@ -140,6 +121,7 @@
 		left: 0px;
 		color: white;
 		padding: 0 8px;
+		display: flex;
 	}
 
 	div.speed-control {
@@ -166,7 +148,7 @@
 		cursor: pointer;
 	}
 	img {
-		width: 24px;
-		height: 24px;
+		width: 22px;
+		height: 22px;
 	}
 </style>

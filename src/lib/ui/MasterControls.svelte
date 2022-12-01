@@ -10,7 +10,7 @@
 	let playSimulation = true;
 	let showClockSpeedInput = false;
 
-	$: displayDate = dateFormat($simCurrentDate, 'mmmm dS, yyyy, h:MM:ss TT');
+	$: displayDate = dateFormat($simCurrentDate, 'mmmm dS, yyyy, HH:MM:ss');
 
 	onMount(() => {
 		initStartDate();
@@ -106,11 +106,16 @@
 	</button>
 	<div class="speed-control">
 		<button type="button" on:click={() => (showClockSpeedInput = !showClockSpeedInput)}>
-			<img src="icons/clock-speed.svg" alt="Time factor" />
+			<img src="icons/clock-speed.svg" alt="Clock speed" title="Clock speed" />
 		</button>
-		{#if showClockSpeedInput}
-			<input class="speed" type="range" min="1" max="100000" bind:value={timeFactorValue} />
-		{/if}
+
+		<input
+			class="speed {showClockSpeedInput ? '' : 'hidden'}"
+			type="range"
+			min="1"
+			max="100000"
+			bind:value={timeFactorValue}
+		/>
 	</div>
 </div>
 
@@ -122,6 +127,7 @@
 		color: white;
 		padding: 0 8px;
 		display: flex;
+		align-items: center;
 	}
 
 	div.speed-control {
@@ -130,10 +136,17 @@
 
 	input.speed {
 		display: inline;
+		margin-left: 4px;
 		width: 150px !important;
-		position: relative;
-		transform: translate(-50%, -80%);
-		left: -20px;
+	}
+
+	input.speed.hidden {
+		visibility: hidden;
+	}
+
+	input.speed:focus {
+		border-color: none !important;
+		box-shadow: none !important;
 	}
 
 	span {

@@ -11,8 +11,9 @@
 	import type { Unsubscriber } from 'svelte/store';
 	import type { GPS } from '$lib/types';
 	import MilkyWay from '$lib/gaphics/3d/MilkyWay.svelte';
+	import { DEG2RAD } from 'three/src/math/MathUtils';
 
-	let showStats = true;
+	let showStats = false;
 
 	const stats = Stats();
 	const ctx = useThrelte();
@@ -37,7 +38,7 @@
 			ctx.renderer.physicallyCorrectLights = true;
 		}
 
-		scene.add(new THREE.AxesHelper(EARTH_ORBIT_RADIUS));
+		//scene.add(new THREE.AxesHelper(EARTH_ORBIT_RADIUS));
 
 		if (showStats) document.body.appendChild(stats.dom);
 
@@ -75,9 +76,12 @@
 		stats.update();
 		if (camera) {
 			if (!prevEarthPos) {
-				const initialCamPos = new THREE.Vector3();
-				initialCamPos.copy(s.earth.pos);
-				initialCamPos.multiplyScalar(0.99987);
+				const initialCamPos = new THREE.Vector3().copy(s.earth.pos);
+				const rotatedOffset = new THREE.Vector3().copy(s.earth.pos);
+				rotatedOffset.multiplyScalar(-0.00015);
+				rotatedOffset.applyEuler(new THREE.Euler(0, 60 * DEG2RAD, 0));
+
+				initialCamPos.add(rotatedOffset);
 				camera.position.x = initialCamPos.x;
 				camera.position.y = initialCamPos.y;
 				camera.position.z = initialCamPos.z;
@@ -111,7 +115,13 @@
 <!-- earth's orbit -->
 <!-- <Line points={$earthOrbit} material={orbitMat} /> -->
 
-<Earth position={$spaceSim.earth.pos} rotation={$spaceSim.earth.rotation}>
+<Earth
+	position={$spaceSim.earth.pos}
+	rotation={$spaceSim.earth.rotation}
+	showEquator={false}
+	showPrimeMeridian={false}
+	showRotationAxis={false}
+>
 	{#if showGPS}
 		<GpsMarker {gps} />
 	{/if}

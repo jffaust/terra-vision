@@ -5,38 +5,13 @@
 	import * as THREE from 'three';
 	import MasterControls from '$lib/ui/MasterControls.svelte';
 	import Space from '$lib/viz/3d/Space.svelte';
-	import TestEarthSpin from '$lib/viz/3d/TestEarthSpin.svelte';
-	import TestObserver from '$lib/viz/3d/TestObserver.svelte';
-	import SkyView from '$lib/viz/3d/SkyView.svelte';
+	import { views } from '$lib/stores';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
 	const textures = new Map<Textures, THREE.Texture>();
 
 	setContext(CTX_TEXTURES, textures);
-
-	let views: View[] = [
-		{
-			id: 1,
-			type: VizTypes.DefaultSpace,
-			region: {
-				left: 0,
-				top: 0,
-				width: 1,
-				height: 1
-			}
-		}
-		// {
-		// 	id: 2,
-		// 	type: VizTypes.SkyView,
-		// 	region: {
-		// 		left: 0.5,
-		// 		top: 0,
-		// 		width: 0.5,
-		// 		height: 1
-		// 	}
-		// }
-	];
 
 	onMount(async () => {
 		try {
@@ -71,7 +46,7 @@
 	}
 
 	function onResize() {
-		views = views;
+		$views = $views;
 	}
 </script>
 
@@ -79,9 +54,9 @@
 
 <div class="app">
 	{#if texturesLoaded}
-		{#each views as view (view.id)}
+		{#each $views as view (view.id)}
 			{@const rect = getViewPixelRegion(view)}
-			<ViewContainer {...rect}>
+			<ViewContainer {...rect} id={view.id}>
 				{#if view.type == VizTypes.DefaultSpace}
 					<Space width={rect.width} height={rect.height} />
 				{/if}

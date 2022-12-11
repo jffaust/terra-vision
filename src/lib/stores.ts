@@ -1,24 +1,14 @@
-import { get, writable, type Writable } from 'svelte/store';
+import { writable } from 'svelte/store';
+import { VizTypes, type View } from './types';
 
-export enum AppView {
-    Map,
-    Sunlight
-}
-export const appView = writable(AppView.Map);
-
-export interface CameraView {
-    center: {
-        lon: number;
-        lat: number;
+const defaultView: View = {
+    id: 0,
+    type: VizTypes.DefaultSpace,
+    region: {
+        left: 0,
+        top: 0,
+        width: 1,
+        height: 1
     }
-    rotation: number; // radians
-    zoom: number; // arbitrary unit
 }
-
-export const collapsed = writable(true);
-export const mapsCamera: Writable<CameraView> = writable({
-    center:
-        { lon: -73.408560, lat: 45.487928 },
-    rotation: 0,
-    zoom: 18
-});
+export const views = writable([defaultView]);

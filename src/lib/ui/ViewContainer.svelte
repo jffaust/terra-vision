@@ -1,19 +1,15 @@
 <script lang="ts">
-	import { beforeUpdate } from 'svelte';
+	import ViewSettings from '$lib/ui/ViewSettings.svelte';
 
+	export let id: number;
 	export let left: number;
 	export let top: number;
 	export let width: number;
 	export let height: number;
-
-	//let style = `left: ${left}px; top: ${top}px; width: ${width}px; height: ${height}px;`;
-
-	beforeUpdate(() => {
-		console.log('ViewContainer beforeUpdate');
-	});
 </script>
 
 <div style="left:{left}px; top:{top}px; width:{width}px; height:{height}px;">
+	<ViewSettings {id} />
 	<slot />
 </div>
 

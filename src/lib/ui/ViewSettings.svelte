@@ -8,9 +8,10 @@
 	</button>
 	{#if showDropdown}
 		<ul>
-			<li>Split view</li>
-			<li>Change view</li>
-			<li>Close View</li>
+			<li>Switch view</li>
+			<li>Split right</li>
+			<li>Split down</li>
+			<li>Close</li>
 		</ul>
 	{/if}
 </div>
@@ -23,18 +24,27 @@
 	}
 
 	ul {
-		padding-inline-start: 0;
-		position: absolute;
 		right: 0;
-		background-color: darkslategrey;
+		position: absolute;
+		padding-inline-start: 0;
+		background-color: #2f383e;
+		border-radius: 5px;
+		padding: 5px;
 	}
 
 	li {
 		color: white;
 		white-space: nowrap;
 		list-style-type: none;
-		padding: 6px 15px;
-		float: left;
+		padding: 6px 10px;
+		text-align: left;
+		width: 100%;
+		border-radius: 5px;
+	}
+
+	li:hover {
+		cursor: pointer;
+		background-color: #525c62;
 	}
 
 	/* same as MasterControls buttons */

@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { Textures, CTX_TEXTURES, VizTypes, type Rect, type View } from '$lib/types';
-	import ViewContainer from '$lib/ui/VizContainer.svelte';
+	import ViewContainer from '$lib/ui/ViewContainer.svelte';
 	import { onMount, setContext } from 'svelte';
 	import * as THREE from 'three';
 	import MasterControls from '$lib/ui/MasterControls.svelte';
-	import { Canvas } from '@threlte/core';
-	import DefaultSpace from '$lib/viz/3d/DefaultSpace.svelte';
+	import Space from '$lib/viz/3d/Space.svelte';
 	import TestEarthSpin from '$lib/viz/3d/TestEarthSpin.svelte';
 	import TestObserver from '$lib/viz/3d/TestObserver.svelte';
 	import SkyView from '$lib/viz/3d/SkyView.svelte';
@@ -83,20 +82,9 @@
 		{#each views as view (view.id)}
 			{@const rect = getViewPixelRegion(view)}
 			<ViewContainer {...rect}>
-				<Canvas
-					rendererParameters={{ antialias: true }}
-					size={{ width: rect.width, height: rect.height }}
-				>
-					{#if view.type == VizTypes.DefaultSpace}
-						<DefaultSpace />
-					{:else if view.type == VizTypes.SkyView}
-						<SkyView />
-					{:else if view.type == VizTypes.TestEarthSpin}
-						<TestEarthSpin />
-					{:else if view.type == VizTypes.TestObserver}
-						<TestObserver />
-					{/if}
-				</Canvas>
+				{#if view.type == VizTypes.DefaultSpace}
+					<Space width={rect.width} height={rect.height} />
+				{/if}
 			</ViewContainer>
 		{/each}
 

@@ -29,6 +29,7 @@ export interface View {
     id: number;
     type: VizTypes;
     region: Rect; // percentages (0 to 1)
+    splitSibling?: View
 }
 
 export interface Rect {

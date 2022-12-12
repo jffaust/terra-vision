@@ -33,8 +33,11 @@
 		let newView: View = {
 			id: Math.max(...$views.map((v) => v.id)) + 1,
 			type: current.type,
-			region
+			region,
+			splitSibling: current
 		};
+		current.splitSibling = newView;
+
 		$views.push(newView);
 		$views = $views;
 
@@ -45,7 +48,28 @@
 		if ($views.length > 1) {
 			const currentIndex = $views.findIndex((v) => v.id == id);
 			if (currentIndex >= 0) {
+				const current = $views[currentIndex];
 				$views.splice(currentIndex, 1);
+
+				if (current.splitSibling) {
+					const minX = Math.min(current.region.left, current.splitSibling.region.left);
+					const minY = Math.min(current.region.top, current.splitSibling.region.top);
+					const width =
+						current.region.left == current.splitSibling.region.left
+							? current.region.width
+							: current.region.width * 2;
+					const height =
+						current.region.top == current.splitSibling.region.top
+							? current.region.height
+							: current.region.height * 2;
+					current.splitSibling.region = {
+						left: minX,
+						top: minY,
+						width,
+						height
+					};
+				}
+
 				$views = $views;
 			}
 		}
@@ -58,7 +82,7 @@
 	</button>
 	{#if showDropdown}
 		<ul>
-			<li>Switch view</li>
+			<li>Change view</li>
 			<li on:click={() => splitView(true)}>Split right</li>
 			<li on:click={() => splitView(false)}>Split down</li>
 			<li on:click={closeView}>Close view</li>

@@ -34,9 +34,9 @@
 			id: Math.max(...$views.map((v) => v.id)) + 1,
 			type: current.type,
 			region,
-			splitSibling: current
+			siblingSplitRegion: copyRegion(current.region)
 		};
-		current.splitSibling = newView;
+		current.siblingSplitRegion = copyRegion(region);
 
 		$views.push(newView);
 		$views = $views;
@@ -44,6 +44,7 @@
 		showDropdown = false;
 	}
 
+	// we close the current view
 	function closeView() {
 		if ($views.length > 1) {
 			const currentIndex = $views.findIndex((v) => v.id == id);
@@ -51,28 +52,91 @@
 				const current = $views[currentIndex];
 				$views.splice(currentIndex, 1);
 
-				if (current.splitSibling) {
-					const minX = Math.min(current.region.left, current.splitSibling.region.left);
-					const minY = Math.min(current.region.top, current.splitSibling.region.top);
-					const width =
-						current.region.left == current.splitSibling.region.left
-							? current.region.width
-							: current.region.width * 2;
-					const height =
-						current.region.top == current.splitSibling.region.top
-							? current.region.height
-							: current.region.height * 2;
-					current.splitSibling.region = {
-						left: minX,
-						top: minY,
-						width,
-						height
-					};
+				if (current.siblingSplitRegion) {
+					const siblingRegion = current.siblingSplitRegion;
+					// find all views that fit in the sibling split region so we can expand them
+					const viewsToExpand = findViewsInRegion(siblingRegion);
+
+					if (current.region.top == siblingRegion.top + siblingRegion.height) {
+						// sibling
+						// current
+
+						viewsToExpand.forEach((v) => {
+							v.region.height *= 2;
+
+							if (v.siblingSplitRegion) {
+								v.siblingSplitRegion.height *= 2;
+							}
+						});
+					} else if (current.region.top + current.region.height == siblingRegion.top) {
+						// current
+						// sibling
+
+						viewsToExpand.forEach((v) => {
+							v.region.height *= 2;
+							v.region.top -= current.region.height;
+
+							if (v.siblingSplitRegion) {
+								v.siblingSplitRegion.height *= 2;
+								v.siblingSplitRegion.top -= current.region.height;
+							}
+						});
+					} else if (current.region.left == siblingRegion.left + siblingRegion.width) {
+						// sibling current
+
+						viewsToExpand.forEach((v) => {
+							v.region.width *= 2;
+
+							if (v.siblingSplitRegion) {
+								v.siblingSplitRegion.width *= 2;
+							}
+						});
+					} else if (current.region.left + current.region.width == siblingRegion.left) {
+						// current sibling
+
+						viewsToExpand.forEach((v) => {
+							v.region.width *= 2;
+							v.region.left -= current.region.width;
+
+							if (v.siblingSplitRegion) {
+								v.siblingSplitRegion.width *= 2;
+								v.siblingSplitRegion.left -= current.region.width;
+							}
+						});
+					}
 				}
 
 				$views = $views;
 			}
 		}
+	}
+
+	function findViewsInRegion(r: Rect): View[] {
+		const results: View[] = [];
+
+		$views.forEach((v) => {
+			if (
+				v.region.left >= r.left &&
+				v.region.top >= r.top &&
+				v.region.left <= r.left + r.width &&
+				v.region.top <= r.top + r.height &&
+				v.region.width <= r.width &&
+				v.region.height <= r.height
+			) {
+				results.push(v);
+			}
+		});
+
+		return results;
+	}
+
+	function copyRegion(source: Rect): Rect {
+		return {
+			left: source.left,
+			top: source.top,
+			width: source.width,
+			height: source.height
+		};
 	}
 </script>
 

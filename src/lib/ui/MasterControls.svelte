@@ -3,6 +3,7 @@
 	import { updateSearchParams } from '$lib/utils';
 	import dateFormat from 'dateformat';
 	import { onDestroy, onMount } from 'svelte';
+	import IconButton from './IconButton.svelte';
 
 	let previousTime: number;
 	let intervalId: NodeJS.Timer;
@@ -91,14 +92,19 @@
 
 <div class="controls">
 	<span>{displayDate}</span>
+	<IconButton
+		alt="Play/Pause"
+		src="/icons/{playSimulation ? 'pause' : 'play'}.svg"
+		onClick={togglePlayPause}
+	/>
 
-	<button type="button" on:click={togglePlayPause}>
-		<img src="/icons/{playSimulation ? 'pause' : 'play'}.svg" alt="Play/Pause" />
-	</button>
 	<div class="speed-control">
-		<button type="button" on:click={() => (showClockSpeedInput = !showClockSpeedInput)}>
-			<img src="icons/clock-speed.svg" alt="Clock speed" title="Clock speed" />
-		</button>
+		<IconButton
+			src="icons/clock-speed.svg"
+			alt="Clock speed"
+			title="Clock speed"
+			onClick={() => (showClockSpeedInput = !showClockSpeedInput)}
+		/>
 
 		<input
 			class="speed {showClockSpeedInput ? '' : 'hidden'}"

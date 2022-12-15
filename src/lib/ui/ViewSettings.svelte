@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { gridView } from '$lib/stores';
 	import { VizTypes, type Rect, type View } from '$lib/types';
+	import IconButton from './IconButton.svelte';
 	import type { Direction } from './gridview';
 
 	export let id: string;
@@ -34,9 +35,7 @@
 </script>
 
 <div class="settings">
-	<button type="button" on:click={() => (showDropdown = !showDropdown)}>
-		<img src="/icons/gear.svg" alt="Settings" />
-	</button>
+	<IconButton src="/icons/gear.svg" alt="Settings" onClick={() => (showDropdown = !showDropdown)} />
 	{#if showDropdown}
 		<ul>
 			<li on:click={changeView}>Change view</li>
@@ -89,22 +88,6 @@
 	li:hover {
 		cursor: pointer;
 		background-color: var(--bg5-dark);
-	}
-
-	/* same as MasterControls buttons */
-	button {
-		background-color: transparent;
-		border: none;
-		padding: 4px;
-		cursor: pointer;
-	}
-	img {
-		width: 22px;
-		height: 22px;
-	}
-
-	.hide {
-		display: none;
 	}
 
 	dialog {

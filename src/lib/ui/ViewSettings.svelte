@@ -14,7 +14,11 @@
 	}
 
 	// we close the current view
-	function closeView() {}
+	function closeView() {
+		$gridView.remove(id);
+		$gridView = $gridView;
+		showDropdown = false;
+	}
 </script>
 
 <div class="settings">

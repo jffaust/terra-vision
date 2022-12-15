@@ -23,3 +23,7 @@ export function copyRegion(source: Rect): Rect {
         height: source.height
     };
 }
+
+export function isIdenticalRegion(a: Rect, b: Rect) {
+    return a.left == b.left && a.top == b.top && a.width == b.width && a.height == b.height;
+}

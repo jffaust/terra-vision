@@ -1,5 +1,5 @@
 import type { Rect, View, VizTypes } from '$lib/types';
-import { copyRegion } from '$lib/utils';
+import { copyRegion, isIdenticalRegion } from '$lib/utils';
 
 export type Direction = "Horizontal" | "Vertical";
 export type GridViewNode = SplitNode | View;
@@ -49,8 +49,46 @@ export class GridView {
         this.distribute();
     }
 
-    distribute() {
+    remove(viewId: string) {
         if (!isView(this.root)) {
+            const result = locateView(this.root, viewId);
+            if (result) {
+                const [parent, view, index] = result;
+                if (parent.children.length > 2) {
+                    parent.children.splice(index, 1);
+                } else {
+                    const remaining = index == 0 ? parent.children[1] : parent.children[0];
+                    //remaining.region = copyRegion(parent.region);
+
+                    // There's only 2 child and we're removing one so we need to replace the
+                    // split node by the remaining child node
+
+                    if (isIdenticalRegion(this.root.region, parent.region)) {
+                        // replace the root node if we only have 1 remaining view in total
+                        this.root = remaining;
+                    } else {
+                        const grandParentResult = locateSplitNodeParent(this.root, parent.region)
+                        if (grandParentResult) {
+                            const [grandParent, parentIndex] = grandParentResult;
+
+                            grandParent.children.splice(parentIndex, 1, remaining);
+                        }
+                    }
+                }
+            }
+            this.distribute();
+        }
+    }
+
+    distribute() {
+        if (isView(this.root)) {
+            this.root.region = {
+                left: 0,
+                top: 0,
+                width: 1,
+                height: 1
+            }
+        } else {
             distributeFrom(this.root)
         }
     }
@@ -77,6 +115,22 @@ function splitViewAcross(v: View, dir: Direction): SplitNode {
             }
         ]
     }
+}
+
+function locateSplitNodeParent(parent: SplitNode, region: Rect): [SplitNode, number] | null {
+
+    for (let i = 0; i < parent.children.length; i++) {
+        const node = parent.children[i];
+        if (!isView(node)) {
+            if (isIdenticalRegion(node.region, region)) {
+                return [parent, i];
+            } else {
+                const result = locateSplitNodeParent(node, region);
+                if (result) return result;
+            }
+        }
+    }
+    return null;
 }
 
 function locateView(parent: SplitNode, viewId: string): [SplitNode, View, number] | null {

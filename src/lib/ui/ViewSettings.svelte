@@ -44,6 +44,28 @@
 		showDropdown = false;
 	}
 
+	function distribute(splitted: Rect, horizontal: boolean) {
+		if (horizontal) {
+			// find contiguous views along the splitted direction
+			// views must fit in the height / lane
+
+			let found = false;
+			do {
+				if (current.region.top == siblingRegion.top + siblingRegion.height) {
+					// sibling
+					// current
+				} else if (current.region.top + current.region.height == siblingRegion.top) {
+					// current
+					// sibling
+				} else if (current.region.left == siblingRegion.left + siblingRegion.width) {
+					// sibling current
+				} else if (current.region.left + current.region.width == siblingRegion.left) {
+					// current sibling
+				}
+			} while (found);
+		}
+	}
+
 	// we close the current view
 	function closeView() {
 		if ($views.length > 1) {
@@ -128,15 +150,6 @@
 		});
 
 		return results;
-	}
-
-	function copyRegion(source: Rect): Rect {
-		return {
-			left: source.left,
-			top: source.top,
-			width: source.width,
-			height: source.height
-		};
 	}
 </script>
 

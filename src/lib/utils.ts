@@ -1,3 +1,5 @@
+import type { Rect } from "./types";
+
 export function updateSearchParams(key: string, val: string, replaceState: boolean) {
 
     var searchParams = new URLSearchParams(window.location.search);
@@ -11,4 +13,13 @@ export function updateSearchParams(key: string, val: string, replaceState: boole
     } else {
         window.history.pushState(null, document.title, newLocation.href);
     }
+}
+
+export function copyRegion(source: Rect): Rect {
+    return {
+        left: source.left,
+        top: source.top,
+        width: source.width,
+        height: source.height
+    };
 }

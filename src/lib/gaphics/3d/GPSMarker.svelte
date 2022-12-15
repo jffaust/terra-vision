@@ -4,7 +4,6 @@
 	import { getGPSRingSize, gpsToCartesian } from '$lib/math';
 	import type { GPS } from '$lib/types';
 	import Ring from './Ring.svelte';
-	import { mapsCamera } from '$lib/stores';
 	import { EARTH_RADIUS } from '$lib/sim/threejs';
 
 	export let gps: GPS;
@@ -14,7 +13,7 @@
 	const gpsSphereMat = new THREE.MeshBasicMaterial({ color: 'red' });
 
 	let gpsPoint = gpsToCartesian(gps?.lon, gps?.lat, EARTH_RADIUS);
-	let ringSize = getGPSRingSize($mapsCamera.center.lat, EARTH_RADIUS * 1.001);
+	let ringSize = getGPSRingSize(gps?.lat, EARTH_RADIUS * 1.001);
 </script>
 
 <!-- gps coords pin -->

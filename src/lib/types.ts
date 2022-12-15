@@ -26,9 +26,9 @@ export enum VizTypes {
 }
 
 export interface View {
-    id: number;
+    id: string; // generated with crypto.randomUUID();
     type: VizTypes;
-    region: Rect; // percentages
+    region: Rect; // percentages (0 to 1)
 }
 
 export interface Rect {

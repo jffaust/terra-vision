@@ -1,3 +1,7 @@
 :root {
-    --overlay-color: snow;
+    --bg-dark: #2f383e;
+    --bg2-dark: #374247;
+    --bg3-dark: #404c51;
+    --bg4-dark: #4a555b;
+    --bg5-dark: #525c62;
 }

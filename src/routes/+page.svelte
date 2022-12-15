@@ -1,43 +1,17 @@
 <script lang="ts">
 	import { Textures, CTX_TEXTURES, VizTypes, type Rect, type View } from '$lib/types';
-	import ViewContainer from '$lib/ui/VizContainer.svelte';
+	import ViewContainer from '$lib/ui/ViewContainer.svelte';
 	import { onMount, setContext } from 'svelte';
 	import * as THREE from 'three';
 	import MasterControls from '$lib/ui/MasterControls.svelte';
-	import { Canvas } from '@threlte/core';
-	import DefaultSpace from '$lib/viz/3d/DefaultSpace.svelte';
-	import TestEarthSpin from '$lib/viz/3d/TestEarthSpin.svelte';
-	import TestObserver from '$lib/viz/3d/TestObserver.svelte';
-	import SkyView from '$lib/viz/3d/SkyView.svelte';
+	import Space from '$lib/viz/3d/Space.svelte';
+	import { gridView } from '$lib/stores';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
 	const textures = new Map<Textures, THREE.Texture>();
 
 	setContext(CTX_TEXTURES, textures);
-
-	let views: View[] = [
-		{
-			id: 1,
-			type: VizTypes.DefaultSpace,
-			region: {
-				left: 0,
-				top: 0,
-				width: 1,
-				height: 1
-			}
-		}
-		// {
-		// 	id: 2,
-		// 	type: VizTypes.SkyView,
-		// 	region: {
-		// 		left: 0.5,
-		// 		top: 0,
-		// 		width: 0.5,
-		// 		height: 1
-		// 	}
-		// }
-	];
 
 	onMount(async () => {
 		try {
@@ -72,7 +46,7 @@
 	}
 
 	function onResize() {
-		views = views;
+		$gridView = $gridView;
 	}
 </script>
 
@@ -80,23 +54,12 @@
 
 <div class="app">
 	{#if texturesLoaded}
-		{#each views as view (view.id)}
+		{#each $gridView.getViews() as view (view.id)}
 			{@const rect = getViewPixelRegion(view)}
-			<ViewContainer {...rect}>
-				<Canvas
-					rendererParameters={{ antialias: true }}
-					size={{ width: rect.width, height: rect.height }}
-				>
-					{#if view.type == VizTypes.DefaultSpace}
-						<DefaultSpace />
-					{:else if view.type == VizTypes.SkyView}
-						<SkyView />
-					{:else if view.type == VizTypes.TestEarthSpin}
-						<TestEarthSpin />
-					{:else if view.type == VizTypes.TestObserver}
-						<TestObserver />
-					{/if}
-				</Canvas>
+			<ViewContainer {...rect} id={view.id}>
+				{#if view.type == VizTypes.DefaultSpace}
+					<Space width={rect.width} height={rect.height} />
+				{/if}
 			</ViewContainer>
 		{/each}
 

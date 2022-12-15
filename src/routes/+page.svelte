@@ -6,6 +6,7 @@
 	import MasterControls from '$lib/ui/MasterControls.svelte';
 	import Space from '$lib/viz/3d/Space.svelte';
 	import { gridView } from '$lib/stores';
+	import SkyView from '$lib/viz/3d/SkyView.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -59,6 +60,8 @@
 			<ViewContainer {...rect} id={view.id}>
 				{#if view.type == VizTypes.DefaultSpace}
 					<Space width={rect.width} height={rect.height} />
+				{:else if view.type == VizTypes.SkyView}
+					<SkyView width={rect.width} height={rect.height} />
 				{/if}
 			</ViewContainer>
 		{/each}

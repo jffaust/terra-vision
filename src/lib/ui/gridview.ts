@@ -80,6 +80,20 @@ export class GridView {
         }
     }
 
+    changeView(viewId: string, type: VizTypes) {
+        if (isView(this.root)) {
+            if (this.root.id === viewId) {
+                this.root.type = type;
+            }
+        } else {
+            const result = locateView(this.root, viewId);
+            if (result) {
+                const [parent, view, index] = result;
+                view.type = type;
+            }
+        }
+    }
+
     distribute() {
         if (isView(this.root)) {
             this.root.region = {

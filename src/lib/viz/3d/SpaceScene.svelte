@@ -15,6 +15,10 @@
 	import { simGPS } from '$lib/sim/sim';
 	import { updateSearchParams } from '$lib/utils';
 
+	export let showEquator: boolean;
+	export let showRotationAxis: boolean;
+	export let showPrimeMeridian: boolean;
+
 	let showStats = false;
 
 	const stats = Stats();
@@ -129,9 +133,9 @@
 <Earth
 	position={$spaceSim.earth.pos}
 	rotation={$spaceSim.earth.rotation}
-	showEquator={false}
-	showPrimeMeridian={false}
-	showRotationAxis={false}
+	{showEquator}
+	{showPrimeMeridian}
+	{showRotationAxis}
 >
 	{#if showGPS}
 		<GpsMarker gps={$simGPS} />

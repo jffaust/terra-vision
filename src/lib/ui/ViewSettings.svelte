@@ -35,7 +35,7 @@
 </script>
 
 <div class="settings">
-	<IconButton src="/icons/gear.svg" alt="Settings" onClick={() => (showDropdown = !showDropdown)} />
+	<IconButton src="/icons/menu.svg" alt="Settings" onClick={() => (showDropdown = !showDropdown)} />
 	{#if showDropdown}
 		<ul>
 			<li on:click={changeView}>Change view</li>
@@ -73,6 +73,7 @@
 		background-color: var(--bg-dark);
 		border-radius: 5px;
 		padding: 5px;
+		z-index: 10;
 	}
 
 	li {

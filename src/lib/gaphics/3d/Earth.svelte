@@ -7,8 +7,8 @@
 	import { EARTH_RADIUS } from '$lib/sim/threejs';
 
 	export let showEquator = true;
-	export let showPrimeMeridian = true;
 	export let showRotationAxis = true;
+	export let showPrimeMeridian = true;
 	export let position: Position = new THREE.Vector3();
 	export let rotation: Rotation = new THREE.Euler(0, 0, 0, 'XZY');
 

@@ -50,26 +50,13 @@ export class GridView {
     }
 
     distribute() {
-
+        if (!isView(this.root)) {
+            distributeFrom(this.root)
+        }
     }
 
     getViews() {
-        return this.getViewsFrom(this.root);
-    }
-
-    getViewsFrom(node: GridViewNode): View[] {
-        const views: View[] = [];
-
-        if (isView(node)) {
-            views.push(node);
-        } else {
-            const _this = this;
-            node.children.forEach(n => {
-                views.push(..._this.getViewsFrom(n));
-            });
-        }
-
-        return views;
+        return getViewsFrom(this.root);
     }
 }
 
@@ -107,4 +94,46 @@ function locateView(parent: SplitNode, viewId: string): [SplitNode, View, number
     }
 
     return null;
+}
+
+function getViewsFrom(node: GridViewNode): View[] {
+    const views: View[] = [];
+
+    if (isView(node)) {
+        views.push(node);
+    } else {
+        node.children.forEach(n => {
+            views.push(...getViewsFrom(n));
+        });
+    }
+
+    return views;
+}
+
+function distributeFrom(split: SplitNode) {
+    for (let i = 0; i < split.children.length; i++) {
+        const node = split.children[i];
+
+        if (split.direction == "Horizontal") {
+            const splitWidth = split.region.width / split.children.length;
+            node.region = {
+                left: split.region.left + i * splitWidth,
+                top: split.region.top,
+                width: splitWidth,
+                height: split.region.height
+            }
+        } else {
+            const splitHeight = split.region.height / split.children.length;
+            node.region = {
+                left: split.region.left,
+                top: split.region.top + i * splitHeight,
+                width: split.region.width,
+                height: splitHeight
+            }
+        }
+
+        if (!isView(node)) {
+            distributeFrom(node)
+        }
+    }
 }

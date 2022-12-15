@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ViewSettings from '$lib/ui/ViewSettings.svelte';
 
-	export let id: number;
+	export let id: string;
 	export let left: number;
 	export let top: number;
 	export let width: number;

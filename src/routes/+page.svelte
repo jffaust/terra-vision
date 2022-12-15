@@ -5,7 +5,7 @@
 	import * as THREE from 'three';
 	import MasterControls from '$lib/ui/MasterControls.svelte';
 	import Space from '$lib/viz/3d/Space.svelte';
-	import { views } from '$lib/stores';
+	import { gridView } from '$lib/stores';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -46,7 +46,7 @@
 	}
 
 	function onResize() {
-		$views = $views;
+		$gridView = $gridView;
 	}
 </script>
 
@@ -54,7 +54,7 @@
 
 <div class="app">
 	{#if texturesLoaded}
-		{#each $views as view (view.id)}
+		{#each $gridView.getViews() as view (view.id)}
 			{@const rect = getViewPixelRegion(view)}
 			<ViewContainer {...rect} id={view.id}>
 				{#if view.type == VizTypes.DefaultSpace}

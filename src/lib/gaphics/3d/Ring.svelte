@@ -7,8 +7,10 @@
 	export let position: Position = new THREE.Vector3();
 	export let rotation: Rotation = new THREE.Euler(0, 0, 0, 'XYZ');
 	export let color: THREE.ColorRepresentation = 0xffff00;
+	export let thetaStart: number = 0;
+	export let thetaEnd: number = 2 * Math.PI;
 
-	const circleGeom = new THREE.CircleGeometry(radius, 200);
+	const circleGeom = new THREE.CircleGeometry(radius, 200, thetaStart, thetaEnd);
 	const ringGeom = new THREE.EdgesGeometry(circleGeom);
 	const lineMat = dashed
 		? new THREE.LineDashedMaterial({ color, dashSize: 0.1, gapSize: 0.1, scale: 0.1 })

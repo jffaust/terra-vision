@@ -15,6 +15,7 @@
 		border: none;
 		padding: 4px;
 		cursor: pointer;
+		outline: none !important;
 	}
 	img {
 		width: 22px;

@@ -25,5 +25,5 @@
 	radius={ringSize}
 	position={{ y: gpsPoint.y }}
 	rotation={{ x: Math.PI / 2 }}
-	color={'white'}
+	color={'orange'}
 />

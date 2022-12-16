@@ -58,6 +58,7 @@
 	});
 
 	function initGPSMarker() {
+		// should be moved to page.svelte
 		const urlParams = new URLSearchParams(window.location.search);
 
 		const latStr = urlParams.get('lat');

@@ -101,8 +101,8 @@
 	<div class="speed-control">
 		<IconButton
 			src="icons/clock-speed.svg"
-			alt="Clock speed"
-			title="Clock speed"
+			alt="Clock Speed"
+			title="Clock Speed"
 			onClick={() => (showClockSpeedInput = !showClockSpeedInput)}
 		/>
 
@@ -131,17 +131,20 @@
 		color: white;
 		padding: 0 8px;
 		display: flex;
+		gap: 4px;
 		align-items: center;
 	}
 
 	div.speed-control {
 		display: inline-flex;
+		position: relative;
 	}
 
 	input.speed {
 		display: inline;
-		margin-left: 4px;
 		width: 150px !important;
+		position: absolute;
+		transform: translate(-42%, -80%);
 	}
 
 	input.speed.hidden {

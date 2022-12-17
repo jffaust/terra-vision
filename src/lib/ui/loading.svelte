@@ -12,7 +12,7 @@
 		content: ' .';
 		font-weight: bold;
 		font-style: italic;
-		animation: dots 3s steps(5, end) infinite;
+		animation: dots 1s steps(5, end) infinite;
 	}
 
 	@keyframes dots {

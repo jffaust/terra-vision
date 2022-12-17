@@ -3,6 +3,7 @@
 	import { updateSearchParams } from '$lib/utils';
 	import dateFormat from 'dateformat';
 	import { onDestroy, onMount } from 'svelte';
+	import GpsModal from './GPSModal.svelte';
 	import IconButton from './IconButton.svelte';
 
 	let previousTime: number;
@@ -11,6 +12,7 @@
 	let timeFactorValue = 1;
 	let playSimulation = true;
 	let showClockSpeedInput = false;
+	let showGPSModal = false;
 
 	$: displayDate = dateFormat($simCurrentDate, 'mmmm dS, yyyy, HH:MM:ss');
 
@@ -119,9 +121,19 @@
 		src="icons/map-marker.svg"
 		alt="GPS Coordinates"
 		title="GPS Coordinates"
-		onClick={() => {}}
+		onClick={() => {
+			showGPSModal = true;
+		}}
 	/>
 </div>
+
+{#if showGPSModal}
+	<GpsModal
+		close={() => {
+			showGPSModal = false;
+		}}
+	/>
+{/if}
 
 <style>
 	div.controls {

@@ -1,4 +1,4 @@
-<!-- https://codepen.io/vkjgr/pen/gbPaVx -->
+<!-- idea taken from https://codepen.io/vkjgr/pen/gbPaVx -->
 
 <p>Loading</p>
 

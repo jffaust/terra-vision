@@ -8,6 +8,8 @@
 	import { gridView } from '$lib/stores';
 	import SkyView from '$lib/viz/3d/SkyView.svelte';
 	import Loading from '$lib/ui/loading.svelte';
+	import { simGPS } from '$lib/sim/sim';
+	import { updateSearchParams } from '$lib/utils';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -30,11 +32,12 @@
 			textures.set(Textures.EarthSpecular, earthSpecMap);
 			// https://www.shadedrelief.com/natural3/pages/extra.html
 			// earthBumpMap = await tLoader.loadAsync('/space/earth_bump_16k.jpg');
-			texturesLoaded = false;
-			console.log('Textures loaded');
+			texturesLoaded = true;
+
+			initGPSPosition();
 		} catch (e) {
 			console.log(e);
-			//todo erro
+			//todo error
 		}
 	});
 
@@ -49,6 +52,36 @@
 
 	function onResize() {
 		$gridView = $gridView;
+	}
+
+	function initGPSPosition() {
+		const urlParams = new URLSearchParams(window.location.search);
+
+		const latStr = urlParams.get('lat');
+		const lonStr = urlParams.get('lon');
+
+		if (latStr && lonStr) {
+			try {
+				$simGPS = {
+					lat: parseFloat(latStr),
+					lon: parseFloat(lonStr)
+				};
+			} catch (e) {
+				$simGPS = null;
+				// remove params from URL?
+			}
+		}
+		//  if ('geolocation' in navigator) {
+		// 	navigator.geolocation.getCurrentPosition((pos) => {
+		// 		$simGPS = {
+		// 			lat: pos.coords.latitude,
+		// 			lon: pos.coords.longitude
+		// 		};
+
+		// 		updateSearchParams('lat', $simGPS.lat.toString(), true);
+		// 		updateSearchParams('lon', $simGPS.lon.toString(), true);
+		// 	});
+		// }
 	}
 </script>
 

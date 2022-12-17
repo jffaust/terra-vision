@@ -71,17 +71,6 @@
 				// remove params from URL?
 			}
 		}
-		//  if ('geolocation' in navigator) {
-		// 	navigator.geolocation.getCurrentPosition((pos) => {
-		// 		$simGPS = {
-		// 			lat: pos.coords.latitude,
-		// 			lon: pos.coords.longitude
-		// 		};
-
-		// 		updateSearchParams('lat', $simGPS.lat.toString(), true);
-		// 		updateSearchParams('lon', $simGPS.lon.toString(), true);
-		// 	});
-		// }
 	}
 </script>
 

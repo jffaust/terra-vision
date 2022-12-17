@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { gridView } from '$lib/stores';
-	import { VizTypes } from '$lib/types';
 	import IconButton from './IconButton.svelte';
 	import type { Direction } from './gridview';
-	import Modal from './Modal.svelte';
 	import ChangeViewModal from './ChangeViewModal.svelte';
 
 	export let id: string;

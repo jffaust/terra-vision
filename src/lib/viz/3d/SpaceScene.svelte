@@ -103,7 +103,7 @@
 	{showRotationAxis}
 >
 	{#if $simGPS}
-		<GpsMarker pos={$simGPS} />
+		<GpsMarker lat={$simGPS.lat} lon={$simGPS.lon} />
 	{/if}
 </Earth>
 

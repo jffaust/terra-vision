@@ -9,11 +9,10 @@
 		useFrame
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
-	import { EARTH_ORBIT_RADIUS, EARTH_RADIUS, METER, skySim } from '$lib/sim/threejs';
+	import { EARTH_ORBIT_RADIUS, METER, skySim } from '$lib/sim/threejs';
 	import { FPControls } from '$lib/FPControls';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
 	import Sun from '$lib/gaphics/3d/Sun.svelte';
-	import Earth from '$lib/gaphics/3d/Earth.svelte';
 
 	let fpControls: FPControls;
 

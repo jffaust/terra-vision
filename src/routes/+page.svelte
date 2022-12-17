@@ -3,7 +3,7 @@
 	import ViewContainer from '$lib/ui/ViewContainer.svelte';
 	import { onMount, setContext } from 'svelte';
 	import * as THREE from 'three';
-	import MasterControls from '$lib/ui/MasterControls.svelte';
+	import MainControls from '$lib/ui/MainControls.svelte';
 	import Space from '$lib/viz/3d/Space.svelte';
 	import { gridView } from '$lib/stores';
 	import SkyView from '$lib/viz/3d/SkyView.svelte';
@@ -100,7 +100,7 @@
 			</ViewContainer>
 		{/each}
 
-		<MasterControls />
+		<MainControls />
 	{:else}
 		<div class="loading">
 			<Loading />

@@ -75,8 +75,10 @@ function calculateEarthPosition(date: Date) {
     return ae.Ecliptic(earth).vec;
 }
 
-function calcSkySimData([date, gps]: [Date, GPSCoords]): ae.HorizontalCoordinates {
-    const obs = new ae.Observer(gps.lat, gps.lon, 0);
+function calcSkySimData([date, pos]: [Date, GPSCoords | null]): ae.HorizontalCoordinates {
+
+    const coords = pos ? pos : { lat: 0, lon: 0 };
+    const obs = new ae.Observer(coords.lat, coords.lon, 0);
     const eq = ae.Equator(ae.Body.Sun, date, obs, true, true);
     return ae.Horizon(date, obs, eq.ra, eq.dec, "normal");
 }

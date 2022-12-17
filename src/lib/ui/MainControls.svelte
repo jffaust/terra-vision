@@ -114,6 +114,13 @@
 			bind:value={timeFactorValue}
 		/>
 	</div>
+
+	<IconButton
+		src="icons/map-marker.svg"
+		alt="GPS Coordinates"
+		title="GPS Coordinates"
+		onClick={() => {}}
+	/>
 </div>
 
 <style>

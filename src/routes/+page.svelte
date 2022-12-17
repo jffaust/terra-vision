@@ -7,6 +7,7 @@
 	import Space from '$lib/viz/3d/Space.svelte';
 	import { gridView } from '$lib/stores';
 	import SkyView from '$lib/viz/3d/SkyView.svelte';
+	import Loading from '$lib/ui/loading.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -29,7 +30,7 @@
 			textures.set(Textures.EarthSpecular, earthSpecMap);
 			// https://www.shadedrelief.com/natural3/pages/extra.html
 			// earthBumpMap = await tLoader.loadAsync('/space/earth_bump_16k.jpg');
-			texturesLoaded = true;
+			texturesLoaded = false;
 			console.log('Textures loaded');
 		} catch (e) {
 			console.log(e);
@@ -68,7 +69,9 @@
 
 		<MasterControls />
 	{:else}
-		<p>Loading textures...</p>
+		<div class="loading">
+			<Loading />
+		</div>
 	{/if}
 </div>
 
@@ -80,13 +83,10 @@
 		background-color: #1d1f21;
 	}
 
-	p {
-		color: snow;
+	.loading {
+		position: absolute;
 		top: 50%;
 		left: 50%;
-		font-style: italic;
-		font-size: x-large;
-		position: absolute;
 		transform: translate(-50%, -50%);
 	}
 </style>

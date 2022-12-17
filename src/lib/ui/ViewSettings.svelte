@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { gridView } from '$lib/stores';
-	import { VizTypes, type Rect, type View } from '$lib/types';
+	import { VizTypes } from '$lib/types';
 	import IconButton from './IconButton.svelte';
 	import type { Direction } from './gridview';
+	import Modal from './Modal.svelte';
+	import ChangeViewModal from './ChangeViewModal.svelte';
 
 	export let id: string;
 
 	let showDropdown = false;
-	let changeViewModal: HTMLDialogElement;
+	let showChangeViewModal = false;
 
 	function splitView(dir: Direction) {
 		$gridView.split(id, dir);
@@ -24,13 +26,7 @@
 
 	function changeView() {
 		showDropdown = false;
-		changeViewModal.show();
-	}
-
-	function changeViewTo(type: VizTypes) {
-		$gridView.changeView(id, type);
-		$gridView = $gridView;
-		changeViewModal.close();
+		showChangeViewModal = true;
 	}
 </script>
 
@@ -46,18 +42,14 @@
 	{/if}
 </div>
 
-<dialog bind:this={changeViewModal}>
-	<menu class="view-picker">
-		<li on:click={() => changeViewTo(VizTypes.DefaultSpace)}>
-			<h4>Space</h4>
-			<p>View the Earth in space</p>
-		</li>
-		<li on:click={() => changeViewTo(VizTypes.SkyView)}>
-			<h4>Sky</h4>
-			<p>View the sky from a specific coordinate on Earth</p>
-		</li>
-	</menu>
-</dialog>
+{#if showChangeViewModal}
+	<ChangeViewModal
+		viewId={id}
+		close={() => {
+			showChangeViewModal = false;
+		}}
+	/>
+{/if}
 
 <style>
 	.settings {
@@ -88,31 +80,6 @@
 
 	li:hover {
 		cursor: pointer;
-		background-color: var(--bg5-dark);
-	}
-
-	dialog {
-		position: fixed;
-		transform: translate(-50%, -50%);
-		left: 50%;
-		top: 50%;
-		padding: 0;
-		border: none;
-		background: none;
-	}
-
-	.view-picker {
-		border-radius: 5px;
-		border: 5px solid var(--bg-dark);
-		background-color: var(--bg-dark);
-		padding-inline-start: 0px;
-		list-style: none;
-	}
-	.view-picker > li {
-		padding: 10px;
-		cursor: pointer;
-	}
-	.view-picker > li:hover {
 		background-color: var(--bg5-dark);
 	}
 </style>

@@ -33,7 +33,7 @@
 			ctx.renderer.physicallyCorrectLights = true;
 		}
 
-		scene.add(new THREE.AxesHelper(10000));
+		//scene.add(new THREE.AxesHelper(10000));
 		scene.add(plane);
 
 		camera.lookAt(new THREE.Vector3(1, 1.75 * METER, 0));

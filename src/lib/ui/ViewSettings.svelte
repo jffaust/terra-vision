@@ -67,7 +67,7 @@
 	}
 
 	li {
-		color: white;
+		color: var(--font-color);
 		white-space: nowrap;
 		list-style-type: none;
 		padding: 6px 10px;

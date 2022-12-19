@@ -22,7 +22,7 @@
 			text-shadow: 0.4em 0 0 rgba(0, 0, 0, 0), 0.8em 0 0 rgba(0, 0, 0, 0);
 		}
 		40% {
-			color: white;
+			color: var(--font-color);
 			text-shadow: 0.4em 0 0 rgba(0, 0, 0, 0), 0.8em 0 0 rgba(0, 0, 0, 0);
 		}
 		60% {

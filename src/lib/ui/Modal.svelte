@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 
+	export let title: string;
 	export let close: () => void;
 
 	let dialog: HTMLDialogElement;
@@ -32,18 +33,31 @@
 </script>
 
 <dialog bind:this={dialog}>
-	<slot />
+	<div class="card">
+		<header>
+			<h4>{title}</h4>
+		</header>
+		<slot />
+	</div>
 </dialog>
 
 <style>
 	dialog {
 		position: fixed;
-		background-color: var(--bg2-dark);
+		background: none;
 		transform: translate(-50%, -50%);
 		left: 50%;
 		top: 50%;
 		padding: 0;
 		border-radius: 5px;
 		border: none;
+	}
+
+	.card {
+		background-color: var(--bg2-dark);
+	}
+
+	h4 {
+		color: var(--font-color);
 	}
 </style>

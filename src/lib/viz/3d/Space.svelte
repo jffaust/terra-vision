@@ -58,7 +58,7 @@
 		border-radius: 5px;
 		padding: 5px;
 		z-index: 10;
-		color: white;
+		color: var(--font-color);
 		white-space: nowrap;
 	}
 

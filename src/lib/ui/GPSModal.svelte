@@ -39,7 +39,7 @@
 	}
 </script>
 
-<Modal {close}>
+<Modal {close} title="Set Coordinates">
 	<div>
 		<p>
 			Set GPS coordinates or use <span class="my-location" on:click={useMyLocation}
@@ -63,7 +63,7 @@
 <style>
 	div {
 		padding: 10px;
-		color: white;
+		color: var(--font-color);
 	}
 	.my-location {
 		color: #17c16f;

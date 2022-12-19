@@ -140,7 +140,7 @@
 		position: fixed;
 		bottom: 0px;
 		left: 0px;
-		color: white;
+		color: var(--font-color);
 		padding: 0 8px;
 		display: flex;
 		gap: 4px;

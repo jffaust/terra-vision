@@ -36,6 +36,7 @@
 	}
 
 	h4 {
+		margin-top: 0;
 		margin-bottom: 7px;
 	}
 
@@ -60,5 +61,9 @@
 	li:hover {
 		cursor: pointer;
 		background-color: var(--bg5-dark);
+	}
+
+	p {
+		font-style: italic;
 	}
 </style>

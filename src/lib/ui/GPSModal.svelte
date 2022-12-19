@@ -42,18 +42,19 @@
 <Modal {close} title="Coordinates">
 	<div>
 		<p>
-			Enter GPS coordinates or use <span class="my-location" on:click={useMyLocation}
+			Enter coordinates or use <span class="my-location" on:click={useMyLocation}
 				>your location</span
 			>
 		</p>
-		<label>
-			Latitude:
-			<input type="number" bind:value={lat} min={-90} max={90} />
-		</label>
-		<label>
-			Longitude:
-			<input type="number" bind:value={lon} min={-180} max={180} />
-		</label>
+		<div class="input-row">
+			<label for="lat">Latitude</label>
+			<input type="number" id="lat" bind:value={lat} />
+		</div>
+		<div class="input-row">
+			<label for="lon">Longitude</label>
+			<input type="number" id="lon" bind:value={lon} />
+		</div>
+
 		<footer class="is-right">
 			<button class="button" on:click={clear}>Clear</button><button
 				class="button primary"
@@ -67,8 +68,35 @@
 	div {
 		color: var(--font-color);
 	}
+
 	.my-location {
 		color: #17c16f;
 		cursor: pointer;
+	}
+
+	.input-row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 10px 0;
+	}
+
+	label {
+		font-weight: bold;
+	}
+
+	/* Chrome, Safari, Edge, Opera */
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	/* Firefox */
+	input[type='number'] {
+		-moz-appearance: textfield;
+		padding: 2px;
+		width: 100px !important;
 	}
 </style>

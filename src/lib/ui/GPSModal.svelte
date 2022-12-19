@@ -39,7 +39,7 @@
 	}
 </script>
 
-<Modal {close} title="Coordinates">
+<Modal {close} title="GPS Coordinates">
 	<div>
 		<p>
 			Enter coordinates or use <span class="my-location" on:click={useMyLocation}
@@ -47,11 +47,9 @@
 			>
 		</p>
 		<div class="input-row">
-			<label for="lat">Latitude</label>
+			<label for="lat">Lat :</label>
 			<input type="number" id="lat" bind:value={lat} />
-		</div>
-		<div class="input-row">
-			<label for="lon">Longitude</label>
+			<label for="lon">Lon :</label>
 			<input type="number" id="lon" bind:value={lon} />
 		</div>
 
@@ -78,7 +76,7 @@
 		display: flex;
 		flex-direction: row;
 		align-items: center;
-		justify-content: space-between;
+		gap: 10px;
 		padding: 10px 0;
 	}
 
@@ -96,7 +94,11 @@
 	/* Firefox */
 	input[type='number'] {
 		-moz-appearance: textfield;
-		padding: 2px;
-		width: 100px !important;
+		padding: 2px 4px 0 4px;
+		width: 90px !important;
+	}
+
+	footer {
+		margin-top: 8px;
 	}
 </style>

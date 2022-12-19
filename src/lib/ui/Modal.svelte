@@ -35,7 +35,7 @@
 <dialog bind:this={dialog}>
 	<div class="card">
 		<header>
-			<h4>{title}</h4>
+			<h3>{title}</h3>
 		</header>
 		<slot />
 	</div>
@@ -57,7 +57,7 @@
 		background-color: var(--bg2-dark);
 	}
 
-	h4 {
+	h3 {
 		color: var(--font-color);
 	}
 </style>

@@ -14,7 +14,7 @@
 	}
 </script>
 
-<Modal {close} title="View Picker">
+<Modal {close} title="Views">
 	<menu class="view-picker">
 		<li on:click={() => changeViewTo(VizTypes.DefaultSpace)}>
 			<h4>Space</h4>
@@ -30,7 +30,6 @@
 <style>
 	.view-picker {
 		border-radius: 5px;
-		padding: 5px !important;
 		background-color: var(--bg2-dark);
 		padding-inline-start: 0px;
 		list-style: none;

@@ -39,10 +39,10 @@
 	}
 </script>
 
-<Modal {close} title="Set Coordinates">
+<Modal {close} title="Coordinates">
 	<div>
 		<p>
-			Set GPS coordinates or use <span class="my-location" on:click={useMyLocation}
+			Enter GPS coordinates or use <span class="my-location" on:click={useMyLocation}
 				>your location</span
 			>
 		</p>
@@ -54,15 +54,17 @@
 			Longitude:
 			<input type="number" bind:value={lon} min={-180} max={180} />
 		</label>
-		<button on:click={clear}>Clear</button><button class="button primary" on:click={submit}
-			>Submit</button
-		>
+		<footer class="is-right">
+			<button class="button" on:click={clear}>Clear</button><button
+				class="button primary"
+				on:click={submit}>Submit</button
+			>
+		</footer>
 	</div>
 </Modal>
 
 <style>
 	div {
-		padding: 10px;
 		color: var(--font-color);
 	}
 	.my-location {

@@ -154,10 +154,10 @@
 	}
 
 	input.speed {
-		display: inline;
+		padding: 0 !important;
 		width: 150px !important;
 		position: absolute;
-		transform: translate(-42%, -80%);
+		transform: translate(-42%, -120%);
 	}
 
 	input.speed.hidden {

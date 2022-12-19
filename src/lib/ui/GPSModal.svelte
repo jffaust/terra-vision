@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { simGPS } from '$lib/sim/sim';
-	import { updateSearchParams, validateCoordinates } from '$lib/utils';
+	import { updateSearchParams } from '$lib/utils';
 	import Modal from './Modal.svelte';
 
 	export let close: () => void;

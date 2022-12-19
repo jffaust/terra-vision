@@ -71,6 +71,7 @@
 	}
 
 	function handleKeyUp(e: KeyboardEvent) {
+		// TODO: disable when editing input values
 		e.preventDefault();
 		if (e.code == 'Space') {
 			togglePlayPause();

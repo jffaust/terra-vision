@@ -1,9 +1,14 @@
 import type { Rect } from "./types";
 
-export function updateSearchParams(key: string, val: string, replaceState: boolean) {
+export function updateSearchParams(key: string, val: string | null, replaceState: boolean) {
 
     var searchParams = new URLSearchParams(window.location.search);
-    searchParams.set(key, val);
+
+    if (val) {
+        searchParams.set(key, val);
+    } else {
+        searchParams.delete(key);
+    }
 
     let newLocation = new URL(window.location.href);
     newLocation.search = searchParams.toString();

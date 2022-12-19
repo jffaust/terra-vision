@@ -5,22 +5,28 @@
 
 	export let close: () => void;
 
-	$: lat = $simGPS?.lat;
-	$: lon = $simGPS?.lon;
+	let lat = $simGPS?.lat;
+	let lon = $simGPS?.lon;
 
 	function clear() {
+		lat = undefined;
+		lon = undefined;
 		$simGPS = null;
-		close();
 	}
 
 	function submit() {
-		if (lat && lon && lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
+		if (lat === undefined && lon === undefined) {
+			updateSearchParams('lat', null, true);
+			updateSearchParams('lon', null, true);
+		} else if (lat && lon && lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
 			$simGPS = {
 				lat,
 				lon
 			};
-			close();
+			updateSearchParams('lat', lat.toString(), true);
+			updateSearchParams('lon', lon.toString(), true);
 		}
+		close();
 	}
 
 	function useMyLocation() {
@@ -39,7 +45,7 @@
 	}
 </script>
 
-<Modal {close} title="GPS Coordinates">
+<Modal {close} title="Coordinates">
 	<div>
 		<p>
 			Enter coordinates or use <span class="my-location" on:click={useMyLocation}

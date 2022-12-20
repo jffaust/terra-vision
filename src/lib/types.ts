@@ -20,6 +20,7 @@ export enum Textures {
 export enum VizTypes {
     DefaultSpace,
     SkyView,
+    SunAltitudeChart,
     TestEarthTilt,
     TestEarthSpin,
     TestObserver,

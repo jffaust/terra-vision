@@ -26,6 +26,7 @@
 		"eslint": "^8.16.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-svelte3": "^4.0.0",
+		"layercake": "^7.1.0",
 		"ol": "^7.1.0",
 		"postcss-import": "^15.0.0",
 		"postcss-load-config": "^4.0.1",

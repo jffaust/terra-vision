@@ -54,6 +54,7 @@
 		position: absolute;
 		top: 1em;
 		right: 1em;
+		z-index: 10;
 	}
 
 	ul {

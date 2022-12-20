@@ -5,10 +5,11 @@
 	import { Textures, CTX_TEXTURES } from '$lib/types';
 	import Ring from './Ring.svelte';
 	import { EARTH_RADIUS } from '$lib/sim/threejs';
+	import { DEG2RAD } from 'three/src/math/MathUtils';
 
 	export let showEquator = true;
-	export let showPrimeMeridian = true;
 	export let showRotationAxis = true;
+	export let showPrimeMeridian = true;
 	export let position: Position = new THREE.Vector3();
 	export let rotation: Rotation = new THREE.Euler(0, 0, 0, 'XZY');
 
@@ -29,7 +30,7 @@
 		[0, EARTH_RADIUS * 1.1, 0]
 	];
 
-	const redLine = new THREE.LineBasicMaterial({ color: 0xff0000 });
+	const redLine = new THREE.LineBasicMaterial({ color: 'purple' });
 </script>
 
 <Group {position} {rotation}>
@@ -42,13 +43,19 @@
 	{/if}
 
 	{#if showEquator}
-		<Ring radius={EARTH_RADIUS * 1.001} rotation={{ x: Math.PI / 2 }} />
+		<Ring radius={EARTH_RADIUS * 1.001} rotation={{ x: Math.PI / 2 }} color={'red'} />
 	{/if}
 
 	{#if showPrimeMeridian}
 		<!-- prime meridian TODO: should be half a ring-->
 		<!-- <LineSegments geometry={edgesCircleGeom} material={redLine} /> -->
-		<Ring radius={EARTH_RADIUS * 1.001} />
+		<Ring
+			radius={EARTH_RADIUS * 1.001}
+			color={'red'}
+			thetaStart={0}
+			thetaEnd={Math.PI}
+			rotation={{ z: -90 * DEG2RAD }}
+		/>
 	{/if}
 
 	<slot />

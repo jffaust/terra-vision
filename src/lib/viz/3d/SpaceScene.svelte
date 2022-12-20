@@ -9,11 +9,14 @@
 	import Sun from '$lib/gaphics/3d/Sun.svelte';
 	import GpsMarker from '$lib/gaphics/3d/GPSMarker.svelte';
 	import type { Unsubscriber } from 'svelte/store';
-	import type { GPS } from '$lib/types';
+	import type { GPSCoords } from '$lib/types';
 	import MilkyWay from '$lib/gaphics/3d/MilkyWay.svelte';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
 	import { simGPS } from '$lib/sim/sim';
-	import { updateSearchParams } from '$lib/utils';
+
+	export let showEquator: boolean;
+	export let showRotationAxis: boolean;
+	export let showPrimeMeridian: boolean;
 
 	let showStats = false;
 
@@ -31,8 +34,6 @@
 	let prevEarthPos: THREE.Vector3;
 	let unsub: Unsubscriber;
 
-	let showGPS = false;
-
 	onMount(async () => {
 		if (ctx && ctx.renderer) {
 			ctx.renderer.physicallyCorrectLights = true;
@@ -43,8 +44,6 @@
 		if (showStats) document.body.appendChild(stats.dom);
 
 		unsub = spaceSim.subscribe(onSimUpdated);
-
-		initGPSMarker();
 	});
 
 	onDestroy(() => {
@@ -52,36 +51,6 @@
 			unsub();
 		}
 	});
-
-	function initGPSMarker() {
-		const urlParams = new URLSearchParams(window.location.search);
-
-		const latStr = urlParams.get('lat');
-		const lonStr = urlParams.get('lon');
-
-		if (latStr && lonStr) {
-			try {
-				$simGPS = {
-					lat: parseFloat(latStr),
-					lon: parseFloat(lonStr)
-				};
-				showGPS = true;
-			} catch (e) {
-				console.log();
-			}
-		} else if ('geolocation' in navigator) {
-			navigator.geolocation.getCurrentPosition((pos) => {
-				$simGPS = {
-					lat: pos.coords.latitude,
-					lon: pos.coords.longitude
-				};
-				showGPS = true;
-
-				updateSearchParams('lat', $simGPS.lat.toString(), true);
-				updateSearchParams('lon', $simGPS.lon.toString(), true);
-			});
-		}
-	}
 
 	function onSimUpdated(s: SimData) {
 		stats.update();
@@ -129,12 +98,12 @@
 <Earth
 	position={$spaceSim.earth.pos}
 	rotation={$spaceSim.earth.rotation}
-	showEquator={false}
-	showPrimeMeridian={false}
-	showRotationAxis={false}
+	{showEquator}
+	{showPrimeMeridian}
+	{showRotationAxis}
 >
-	{#if showGPS}
-		<GpsMarker gps={$simGPS} />
+	{#if $simGPS}
+		<GpsMarker lat={$simGPS.lat} lon={$simGPS.lon} />
 	{/if}
 </Earth>
 

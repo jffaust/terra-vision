@@ -50,6 +50,7 @@ export class GridView {
     }
 
     remove(viewId: string) {
+        console.log("debug remove")
         if (!isView(this.root)) {
             const result = locateView(this.root, viewId);
             if (result) {
@@ -61,7 +62,7 @@ export class GridView {
                     //remaining.region = copyRegion(parent.region);
 
                     // There's only 2 child and we're removing one so we need to replace the
-                    // split node by the remaining child node
+                    // parent split node by the remaining child node
 
                     if (isIdenticalRegion(this.root.region, parent.region)) {
                         // replace the root node if we only have 1 remaining view in total
@@ -95,14 +96,13 @@ export class GridView {
     }
 
     distribute() {
-        if (isView(this.root)) {
-            this.root.region = {
-                left: 0,
-                top: 0,
-                width: 1,
-                height: 1
-            }
-        } else {
+        this.root.region = {
+            left: 0,
+            top: 0,
+            width: 1,
+            height: 1
+        }
+        if (!isView(this.root)) {
             distributeFrom(this.root)
         }
     }

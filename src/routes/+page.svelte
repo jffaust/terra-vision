@@ -3,10 +3,13 @@
 	import ViewContainer from '$lib/ui/ViewContainer.svelte';
 	import { onMount, setContext } from 'svelte';
 	import * as THREE from 'three';
-	import MasterControls from '$lib/ui/MasterControls.svelte';
+	import MainControls from '$lib/ui/MainControls.svelte';
 	import Space from '$lib/viz/3d/Space.svelte';
 	import { gridView } from '$lib/stores';
 	import SkyView from '$lib/viz/3d/SkyView.svelte';
+	import Loading from '$lib/ui/loading.svelte';
+	import { simGPS } from '$lib/sim/sim';
+	import { updateSearchParams } from '$lib/utils';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -30,10 +33,11 @@
 			// https://www.shadedrelief.com/natural3/pages/extra.html
 			// earthBumpMap = await tLoader.loadAsync('/space/earth_bump_16k.jpg');
 			texturesLoaded = true;
-			console.log('Textures loaded');
+
+			initGPSPosition();
 		} catch (e) {
 			console.log(e);
-			//todo erro
+			//todo error
 		}
 	});
 
@@ -48,6 +52,25 @@
 
 	function onResize() {
 		$gridView = $gridView;
+	}
+
+	function initGPSPosition() {
+		const urlParams = new URLSearchParams(window.location.search);
+
+		const latStr = urlParams.get('lat');
+		const lonStr = urlParams.get('lon');
+
+		if (latStr && lonStr) {
+			try {
+				$simGPS = {
+					lat: parseFloat(latStr),
+					lon: parseFloat(lonStr)
+				};
+			} catch (e) {
+				$simGPS = null;
+				// remove params from URL?
+			}
+		}
 	}
 </script>
 
@@ -66,9 +89,11 @@
 			</ViewContainer>
 		{/each}
 
-		<MasterControls />
+		<MainControls />
 	{:else}
-		<p>Loading textures...</p>
+		<div class="loading">
+			<Loading />
+		</div>
 	{/if}
 </div>
 
@@ -76,17 +101,13 @@
 	.app {
 		width: 100vw;
 		height: 100vh;
-		text-align: center;
 		background-color: #1d1f21;
 	}
 
-	p {
-		color: snow;
+	.loading {
+		position: absolute;
 		top: 50%;
 		left: 50%;
-		font-style: italic;
-		font-size: x-large;
-		position: absolute;
 		transform: translate(-50%, -50%);
 	}
 </style>

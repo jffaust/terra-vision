@@ -5,7 +5,7 @@ export interface Point2D {
     y: number;
 }
 
-export interface GPS {
+export interface GPSCoords {
     lon: number;
     lat: number;
 }

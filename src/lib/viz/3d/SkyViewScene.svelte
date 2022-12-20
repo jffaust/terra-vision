@@ -9,11 +9,10 @@
 		useFrame
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
-	import { EARTH_ORBIT_RADIUS, EARTH_RADIUS, METER, skySim } from '$lib/sim/threejs';
+	import { EARTH_ORBIT_RADIUS, METER, skySim } from '$lib/sim/threejs';
 	import { FPControls } from '$lib/FPControls';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
 	import Sun from '$lib/gaphics/3d/Sun.svelte';
-	import Earth from '$lib/gaphics/3d/Earth.svelte';
 
 	let fpControls: FPControls;
 
@@ -34,7 +33,7 @@
 			ctx.renderer.physicallyCorrectLights = true;
 		}
 
-		scene.add(new THREE.AxesHelper(10000));
+		//scene.add(new THREE.AxesHelper(10000));
 		scene.add(plane);
 
 		camera.lookAt(new THREE.Vector3(1, 1.75 * METER, 0));

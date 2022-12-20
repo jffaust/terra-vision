@@ -3,6 +3,8 @@
 	import { updateSearchParams } from '$lib/utils';
 	import dateFormat from 'dateformat';
 	import { onDestroy, onMount } from 'svelte';
+	import GpsModal from './GPSModal.svelte';
+	import IconButton from './IconButton.svelte';
 
 	let previousTime: number;
 	let intervalId: NodeJS.Timer;
@@ -10,6 +12,7 @@
 	let timeFactorValue = 1;
 	let playSimulation = true;
 	let showClockSpeedInput = false;
+	let showGPSModal = false;
 
 	$: displayDate = dateFormat($simCurrentDate, 'mmmm dS, yyyy, HH:MM:ss');
 
@@ -68,6 +71,7 @@
 	}
 
 	function handleKeyUp(e: KeyboardEvent) {
+		// TODO: disable when editing input values
 		e.preventDefault();
 		if (e.code == 'Space') {
 			togglePlayPause();
@@ -91,14 +95,19 @@
 
 <div class="controls">
 	<span>{displayDate}</span>
+	<IconButton
+		alt="Play/Pause"
+		src="/icons/{playSimulation ? 'pause' : 'play'}.svg"
+		onClick={togglePlayPause}
+	/>
 
-	<button type="button" on:click={togglePlayPause}>
-		<img src="/icons/{playSimulation ? 'pause' : 'play'}.svg" alt="Play/Pause" />
-	</button>
 	<div class="speed-control">
-		<button type="button" on:click={() => (showClockSpeedInput = !showClockSpeedInput)}>
-			<img src="icons/clock-speed.svg" alt="Clock speed" title="Clock speed" />
-		</button>
+		<IconButton
+			src="icons/clock-speed.svg"
+			alt="Clock Speed"
+			title="Clock Speed"
+			onClick={() => (showClockSpeedInput = !showClockSpeedInput)}
+		/>
 
 		<input
 			class="speed {showClockSpeedInput ? '' : 'hidden'}"
@@ -108,27 +117,47 @@
 			bind:value={timeFactorValue}
 		/>
 	</div>
+
+	<IconButton
+		src="icons/map-marker.svg"
+		alt="GPS Coordinates"
+		title="GPS Coordinates"
+		onClick={() => {
+			showGPSModal = true;
+		}}
+	/>
 </div>
+
+{#if showGPSModal}
+	<GpsModal
+		close={() => {
+			showGPSModal = false;
+		}}
+	/>
+{/if}
 
 <style>
 	div.controls {
 		position: fixed;
 		bottom: 0px;
 		left: 0px;
-		color: white;
+		color: var(--font-color);
 		padding: 0 8px;
 		display: flex;
+		gap: 4px;
 		align-items: center;
 	}
 
 	div.speed-control {
 		display: inline-flex;
+		position: relative;
 	}
 
 	input.speed {
-		display: inline;
-		margin-left: 4px;
+		padding: 0 !important;
 		width: 150px !important;
+		position: absolute;
+		transform: translate(-42%, -120%);
 	}
 
 	input.speed.hidden {

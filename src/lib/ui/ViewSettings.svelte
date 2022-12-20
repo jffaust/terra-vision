@@ -33,9 +33,9 @@
 	{#if showDropdown}
 		<ul>
 			<li on:click={changeView}>Change view</li>
+			<li on:click={closeView}>Close view</li>
 			<li on:click={() => splitView('Horizontal')}>Split right</li>
 			<li on:click={() => splitView('Vertical')}>Split down</li>
-			<li on:click={closeView}>Close view</li>
 		</ul>
 	{/if}
 </div>

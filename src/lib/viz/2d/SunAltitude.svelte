@@ -3,13 +3,12 @@
 	import { LayerCake, Svg } from 'layercake';
 	import AxisX from '$lib/gaphics/2d/AxisX.svelte';
 	import AxisY from '$lib/gaphics/2d/AxisY.svelte';
-	import Scatter from '$lib/gaphics/2d/Scatter.svelte';
 	import { scaleTime } from 'd3-scale';
 	import { astroSkySim } from '$lib/sim/astro';
-	import CurvedLine from '$lib/gaphics/2d/CurvedLine.svelte';
 	import dateFormat from 'dateformat';
 	import MultiLine from '$lib/gaphics/2d/MultiLine.svelte';
-	import LastDataPoint from '$lib/gaphics/2d/LastDataPoint.svelte';
+	import SunAltitudeCircle from '$lib/gaphics/2d/SunAltitudeCircle.svelte';
+	import { getTimeInSeconds } from '$lib/utils';
 
 	interface DataPoint {
 		x: number; // number of seconds since midnight
@@ -75,10 +74,6 @@
 		return dateFormat(date, 'yyyy-m-d');
 	}
 
-	function getTimeInSeconds(d: Date): number {
-		return d.getHours() * 60 * 60 + d.getMinutes() * 60 + d.getSeconds();
-	}
-
 	function formatTimeTick(d: number): string {
 		return `${Math.floor(d / 60 / 60)}:00`;
 	}
@@ -107,7 +102,7 @@
 					<AxisY />
 					<MultiLine />
 
-					<LastDataPoint fill={'yellow'} r={3} />
+					<SunAltitudeCircle fill={'yellow'} r={5} xGranularity={lineTimeGranularity} />
 				</Svg>
 			</LayerCake>
 		</div>

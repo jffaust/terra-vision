@@ -32,3 +32,7 @@ export function copyRegion(source: Rect): Rect {
 export function isIdenticalRegion(a: Rect, b: Rect) {
     return a.left == b.left && a.top == b.top && a.width == b.width && a.height == b.height;
 }
+
+export function getTimeInSeconds(d: Date): number {
+    return d.getHours() * 60 * 60 + d.getMinutes() * 60 + d.getSeconds();
+}

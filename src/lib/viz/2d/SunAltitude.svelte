@@ -9,6 +9,7 @@
 	import CurvedLine from '$lib/gaphics/2d/CurvedLine.svelte';
 	import dateFormat from 'dateformat';
 	import MultiLine from '$lib/gaphics/2d/MultiLine.svelte';
+	import LastDataPoint from '$lib/gaphics/2d/LastDataPoint.svelte';
 
 	interface DataPoint {
 		x: number; // number of seconds since midnight
@@ -40,7 +41,6 @@
 		}
 
 		let series = findSeries(date);
-		console.log(series);
 		if (!series) {
 			series = { date: currentDateKey, values: [] };
 			data.push(series);
@@ -106,7 +106,8 @@
 					/>
 					<AxisY />
 					<MultiLine />
-					<!-- <Scatter fill={'yellow'} r={3} /> -->
+
+					<LastDataPoint fill={'yellow'} r={3} />
 				</Svg>
 			</LayerCake>
 		</div>

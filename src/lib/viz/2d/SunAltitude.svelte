@@ -7,7 +7,7 @@
 	import { astroSkySim } from '$lib/sim/astro';
 	import dateFormat from 'dateformat';
 	import MultiLine from '$lib/gaphics/2d/MultiLine.svelte';
-	import SunAltitudeCircle from '$lib/gaphics/2d/SunAltitudeCircle.svelte';
+	import CircleOverride from '$lib/gaphics/2d/CircleOverride.svelte';
 	import { getTimeInSeconds } from '$lib/utils';
 
 	interface DataPoint {
@@ -23,26 +23,25 @@
 
 	const lineTimeGranularity = 60 * 5; // 5 minutes
 
-	// Define some data
-	// $: points = calcDataPoints($simCurrentDate, $astroSkySim.altitude);
-	$: data = calcDataPoints2($simCurrentDate, $astroSkySim.altitude);
+	$: currentData = calcCurrentData($simCurrentDate, $astroSkySim.altitude);
+	$: trailData = calcTrailData($simCurrentDate, $astroSkySim.altitude);
 
-	// function calcDataPoints(date: Date, altitude: number): DataPoint[] {
-	// 	if (altitude < 0) return [];
-	// 	else return [{ x: getTimeInSeconds(date), y: altitude }];
-	// }
+	function calcCurrentData(date: Date, altitude: number): DataPoint | null {
+		if (altitude < 0) return null;
+		else return { x: getTimeInSeconds(date), y: altitude, date: '' };
+	}
 
-	function calcDataPoints2(date: Date, altitude: number): Series[] {
+	function calcTrailData(date: Date, altitude: number): Series[] {
 		const currentDateKey = formatDateKey(date);
 
-		if (!data) {
-			data = [];
+		if (!trailData) {
+			trailData = [];
 		}
 
 		let series = findSeries(date);
 		if (!series) {
 			series = { date: currentDateKey, values: [] };
-			data.push(series);
+			trailData.push(series);
 		}
 
 		if (altitude >= 0) {
@@ -63,11 +62,11 @@
 			}
 		}
 
-		return data;
+		return trailData;
 	}
 
 	function findSeries(date: Date): Series | undefined {
-		return data.find((s) => s.date == formatDateKey(date));
+		return trailData.find((s) => s.date == formatDateKey(date));
 	}
 
 	function formatDateKey(date: Date): string {
@@ -85,7 +84,7 @@
 	{:else}
 		<div class="chart-container">
 			<LayerCake
-				{data}
+				data={trailData}
 				x="x"
 				y="y"
 				z="date"
@@ -102,7 +101,9 @@
 					<AxisY />
 					<MultiLine />
 
-					<SunAltitudeCircle fill={'yellow'} r={5} xGranularity={lineTimeGranularity} />
+					{#if currentData}
+						<CircleOverride fill={'yellow'} r={5} x={currentData.x} y={currentData.y} />
+					{/if}
 				</Svg>
 			</LayerCake>
 		</div>

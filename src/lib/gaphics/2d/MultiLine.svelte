@@ -23,7 +23,7 @@
 
 <g class="line-group">
 	{#each $data as group}
-		<path class="path-line" d={path(group.values)} stroke={$zGet(group)} />
+		<path class="path-line" d={path(group.values)} stroke={'#ffe4b8'} />
 	{/each}
 </g>
 

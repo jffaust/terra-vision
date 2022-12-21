@@ -40,6 +40,7 @@
 		}
 
 		let series = findSeries(date);
+		console.log(series);
 		if (!series) {
 			series = { date: currentDateKey, values: [] };
 			data.push(series);
@@ -52,7 +53,7 @@
 			if (series.values.length == 0) {
 				append = true;
 			} else {
-				const lastTime = series.values[data.length - 1].x;
+				const lastTime = series.values[series.values.length - 1].x;
 				if (currentTime - lastTime > lineTimeGranularity) {
 					append = true;
 				}
@@ -67,7 +68,7 @@
 	}
 
 	function findSeries(date: Date): Series | undefined {
-		return data.find((s) => s.date === formatDateKey(date));
+		return data.find((s) => s.date == formatDateKey(date));
 	}
 
 	function formatDateKey(date: Date): string {

@@ -22,7 +22,11 @@
 		</li>
 		<li on:click={() => changeViewTo(VizTypes.SkyView)}>
 			<h4>Sky</h4>
-			<p>View the sky from a specific coordinate on Earth</p>
+			<p>View the sky from a specific coordinates on Earth</p>
+		</li>
+		<li on:click={() => changeViewTo(VizTypes.SunAltitudeChart)}>
+			<h4>Sun Altitude</h4>
+			<p>Chart of the sun's altitude from specific coordinates on Earth</p>
 		</li>
 	</menu>
 </Modal>

@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { simCurrentDate, simStartDate } from '$lib/sim/sim';
+	import { simCurrentDate, simGPS, simStartDate } from '$lib/sim/sim';
+	import type { GPSCoords } from '$lib/types';
 	import { updateSearchParams } from '$lib/utils';
 	import dateFormat from 'dateformat';
 	import { onDestroy, onMount } from 'svelte';
@@ -14,6 +15,7 @@
 	let showClockSpeedInput = false;
 	let showGPSModal = false;
 
+	$: mapMarkerIconSrc = getMapMarkerIconSrc($simGPS);
 	$: displayDate = dateFormat($simCurrentDate, 'mmmm dS, yyyy, HH:MM:ss');
 
 	onMount(() => {
@@ -89,6 +91,13 @@
 			stopInterval();
 		}
 	}
+
+	function getMapMarkerIconSrc(coords: GPSCoords | null) {
+		if (coords) return 'icons/map-marker-set.svg';
+		else {
+			return 'icons/map-marker.svg';
+		}
+	}
 </script>
 
 <svelte:window on:keyup={handleKeyUp} />
@@ -119,7 +128,7 @@
 	</div>
 
 	<IconButton
-		src="icons/map-marker.svg"
+		src={mapMarkerIconSrc}
 		alt="GPS Coordinates"
 		title="GPS Coordinates"
 		onClick={() => {

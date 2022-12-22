@@ -33,6 +33,8 @@
 	/** @type {Number} [yTick=16] - The distance from the baseline to place each tick value. */
 	export let yTick = 16;
 
+	export let textColor = 'black';
+
 	$: isBandwidth = typeof $xScale.bandwidth === 'function';
 
 	$: tickVals = Array.isArray(ticks)
@@ -76,6 +78,7 @@
 				y={yTick}
 				dx=""
 				dy=""
+				fill={textColor}
 				text-anchor={textAnchor(i)}>{formatTick(tick)}</text
 			>
 		</g>
@@ -95,10 +98,6 @@
 	.tick line {
 		stroke: #aaa;
 		stroke-dasharray: 2;
-	}
-
-	.tick text {
-		fill: #666;
 	}
 
 	.tick .tick-mark,

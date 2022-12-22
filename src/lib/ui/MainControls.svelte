@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { simCurrentDate, simGPS, simStartDate } from '$lib/sim/sim';
+	import type { GPSCoords } from '$lib/types';
 	import { updateSearchParams } from '$lib/utils';
 	import dateFormat from 'dateformat';
 	import { onDestroy, onMount } from 'svelte';

@@ -21,7 +21,7 @@
 		values: DataPoint[];
 	}
 
-	const lineTimeGranularity = 60 * 5; // 5 minutes
+	const lineTimeGranularity = 60 * 1; // 5 minutes
 
 	$: currentData = calcCurrentData($simCurrentDate, $astroSkySim.altitude);
 	$: trailData = calcTrailData($simCurrentDate, $astroSkySim.altitude);
@@ -76,6 +76,16 @@
 	function formatTimeTick(d: number): string {
 		return `${Math.floor(d / 60 / 60)}:00`;
 	}
+
+	function calcSeriesStrokeColor(series: Series): string {
+		let saturation = 100;
+		const index = trailData.findIndex((s) => s.date == series.date);
+		if (index >= 0) {
+			const diff = trailData.length - 1 - index;
+			saturation = 100 - diff * 2;
+		}
+		return `hsl(60, ${saturation}%, 50%)`;
+	}
 </script>
 
 <div class="main">
@@ -97,9 +107,10 @@
 					<AxisX
 						ticks={[0, 4, 8, 12, 16, 20, 24].map((d) => d * 60 * 60)}
 						formatTick={formatTimeTick}
+						textColor="white"
 					/>
-					<AxisY />
-					<MultiLine />
+					<AxisY textColor="white" />
+					<MultiLine calcStroke={calcSeriesStrokeColor} />
 
 					{#if currentData}
 						<CircleOverride fill={'yellow'} r={5} x={currentData.x} y={currentData.y} />

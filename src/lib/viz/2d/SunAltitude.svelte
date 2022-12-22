@@ -19,11 +19,12 @@
 	}
 
 	interface Series {
-		date: string;
+		date: Date;
+		dateKey: string;
 		values: DataPoint[];
 	}
 
-	const maxSeriesToKeep = 20;
+	const maxDaysToKeep = 20;
 	const lineTimeGranularity = 60 * 2; // 5 minutes
 
 	$: currentData = calcCurrentData($simCurrentDate, $astroSkySim.altitude);
@@ -41,6 +42,14 @@
 			trailData = [];
 		}
 
+		if (trailData.length > 0) {
+			const first = trailData[0];
+			const diffMs = date.getTime() - first.date.getTime();
+			if (diffMs / (1000 * 60 * 60 * 24) > maxDaysToKeep) {
+				trailData.splice(0, 1);
+			}
+		}
+
 		let series = findSeries(date);
 		if (altitude >= 0) {
 			let append = false;
@@ -48,12 +57,8 @@
 
 			if (!series) {
 				append = true;
-				series = { date: currentDateKey, values: [] };
+				series = { date, dateKey: currentDateKey, values: [] };
 				trailData.push(series);
-
-				if (trailData.length > maxSeriesToKeep) {
-					trailData.splice(0, 1);
-				}
 			}
 
 			if (series.values.length > 0) {
@@ -72,7 +77,7 @@
 	}
 
 	function findSeries(date: Date): Series | undefined {
-		return trailData.find((s) => s.date == formatDateKey(date));
+		return trailData.find((s) => s.dateKey == formatDateKey(date));
 	}
 
 	function formatDateKey(date: Date): string {
@@ -84,10 +89,12 @@
 	}
 
 	function calcSeriesStrokeColor(series: Series, index: number): string {
-		if (index == trailData.length - 1) return 'yellow';
-		else {
+		if (index == trailData.length - 1) {
+			if (series.date.getDate() == $simCurrentDate.getDate()) return 'yellow';
+			else return 'gray';
+		} else {
 			const distPenultimate = trailData.length - 2 - index;
-			const percent = distPenultimate / maxSeriesToKeep;
+			const percent = distPenultimate / maxDaysToKeep;
 			return interpolateRgb('gray', '#1d1f21')(percent);
 		}
 	}

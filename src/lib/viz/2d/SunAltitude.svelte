@@ -11,6 +11,7 @@
 	import { formatGPSCoords, getTimeInSeconds } from '$lib/utils';
 	import { interpolateRgb } from 'd3-interpolate';
 	import { onDestroy } from 'svelte';
+	import { fit, parent_style } from '@leveluptuts/svelte-fit';
 
 	interface DataPoint {
 		x: number; // number of seconds since midnight
@@ -113,9 +114,11 @@
 		<p><i>GPS position required</i></p>
 	{:else}
 		<header>
-			<p>
-				<i>Altitude of the sun over time for location {formatGPSCoords($simGPS)} </i>
-			</p>
+			<div style={parent_style}>
+				<p use:fit>
+					<i>Altitude of the sun over time for location {formatGPSCoords($simGPS)} </i>
+				</p>
+			</div>
 		</header>
 		<div class="chart-container">
 			<LayerCake
@@ -160,10 +163,6 @@
 		height: 10%;
 		width: 75%;
 		text-align: center;
-	}
-
-	header > p {
-		font-size: 80%;
 	}
 
 	.chart-container {

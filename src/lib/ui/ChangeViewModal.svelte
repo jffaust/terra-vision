@@ -26,7 +26,11 @@
 		</li>
 		<li on:click={() => changeViewTo(VizTypes.SunAltitudeChart)}>
 			<h4>Sun Altitude</h4>
-			<p>Chart of the sun's altitude from specific coordinates on Earth</p>
+			<p>Chart of the sun's altitude for a location on Earth</p>
+		</li>
+		<li on:click={() => changeViewTo(VizTypes.DaylightHoursChart)}>
+			<h4>Daylight Hours</h4>
+			<p>Chart of daylight hours for a location on Earth</p>
 		</li>
 	</menu>
 </Modal>

@@ -21,6 +21,7 @@ export enum VizTypes {
     DefaultSpace,
     SkyView,
     SunAltitudeChart,
+    DaylightHoursChart,
     TestEarthTilt,
     TestEarthSpin,
     TestObserver,

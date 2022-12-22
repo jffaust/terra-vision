@@ -9,8 +9,8 @@
 	import MultiLine from '$lib/gaphics/2d/MultiLine.svelte';
 	import CircleOverride from '$lib/gaphics/2d/CircleOverride.svelte';
 	import { getTimeInSeconds } from '$lib/utils';
-	import { Data3DTexture } from 'three';
 	import { interpolateRgb } from 'd3-interpolate';
+	import { onDestroy } from 'svelte';
 
 	interface DataPoint {
 		x: number; // number of seconds since midnight
@@ -29,6 +29,14 @@
 
 	$: currentData = calcCurrentData($simCurrentDate, $astroSkySim.altitude);
 	$: trailData = calcTrailData($simCurrentDate, $astroSkySim.altitude);
+
+	const unsub = simGPS.subscribe(resetTrailData);
+
+	onDestroy(unsub);
+
+	function resetTrailData() {
+		trailData = [];
+	}
 
 	function calcCurrentData(date: Date, altitude: number): DataPoint | null {
 		if (altitude < 0) return null;

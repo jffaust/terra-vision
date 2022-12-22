@@ -5,7 +5,7 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 
-	export let calcStroke: (series: any) => string;
+	export let calcStroke: (series: any, index: number) => string;
 
 	// @ts-ignore
 	const { data, xGet, yGet, zGet } = getContext('LayerCake');
@@ -23,8 +23,8 @@
 </script>
 
 <g class="line-group">
-	{#each $data as group}
-		<path class="path-line" d={path(group.values)} stroke={calcStroke(group)} />
+	{#each $data as group, i}
+		<path class="path-line" d={path(group.values)} stroke={calcStroke(group, i)} />
 	{/each}
 </g>
 

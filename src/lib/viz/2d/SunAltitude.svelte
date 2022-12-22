@@ -9,6 +9,8 @@
 	import MultiLine from '$lib/gaphics/2d/MultiLine.svelte';
 	import CircleOverride from '$lib/gaphics/2d/CircleOverride.svelte';
 	import { getTimeInSeconds } from '$lib/utils';
+	import { Data3DTexture } from 'three';
+	import { interpolateRgb } from 'd3-interpolate';
 
 	interface DataPoint {
 		x: number; // number of seconds since midnight
@@ -21,7 +23,8 @@
 		values: DataPoint[];
 	}
 
-	const lineTimeGranularity = 60 * 1; // 5 minutes
+	const maxSeriesToKeep = 20;
+	const lineTimeGranularity = 60 * 2; // 5 minutes
 
 	$: currentData = calcCurrentData($simCurrentDate, $astroSkySim.altitude);
 	$: trailData = calcTrailData($simCurrentDate, $astroSkySim.altitude);
@@ -39,18 +42,21 @@
 		}
 
 		let series = findSeries(date);
-		if (!series) {
-			series = { date: currentDateKey, values: [] };
-			trailData.push(series);
-		}
-
 		if (altitude >= 0) {
 			let append = false;
 			const currentTime = getTimeInSeconds(date);
 
-			if (series.values.length == 0) {
+			if (!series) {
 				append = true;
-			} else {
+				series = { date: currentDateKey, values: [] };
+				trailData.push(series);
+
+				if (trailData.length > maxSeriesToKeep) {
+					trailData.splice(0, 1);
+				}
+			}
+
+			if (series.values.length > 0) {
 				const lastTime = series.values[series.values.length - 1].x;
 				if (currentTime - lastTime > lineTimeGranularity) {
 					append = true;
@@ -77,14 +83,13 @@
 		return `${Math.floor(d / 60 / 60)}:00`;
 	}
 
-	function calcSeriesStrokeColor(series: Series): string {
-		let saturation = 100;
-		const index = trailData.findIndex((s) => s.date == series.date);
-		if (index >= 0) {
-			const diff = trailData.length - 1 - index;
-			saturation = 100 - diff * 2;
+	function calcSeriesStrokeColor(series: Series, index: number): string {
+		if (index == trailData.length - 1) return 'yellow';
+		else {
+			const distPenultimate = trailData.length - 2 - index;
+			const percent = distPenultimate / maxSeriesToKeep;
+			return interpolateRgb('gray', '#1d1f21')(percent);
 		}
-		return `hsl(60, ${saturation}%, 50%)`;
 	}
 </script>
 

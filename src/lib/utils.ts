@@ -1,4 +1,4 @@
-import type { Rect } from "./types";
+import type { GPSCoords, Rect } from "./types";
 
 export function updateSearchParams(key: string, val: string | null, replaceState: boolean) {
 
@@ -35,4 +35,9 @@ export function isIdenticalRegion(a: Rect, b: Rect) {
 
 export function getTimeInSeconds(d: Date): number {
     return d.getHours() * 60 * 60 + d.getMinutes() * 60 + d.getSeconds();
+}
+
+export function formatGPSCoords(coords: GPSCoords | null) {
+    if (!coords) return "";
+    else return `${coords.lat}, ${coords.lon}`
 }

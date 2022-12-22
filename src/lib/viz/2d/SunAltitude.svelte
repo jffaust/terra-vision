@@ -8,7 +8,7 @@
 	import dateFormat from 'dateformat';
 	import MultiLine from '$lib/gaphics/2d/MultiLine.svelte';
 	import CircleOverride from '$lib/gaphics/2d/CircleOverride.svelte';
-	import { getTimeInSeconds } from '$lib/utils';
+	import { formatGPSCoords, getTimeInSeconds } from '$lib/utils';
 	import { interpolateRgb } from 'd3-interpolate';
 	import { onDestroy } from 'svelte';
 
@@ -112,6 +112,11 @@
 	{#if !$simGPS}
 		<p><i>GPS position required</i></p>
 	{:else}
+		<header>
+			<p>
+				<i>Altitude of the sun over time for location {formatGPSCoords($simGPS)} </i>
+			</p>
+		</header>
 		<div class="chart-container">
 			<LayerCake
 				data={trailData}
@@ -146,11 +151,23 @@
 		width: 100%;
 		height: 100%;
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 	}
+
+	header {
+		height: 10%;
+		width: 75%;
+		text-align: center;
+	}
+
+	header > p {
+		font-size: 80%;
+	}
+
 	.chart-container {
-		width: 80%;
+		width: 90%;
 		height: 80%;
 	}
 </style>

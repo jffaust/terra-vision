@@ -7,7 +7,7 @@
 	import { astroSkySim } from '$lib/sim/astro';
 	import dateFormat from 'dateformat';
 	import MultiLine from '$lib/gaphics/2d/MultiLine.svelte';
-	import CircleOverride from '$lib/gaphics/2d/CircleOverride.svelte';
+	import CustomCircle from '$lib/gaphics/2d/CustomCircle.svelte';
 	import { formatGPSCoords, getTimeInSeconds } from '$lib/utils';
 	import { interpolateRgb } from 'd3-interpolate';
 	import { onDestroy } from 'svelte';
@@ -141,7 +141,7 @@
 					<MultiLine calcStroke={calcSeriesStrokeColor} />
 
 					{#if currentData}
-						<CircleOverride fill={'yellow'} r={5} x={currentData.x} y={currentData.y} />
+						<CustomCircle fill={'yellow'} r={5} x={currentData.x} y={currentData.y} />
 					{/if}
 				</Svg>
 			</LayerCake>

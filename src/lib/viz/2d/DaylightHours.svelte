@@ -3,7 +3,7 @@
 	import { LayerCake, Svg } from 'layercake';
 	import AxisX from '$lib/gaphics/2d/AxisX.svelte';
 	import AxisY from '$lib/gaphics/2d/AxisY.svelte';
-	import { scaleTime } from 'd3-scale';
+	import { scaleBand, scaleTime } from 'd3-scale';
 	import { astroSkySim } from '$lib/sim/astro';
 	import dateFormat from 'dateformat';
 	import MultiLine from '$lib/gaphics/2d/MultiLine.svelte';
@@ -12,14 +12,14 @@
 	import { interpolateRgb } from 'd3-interpolate';
 	import { onDestroy } from 'svelte';
 	import { fit, parent_style } from '@leveluptuts/svelte-fit';
+	import Column from '$lib/gaphics/2d/Column.svelte';
 
 	interface DataPoint {
 		x: Date; // Date object used on the X axis
 		y: number; // number of hours of daylight
 	}
 
-	$: jan1st = new Date($simCurrentDate.getFullYear());
-	$: dec31st = new Date($simCurrentDate.getFullYear(), 11, 31);
+	let currentYear = $simCurrentDate.getFullYear();
 	$: data = calcData($simCurrentDate, $astroSkySim.altitude);
 
 	const unsub = simGPS.subscribe(resetData);
@@ -27,12 +27,13 @@
 	onDestroy(unsub);
 
 	function resetData() {
-		data = [];
+		data = initData(currentYear);
 	}
 
 	function calcData(date: Date, altitude: number): DataPoint[] {
-		if (!data) {
-			data = [];
+		if (!data || date.getFullYear() != currentYear) {
+			currentYear = date.getFullYear();
+			data = initData(currentYear);
 		}
 
 		const currentDateKey = formatDateKey(date);
@@ -46,6 +47,19 @@
 		dayData.y = date.getHours() + date.getMinutes() / 60;
 
 		return data;
+	}
+
+	function initData(year: number): DataPoint[] {
+		let initial: DataPoint[] = [];
+		let tmpDate = new Date(year, 0, 1);
+		while (tmpDate.getFullYear() == year) {
+			initial.push({
+				x: new Date(tmpDate.getFullYear(), tmpDate.getMonth(), tmpDate.getDate()),
+				y: 0
+			});
+			tmpDate.setDate(tmpDate.getDate() + 1);
+		}
+		return initial;
 	}
 
 	function formatDateKey(date: Date): string {
@@ -73,14 +87,15 @@
 				{data}
 				x="x"
 				y="y"
-				xDomain={[jan1st, dec31st]}
 				yDomain={[0, 24]}
 				xScale={scaleTime()}
+				padding={{ top: 20, right: 20, bottom: 20, left: 20 }}
 			>
 				<!-- Components go here -->
 				<Svg>
-					<AxisX formatTick={formatTimeTick} textColor="white" />
-					<AxisY textColor="white" />
+					<AxisX formatTick={formatTimeTick} textColor="white" gridlines={false} tickMarks={true} />
+					<AxisY textColor="white" ticks={10} />
+					<Column fill="yellow" />
 				</Svg>
 			</LayerCake>
 		</div>

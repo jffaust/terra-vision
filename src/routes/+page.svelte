@@ -9,8 +9,8 @@
 	import SkyView from '$lib/viz/3d/SkyView.svelte';
 	import Loading from '$lib/ui/loading.svelte';
 	import { simGPS } from '$lib/sim/sim';
-	import SunAltitude from '$lib/viz/2d/SunAltitude.svelte';
-	import DaylightHours from '$lib/viz/2d/DaylightHours.svelte';
+	import DaylightHours from '$lib/viz/2d/charts/DaylightHours.svelte';
+	import SunAltitudeSimChart from '$lib/viz/2d/sim/SunAltitudeSimChart.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -87,7 +87,7 @@
 				{:else if view.type == VizTypes.SkyView}
 					<SkyView width={rect.width} height={rect.height} />
 				{:else if view.type == VizTypes.SunAltitudeChart}
-					<SunAltitude />
+					<SunAltitudeSimChart />
 				{:else if view.type == VizTypes.DaylightHoursChart}
 					<DaylightHours />
 				{/if}

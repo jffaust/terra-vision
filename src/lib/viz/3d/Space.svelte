@@ -54,7 +54,7 @@
 		right: 0;
 		position: absolute;
 		padding-inline-start: 0;
-		background-color: var(--bg-dark);
+		background-color: var(--bg-color);
 		border-radius: 5px;
 		padding: 5px;
 		z-index: 10;

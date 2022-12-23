@@ -54,7 +54,7 @@
 	}
 
 	.card {
-		background-color: var(--bg2-dark);
+		background-color: var(--bg2-color);
 	}
 
 	h3 {

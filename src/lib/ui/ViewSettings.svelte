@@ -61,7 +61,7 @@
 		right: 0;
 		position: absolute;
 		padding-inline-start: 0;
-		background-color: var(--bg-dark);
+		background-color: var(--bg2-color);
 		border-radius: 5px;
 		padding: 5px;
 		z-index: 10;
@@ -79,6 +79,6 @@
 
 	li:hover {
 		cursor: pointer;
-		background-color: var(--bg5-dark);
+		background-color: var(--bg5-color);
 	}
 </style>

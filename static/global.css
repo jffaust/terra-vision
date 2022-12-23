@@ -1,8 +1,15 @@
 :root {
-    --font-color: white !important;
-    --bg-dark: #2f383e;
-    --bg2-dark: #374247;
-    --bg3-dark: #404c51;
-    --bg4-dark: #4a555b;
-    --bg5-dark: #525c62;
+    /* dark theme */
+    --bg-color: #1d1f21;
+    --bg2-color: #2f383e;
+    --bg3-color: #374247;
+    --bg4-color: #404c51;
+    --bg5-color: #4a555b;
+    --bg6-color: #525c62;
+    --bg-secondary-color: #131316;
+    --font-color: #f5f5f5;
+    --color-grey: #ccc;
+    --color-darkGrey: #777;
+
+
 }

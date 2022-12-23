@@ -38,7 +38,7 @@
 <style>
 	.view-picker {
 		border-radius: 5px;
-		background-color: var(--bg2-dark);
+		background-color: var(--bg2-color);
 		padding-inline-start: 0px;
 		list-style: none;
 	}
@@ -53,7 +53,7 @@
 		cursor: pointer;
 	}
 	.view-picker > li:hover {
-		background-color: var(--bg5-dark);
+		background-color: var(--bg5-color);
 	}
 
 	li {
@@ -68,7 +68,7 @@
 
 	li:hover {
 		cursor: pointer;
-		background-color: var(--bg5-dark);
+		background-color: var(--bg5-color);
 	}
 
 	p {

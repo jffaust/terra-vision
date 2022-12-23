@@ -17,7 +17,7 @@
 
 	$: title = `Altitude of the sun over time for location ${formatGPSCoords($simGPS)} `;
 	$: currentData = calcCurrentData($simCurrentDate, $astroSkySim.altitude);
-	$: seriesData = calcTrailData($simCurrentDate, $astroSkySim.altitude, $simGPS);
+	$: seriesData = calcSeriesData($simCurrentDate, $astroSkySim.altitude, $simGPS);
 
 	const unsub = simGPS.subscribe(resetTrailData);
 
@@ -39,8 +39,8 @@
 		if (altitude < 0) return null;
 		else return { x: getTimeInSeconds(date), y: altitude, date: '' };
 	}
-	function calcTrailData(date: Date, altitude: number, pos: GPSCoords | null): Series[] {
-		if (pos == null) return [];
+	function calcSeriesData(date: Date, altitude: number, position: GPSCoords | null): Series[] {
+		if (position == null) return [];
 
 		const currentDateKey = formatDateKey(date);
 

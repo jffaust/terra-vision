@@ -4,7 +4,6 @@
 	import { onDestroy } from 'svelte';
 	import { simCurrentDate, simGPS } from '$lib/sim/sim';
 	import { astroSkySim } from '$lib/sim/astro';
-	import CustomCircle from '$lib/gaphics/2d/CustomCircle.svelte';
 	import dateFormat from 'dateformat';
 	import { getTimeInSeconds } from '$lib/utils';
 	import type { GPSCoords } from '$lib/types';
@@ -12,7 +11,6 @@
 	const maxDaysToKeep = 20;
 	const lineTimeGranularity = 60 * 2; // 5 minutes
 
-	$: currentData = calcCurrentData($simCurrentDate, $astroSkySim.altitude);
 	$: trailData = calcTrailData($simCurrentDate, $astroSkySim.altitude, $simGPS);
 
 	const unsub = simGPS.subscribe(resetTrailData);
@@ -31,10 +29,6 @@
 		return trailData.find((s) => s.dateKey == formatDateKey(date));
 	}
 
-	function calcCurrentData(date: Date, altitude: number): DataPoint | null {
-		if (altitude < 0) return null;
-		else return { x: getTimeInSeconds(date), y: altitude, date: '' };
-	}
 	function calcTrailData(date: Date, altitude: number, pos: GPSCoords | null): Series[] {
 		if (pos == null) return [];
 
@@ -90,8 +84,4 @@
 	}
 </script>
 
-<SunAltitudeChart {trailData} {calcSeriesStrokeColor}>
-	{#if currentData}
-		<CustomCircle fill={'yellow'} r={5} x={currentData.x} y={currentData.y} />
-	{/if}
-</SunAltitudeChart>
+<SunAltitudeChart {trailData} {calcSeriesStrokeColor} />

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SunAltitudeChart, {
+	import MultiLineTimeChart, {
 		type DataPoint,
 		type Series
 	} from '$lib/gaphics/2d/charts/MultiLineTimeChart.svelte';
@@ -99,11 +99,11 @@
 		<p><i>GPS position required</i></p>
 	</div>
 {:else}
-	<SunAltitudeChart {title} {seriesData} {calcSeriesStrokeColor}>
+	<MultiLineTimeChart {title} {seriesData} {calcSeriesStrokeColor}>
 		{#if currentData}
 			<CustomCircle fill={'yellow'} r={5} x={currentData.x} y={currentData.y} />
 		{/if}
-	</SunAltitudeChart>
+	</MultiLineTimeChart>
 {/if}
 
 <style>

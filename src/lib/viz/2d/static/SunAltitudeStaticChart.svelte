@@ -1,6 +1,8 @@
 <script lang="ts">
-	import SunAltitudeChart, { type Series } from '$lib/gaphics/2d/charts/MultiLineTimeChart.svelte';
-	import { interpolateRgb } from 'd3-interpolate';
+	import MultiLineTimeChart, {
+		type Series
+	} from '$lib/gaphics/2d/charts/MultiLineTimeChart.svelte';
+	import { interpolateRgb, interpolateRgbBasis } from 'd3-interpolate';
 	import dateFormat from 'dateformat';
 	import { formatGPSCoords } from '$lib/utils';
 	import type { GPSCoords } from '$lib/types';
@@ -53,7 +55,7 @@
 
 	function calcSeriesStrokeColor(series: Series, index: number): string {
 		const percent = index > 364 ? 1 : index / 364;
-		return interpolateRgb('gray', 'white')(percent);
+		return interpolateRgbBasis(['red', 'yellow', 'red'])(percent);
 	}
 </script>
 
@@ -62,7 +64,7 @@
 		<p><i>GPS position required</i></p>
 	</div>
 {:else}
-	<SunAltitudeChart {title} {seriesData} {calcSeriesStrokeColor} />
+	<MultiLineTimeChart {title} {seriesData} {calcSeriesStrokeColor} />
 {/if}
 
 <style>

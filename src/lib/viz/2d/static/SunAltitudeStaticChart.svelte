@@ -1,41 +1,54 @@
 <script lang="ts">
-	import SunAltitudeChart, {
-		type DataPoint,
-		type Series
-	} from '../../../gaphics/2d/charts/MultiLineTimeChart.svelte';
+	import SunAltitudeChart, { type Series } from '$lib/gaphics/2d/charts/MultiLineTimeChart.svelte';
 	import { interpolateRgb } from 'd3-interpolate';
-	import { simCurrentDate, simGPS } from '$lib/sim/sim';
-	import { astroSkySim } from '$lib/sim/astro';
 	import dateFormat from 'dateformat';
-	import { formatGPSCoords, getTimeInSeconds } from '$lib/utils';
+	import { formatGPSCoords } from '$lib/utils';
 	import type { GPSCoords } from '$lib/types';
+	import { calcSunAltitudeDay } from '$lib/data/sun';
 
 	export let pos: GPSCoords | null;
 
-	const maxDaysToKeep = 20;
-	const lineTimeGranularity = 60 * 2; // 5 minutes
-
-	$: title = `Altitude of the sun over time for location ${formatGPSCoords(pos)} `;
-	$: seriesData = calcTrailData($simCurrentDate, $astroSkySim.altitude, pos);
+	let title = `Altitude of the sun over time for location ${formatGPSCoords(pos)} `;
+	let seriesData = calcSeriesData(new Date().getFullYear());
 
 	function formatDateKey(date: Date): string {
 		return dateFormat(date, 'yyyy-m-d');
 	}
 
-	function findSeries(date: Date): Series | undefined {
-		return seriesData.find((s) => s.dateKey == formatDateKey(date));
-	}
+	function calcSeriesData(year: number): Series[] {
+		console.log('refreshing');
+		if (pos == null) return [];
 
-	function calcTrailData(date: Date, altitude: number, position: GPSCoords | null): Series[] {
-		if (position == null) return [];
+		let data: Series[] = [];
+		let date = new Date(year, 0, 1);
 
-		const currentDateKey = formatDateKey(date);
+		while (date.getFullYear() == year) {
+			const dateKey = formatDateKey(date);
+			const dayData = calcSunAltitudeDay(
+				year,
+				date.getMonth(),
+				date.getDay(),
+				pos,
+				86400 / (60 * 5)
+			);
+			const seriesDayData: Series = {
+				date,
+				dateKey,
+				values: dayData
+					.filter((d) => d.altitude >= 0)
+					.map((d) => ({
+						x: d.time,
+						y: d.altitude,
+						date: dateKey
+					}))
+			};
 
-		if (!seriesData) {
-			seriesData = [];
+			data.push(seriesDayData);
+			date.setDate(date.getDate() + 1);
 		}
 
-		return seriesData;
+		console.log(data);
+		return data;
 	}
 
 	function calcSeriesStrokeColor(series: Series, index: number): string {
@@ -51,3 +64,14 @@
 {:else}
 	<SunAltitudeChart {title} {seriesData} {calcSeriesStrokeColor} />
 {/if}
+
+<style>
+	.msg {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+</style>

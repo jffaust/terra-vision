@@ -1,14 +1,12 @@
 <script lang="ts">
 	import { onMount, setContext } from 'svelte';
-	import { simGPS } from '$lib/sim/sim';
 	import SunAltitudeStaticChart from '$lib/viz/2d/static/SunAltitudeStaticChart.svelte';
 	import type { GPSCoords } from '$lib/types';
-	import { formatGPSCoords } from '$lib/utils';
 
 	let pos: GPSCoords | null = null;
 
 	onMount(async () => {
-		initGPSPosition();
+		pos = initGPSPosition();
 	});
 
 	function initGPSPosition(): GPSCoords | null {

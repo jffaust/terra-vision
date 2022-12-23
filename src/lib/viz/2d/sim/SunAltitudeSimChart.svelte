@@ -1,26 +1,30 @@
 <script lang="ts">
-	import SunAltitudeChart, { type DataPoint, type Series } from '../charts/SunAltitudeChart.svelte';
+	import SunAltitudeChart, {
+		type DataPoint,
+		type Series
+	} from '$lib/gaphics/2d/charts/MultiLineTimeChart.svelte';
 	import { interpolateRgb } from 'd3-interpolate';
 	import { onDestroy } from 'svelte';
 	import { simCurrentDate, simGPS } from '$lib/sim/sim';
 	import { astroSkySim } from '$lib/sim/astro';
 	import CustomCircle from '$lib/gaphics/2d/CustomCircle.svelte';
 	import dateFormat from 'dateformat';
-	import { getTimeInSeconds } from '$lib/utils';
+	import { formatGPSCoords, getTimeInSeconds } from '$lib/utils';
 	import type { GPSCoords } from '$lib/types';
 
 	const maxDaysToKeep = 20;
 	const lineTimeGranularity = 60 * 2; // 5 minutes
 
+	$: title = `Altitude of the sun over time for location ${formatGPSCoords($simGPS)} `;
 	$: currentData = calcCurrentData($simCurrentDate, $astroSkySim.altitude);
-	$: trailData = calcTrailData($simCurrentDate, $astroSkySim.altitude, $simGPS);
+	$: seriesData = calcTrailData($simCurrentDate, $astroSkySim.altitude, $simGPS);
 
 	const unsub = simGPS.subscribe(resetTrailData);
 
 	onDestroy(unsub);
 
 	function resetTrailData() {
-		trailData = [];
+		seriesData = [];
 	}
 
 	function formatDateKey(date: Date): string {
@@ -28,7 +32,7 @@
 	}
 
 	function findSeries(date: Date): Series | undefined {
-		return trailData.find((s) => s.dateKey == formatDateKey(date));
+		return seriesData.find((s) => s.dateKey == formatDateKey(date));
 	}
 
 	function calcCurrentData(date: Date, altitude: number): DataPoint | null {
@@ -40,15 +44,15 @@
 
 		const currentDateKey = formatDateKey(date);
 
-		if (!trailData) {
-			trailData = [];
+		if (!seriesData) {
+			seriesData = [];
 		}
 
-		if (trailData.length > 0) {
-			const first = trailData[0];
+		if (seriesData.length > 0) {
+			const first = seriesData[0];
 			const diffMs = date.getTime() - first.date.getTime();
 			if (diffMs / (1000 * 60 * 60 * 24) > maxDaysToKeep) {
-				trailData.splice(0, 1);
+				seriesData.splice(0, 1);
 			}
 		}
 
@@ -60,7 +64,7 @@
 			if (!series) {
 				append = true;
 				series = { date, dateKey: currentDateKey, values: [] };
-				trailData.push(series);
+				seriesData.push(series);
 			}
 
 			if (series.values.length > 0) {
@@ -75,23 +79,40 @@
 			}
 		}
 
-		return trailData;
+		return seriesData;
 	}
 
 	function calcSeriesStrokeColor(series: Series, index: number): string {
-		if (index == trailData.length - 1) {
+		if (index == seriesData.length - 1) {
 			if (series.date.getDate() == $simCurrentDate.getDate()) return 'yellow';
 			else return 'gray';
 		} else {
-			const distPenultimate = trailData.length - 2 - index;
+			const distPenultimate = seriesData.length - 2 - index;
 			const percent = distPenultimate / maxDaysToKeep;
 			return interpolateRgb('gray', '#1d1f21')(percent);
 		}
 	}
 </script>
 
-<SunAltitudeChart {trailData} {calcSeriesStrokeColor}>
-	{#if currentData}
-		<CustomCircle fill={'yellow'} r={5} x={currentData.x} y={currentData.y} />
-	{/if}
-</SunAltitudeChart>
+{#if !$simGPS}
+	<div class="msg">
+		<p><i>GPS position required</i></p>
+	</div>
+{:else}
+	<SunAltitudeChart {title} {seriesData} {calcSeriesStrokeColor}>
+		{#if currentData}
+			<CustomCircle fill={'yellow'} r={5} x={currentData.x} y={currentData.y} />
+		{/if}
+	</SunAltitudeChart>
+{/if}
+
+<style>
+	.msg {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+</style>

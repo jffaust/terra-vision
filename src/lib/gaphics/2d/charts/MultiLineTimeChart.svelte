@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
 	export interface DataPoint {
 		x: number; // number of seconds since midnight
-		y: number; // positive altitude of the sun
+		y: number;
 		date: string;
 	}
 
@@ -18,11 +18,10 @@
 	import AxisY from '$lib/gaphics/2d/AxisY.svelte';
 	import { scaleTime } from 'd3-scale';
 	import MultiLine from '$lib/gaphics/2d/MultiLine.svelte';
-	import { formatGPSCoords } from '$lib/utils';
 	import { fit, parent_style } from '@leveluptuts/svelte-fit';
-	import { simGPS } from '$lib/sim/sim';
 
-	export let trailData: Series[];
+	export let title: string;
+	export let seriesData: Series[];
 	export let calcSeriesStrokeColor: (series: any, index: number) => string;
 
 	function formatTimeTick(d: number): string {
@@ -31,41 +30,37 @@
 </script>
 
 <div class="main">
-	{#if !$simGPS}
-		<p><i>GPS position required</i></p>
-	{:else}
-		<header>
-			<div style={parent_style}>
-				<p use:fit>
-					<i>Altitude of the sun over time for location {formatGPSCoords($simGPS)} </i>
-				</p>
-			</div>
-		</header>
-		<div class="chart-container">
-			<LayerCake
-				data={trailData}
-				x="x"
-				y="y"
-				z="date"
-				xDomain={[0, 24 * 60 * 60]}
-				yDomain={[0, 100]}
-				xScale={scaleTime()}
-			>
-				<!-- Components go here -->
-				<Svg>
-					<AxisX
-						ticks={[0, 4, 8, 12, 16, 20, 24].map((d) => d * 60 * 60)}
-						formatTick={formatTimeTick}
-						textColor="white"
-					/>
-					<AxisY textColor="white" />
-					<MultiLine calcStroke={calcSeriesStrokeColor} />
-
-					<slot />
-				</Svg>
-			</LayerCake>
+	<header>
+		<div style={parent_style}>
+			<p use:fit>
+				<i>{title}</i>
+			</p>
 		</div>
-	{/if}
+	</header>
+	<div class="chart-container">
+		<LayerCake
+			data={seriesData}
+			x="x"
+			y="y"
+			z="date"
+			xDomain={[0, 24 * 60 * 60]}
+			yDomain={[0, 100]}
+			xScale={scaleTime()}
+		>
+			<!-- Components go here -->
+			<Svg>
+				<AxisX
+					ticks={[0, 4, 8, 12, 16, 20, 24].map((d) => d * 60 * 60)}
+					formatTick={formatTimeTick}
+					textColor="white"
+				/>
+				<AxisY textColor="white" />
+				<MultiLine calcStroke={calcSeriesStrokeColor} />
+
+				<slot />
+			</Svg>
+		</LayerCake>
+	</div>
 </div>
 
 <style>

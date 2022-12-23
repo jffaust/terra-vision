@@ -1,5 +1,8 @@
 <script lang="ts">
-	import SunAltitudeChart, { type DataPoint, type Series } from '../charts/SunAltitudeChart.svelte';
+	import SunAltitudeChart, {
+		type DataPoint,
+		type Series
+	} from '../../../gaphics/2d/charts/MultiLineTimeChart.svelte';
 	import { interpolateRgb } from 'd3-interpolate';
 	import { onDestroy } from 'svelte';
 	import { simCurrentDate, simGPS } from '$lib/sim/sim';

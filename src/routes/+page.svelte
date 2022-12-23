@@ -50,14 +50,69 @@
 			height: view.region.height * window.innerHeight
 		};
 	}
+
+	function onResize() {
+		$gridView = $gridView;
+	}
+
+	function initGPSPosition() {
+		const urlParams = new URLSearchParams(window.location.search);
+
+		const latStr = urlParams.get('lat');
+		const lonStr = urlParams.get('lon');
+
+		if (latStr && lonStr) {
+			try {
+				$simGPS = {
+					lat: parseFloat(latStr),
+					lon: parseFloat(lonStr)
+				};
+			} catch (e) {
+				$simGPS = null;
+				// remove params from URL?
+			}
+		}
+	}
 </script>
 
-<div class="app" />
+<svelte:window on:resize={onResize} />
+
+<div class="app">
+	{#if texturesLoaded}
+		{#each $gridView.getViews() as view (view.id)}
+			{@const rect = getViewPixelRegion(view)}
+			<ViewContainer {...rect} id={view.id}>
+				{#if view.type == VizTypes.DefaultSpace}
+					<Space width={rect.width} height={rect.height} />
+				{:else if view.type == VizTypes.SkyView}
+					<SkyView width={rect.width} height={rect.height} />
+				{:else if view.type == VizTypes.SunAltitudeChart}
+					<SunAltitudeSimChart />
+				{:else if view.type == VizTypes.DaylightHoursChart}
+					<DaylightHours />
+				{/if}
+			</ViewContainer>
+		{/each}
+
+		<MainControls />
+	{:else}
+		<div class="loading">
+			<Loading />
+		</div>
+	{/if}
+</div>
 
 <style>
 	.app {
 		width: 100vw;
 		height: 100vh;
 		background-color: #1d1f21;
+	}
+
+	.loading {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
 </style>

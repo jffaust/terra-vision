@@ -1,7 +1,8 @@
 <script lang="ts">
 	import MilkyWay from '$lib/gaphics/3d/MilkyWay.svelte';
-	import Sun from '$lib/gaphics/3d/Sun.svelte';
+	import AltSun from '$lib/gaphics/3d/AltSun.svelte';
 	import { Canvas, OrbitControls, PerspectiveCamera } from '@threlte/core';
+	import Sun from '$lib/gaphics/3d/Sun.svelte';
 
 	// https://mgvez.github.io/jsorrery/
 	// https://github.com/mgvez/jsorrery/blob/master/src/graphics3d/Sun.js
@@ -21,7 +22,8 @@
 
 	<MilkyWay />
 
-	<Sun />
+	<!-- <Sun /> -->
+	<AltSun {width} {height} />
 </Canvas>
 
 <style>

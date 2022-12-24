@@ -10,6 +10,7 @@
 	import Loading from '$lib/ui/loading.svelte';
 	import { simGPS } from '$lib/sim/sim';
 	import SunAltitude from '$lib/viz/2d/SunAltitude.svelte';
+	import SunWithShaders from '$lib/viz/3d/SunWithShaders.svelte';
 
 	let texturesLoaded = false;
 	const tLoader = new THREE.TextureLoader();
@@ -87,6 +88,8 @@
 					<SkyView width={rect.width} height={rect.height} />
 				{:else if view.type == VizTypes.SunAltitudeChart}
 					<SunAltitude />
+				{:else if view.type == VizTypes.SunWithShaders}
+					<SunWithShaders width={rect.width} height={rect.height} />
 				{/if}
 			</ViewContainer>
 		{/each}

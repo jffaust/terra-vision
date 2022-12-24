@@ -24,6 +24,7 @@ export enum VizTypes {
     TestEarthTilt,
     TestEarthSpin,
     TestObserver,
+    SunWithShaders
 }
 
 export interface View {

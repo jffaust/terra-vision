@@ -6,12 +6,14 @@
 		PointLight,
 		AmbientLight,
 		useFrame,
-		type ThrelteContext
+		type ThrelteContext,
+		useThrelte
 	} from '@threlte/core';
-	import { SUN_INTENSITY, SUN_RADIUS } from '$lib/sim/threejs';
+	import { EARTH_ORBIT_RADIUS, SUN_INTENSITY, SUN_RADIUS } from '$lib/sim/threejs';
 	import { sunFragmentShader } from './sunFragmentShader';
 	import { get } from 'svelte/store';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
+	import { onMount } from 'svelte';
 
 	export let width: number;
 	export let height: number;
@@ -41,12 +43,17 @@ void main() {
 }
     `;
 
-	const geo = new THREE.PlaneGeometry(SUN_RADIUS, SUN_RADIUS, 10, 10);
+	const geo = new THREE.PlaneGeometry(EARTH_ORBIT_RADIUS, EARTH_ORBIT_RADIUS, 10, 10);
 	const mat = new THREE.ShaderMaterial({
 		fragmentShader: sunFragmentShader,
 		vertexShader,
 		uniforms,
 		transparent: true
+	});
+
+	const { scene } = useThrelte();
+	onMount(() => {
+		scene.add(new THREE.AxesHelper(EARTH_ORBIT_RADIUS));
 	});
 
 	useFrame(updateFlare);
@@ -55,7 +62,6 @@ void main() {
 		const cam = get(camera);
 		const pcam = cam as THREE.PerspectiveCamera;
 		if (pcam == null) return;
-		console.log('testing flare: ' + cam.position.x);
 
 		const camToSun = cam.position.clone().sub(position);
 
@@ -67,7 +73,7 @@ void main() {
 		uniforms.sunPosition.value.copy(camToSun.multiplyScalar(-1));
 
 		const visibleW = Math.tan((DEG2RAD * pcam.fov) / 2) * camToSun.length() * 2;
-		const sunScaledSize = SUN_RADIUS * 0.1; //this.scale;
+		const sunScaledSize = SUN_RADIUS * 1; //this.scale;
 		const sunScreenRatio = sunScaledSize / visibleW;
 
 		uniforms.sunSize.value = sunScreenRatio;
@@ -79,7 +85,7 @@ void main() {
 </script>
 
 <Group {position}>
-	<!-- <PointLight decay={2} intensity={SUN_INTENSITY} /> -->
-	<AmbientLight />
+	<PointLight decay={2} intensity={SUN_INTENSITY} />
+	<!-- <AmbientLight /> -->
 </Group>
 <Mesh bind:this={planeMesh} geometry={geo} material={mat} />

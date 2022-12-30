@@ -19,6 +19,7 @@
 
 	let flarePos = new THREE.Vector3();
 	let flareRot = new THREE.Quaternion();
+	let planeMesh: Mesh;
 
 	const uniforms = {
 		aspectRatio: { type: 'f', value: width / height },
@@ -58,24 +59,22 @@ void main() {
 
 		const camToSun = cam.position.clone().sub(position);
 
-		flareRot.copy(cam.quaternion);
-
-		flarePos.copy(camToSun.clone().multiplyScalar(0.1)); /**/
-		// const scaleRatio = (camToSun.length() / this.stageSize) * 0.8;
+		planeMesh.mesh.quaternion.copy(cam.quaternion);
+		planeMesh.mesh.position.copy(camToSun.clone().multiplyScalar(0.1));
 
 		const sunScreenPos = position.clone().project(cam);
 
-		// this.sky.mesh.scale.set(scaleRatio, scaleRatio, scaleRatio);/**/
 		uniforms.sunPosition.value.copy(camToSun.multiplyScalar(-1));
 
 		const visibleW = Math.tan((DEG2RAD * pcam.fov) / 2) * camToSun.length() * 2;
-		const sunScaledSize = SUN_RADIUS * 2 * 1; //this.scale;
+		const sunScaledSize = SUN_RADIUS * 0.1; //this.scale;
 		const sunScreenRatio = sunScaledSize / visibleW;
-		// console.log(visibleW, CameraManager.getCamera().fov, camToSun.length(), sunScaledSize);
+
 		uniforms.sunSize.value = sunScreenRatio;
 		uniforms.randAngle.value = uniforms.randAngle.value + 0.001;
 		uniforms.camAngle.value = camToSun.angleTo(new THREE.Vector3(1, 1, 0));
 		uniforms.sunScreenPos.value = sunScreenPos;
+		console.log(uniforms);
 	}
 </script>
 
@@ -83,4 +82,4 @@ void main() {
 	<!-- <PointLight decay={2} intensity={SUN_INTENSITY} /> -->
 	<AmbientLight />
 </Group>
-<Mesh rotation={flareRot} position={flarePos} geometry={geo} material={mat} />
+<Mesh bind:this={planeMesh} geometry={geo} material={mat} />

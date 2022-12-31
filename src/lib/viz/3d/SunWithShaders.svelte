@@ -15,14 +15,14 @@
 	export let width: number;
 	export let height: number;
 
-	let position = new THREE.Vector3();
+	let position = new THREE.Vector3(0, 0, 0);
 
 	let interval: NodeJS.Timer;
 
 	onMount(() => {
-		// interval = setInterval(() => {
-		// 	position.z += 10;
-		// }, 100);
+		interval = setInterval(() => {
+			position.x -= 10;
+		}, 100);
 	});
 
 	onDestroy(() => {

@@ -71,7 +71,7 @@ void main() {
 		uniforms.sunPosition.value.copy(camToSun.multiplyScalar(-1));
 
 		const visibleW = Math.tan((DEG2RAD * pcam.fov) / 2) * camToSun.length() * 2;
-		const sunScaledSize = SUN_RADIUS * 1; //this.scale;
+		const sunScaledSize = SUN_RADIUS * 0.5; //this.scale;
 		const sunScreenRatio = sunScaledSize / visibleW;
 
 		uniforms.sunSize.value = sunScreenRatio;

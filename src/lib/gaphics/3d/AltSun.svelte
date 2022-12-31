@@ -19,8 +19,6 @@
 	export let height: number;
 	export let position = new THREE.Vector3();
 
-	let flarePos = new THREE.Vector3();
-	let flareRot = new THREE.Quaternion();
 	let planeMesh: Mesh;
 
 	const uniforms = {

@@ -13,6 +13,10 @@
 	import { FPControls } from '$lib/FPControls';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
 	import Sun from '$lib/gaphics/3d/Sun.svelte';
+	import AltSun from '$lib/gaphics/3d/AltSun.svelte';
+
+	export let width: number;
+	export let height: number;
 
 	let fpControls: FPControls;
 
@@ -57,7 +61,7 @@
 
 <!-- TODO: Optionally change the color of the light based on the angle (orange/red for low altitude, whiter near 90 degrees) -->
 <!-- similarly, change the color of the scene's background from black to blue -->
-<Sun position={$skySim} />
+<AltSun position={$skySim} {width} {height} />
 
 <AmbientLight intensity={0.15} />
 

@@ -2,7 +2,9 @@
 	import MilkyWay from '$lib/gaphics/3d/MilkyWay.svelte';
 	import AltSun from '$lib/gaphics/3d/AltSun.svelte';
 	import { Canvas, OrbitControls, PerspectiveCamera } from '@threlte/core';
-	import Sun from '$lib/gaphics/3d/Sun.svelte';
+	import * as THREE from 'three';
+	import { onDestroy, onMount } from 'svelte';
+	import Earth from '$lib/gaphics/3d/Earth.svelte';
 
 	// https://mgvez.github.io/jsorrery/
 	// https://github.com/mgvez/jsorrery/blob/master/src/graphics3d/Sun.js
@@ -12,6 +14,20 @@
 
 	export let width: number;
 	export let height: number;
+
+	let position = new THREE.Vector3();
+
+	let interval: NodeJS.Timer;
+
+	onMount(() => {
+		// interval = setInterval(() => {
+		// 	position.z += 10;
+		// }, 100);
+	});
+
+	onDestroy(() => {
+		if (interval) clearInterval(interval);
+	});
 </script>
 
 <!-- SpaceScene uses useThrelte so the canvas component must be inside a parent component -->
@@ -23,7 +39,9 @@
 	<MilkyWay />
 
 	<!-- <Sun /> -->
-	<AltSun {width} {height} />
+	<AltSun {width} {height} {position} />
+
+	<Earth {position} />
 </Canvas>
 
 <style>

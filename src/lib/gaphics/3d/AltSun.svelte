@@ -4,86 +4,65 @@
 		Group,
 		Mesh,
 		PointLight,
-		AmbientLight,
 		useFrame,
-		type ThrelteContext,
-		useThrelte
+		useThrelte,
+		type ThrelteContext
 	} from '@threlte/core';
+	import { getContext } from 'svelte';
+	import { Textures, CTX_TEXTURES } from '$lib/types';
 	import { EARTH_ORBIT_RADIUS, SUN_INTENSITY, SUN_RADIUS } from '$lib/sim/threejs';
-	import { sunFragmentShader } from './sunFragmentShader';
-	import { get } from 'svelte/store';
-	import { DEG2RAD } from 'three/src/math/MathUtils';
 	import { onMount } from 'svelte';
+	import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+	import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+	import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+	import { get } from 'svelte/store';
 
 	export let width: number;
 	export let height: number;
 	export let position = new THREE.Vector3();
 
-	let planeMesh: Mesh;
+	const textures = getContext<Map<Textures, THREE.Texture>>(CTX_TEXTURES);
 
-	const uniforms = {
-		aspectRatio: { type: 'f', value: width / height },
-		sunPosition: { type: 'v3', value: new THREE.Vector3() },
-		sunScreenPos: { type: 'v3', value: new THREE.Vector3() },
-		sunSize: { type: 'f', value: 0.0 },
-		randAngle: { type: 'f', value: 0.0 },
-		camAngle: { type: 'f', value: 0.0 }
-	};
-
-	const vertexShader = /*glsl*/ `
-varying vec2 vPxScreenPosition;
-
-void main() {
-	
-	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-
-	vPxScreenPosition = vec2(gl_Position.x / gl_Position.z, gl_Position.y / gl_Position.z);
-}
-    `;
-
-	const geo = new THREE.PlaneGeometry(EARTH_ORBIT_RADIUS, EARTH_ORBIT_RADIUS, 10, 10);
-	const mat = new THREE.ShaderMaterial({
-		fragmentShader: sunFragmentShader,
-		vertexShader,
-		uniforms,
-		transparent: true
+	const sunGeom = new THREE.SphereGeometry(1, 50, 50);
+	const sunMat = new THREE.MeshStandardMaterial({
+		emissive: 0xffd700,
+		emissiveIntensity: 1,
+		emissiveMap: textures.get(Textures.Sun)
 	});
 
-	const { scene } = useThrelte();
+	const { scene, camera, renderer } = useThrelte();
+
+	// taken from https://github.com/ankit-alpha-q/glowing-sun
+	// bloom params: https://threejs.org/examples/#webgl_postprocessing_unreal_bloom
+	const renderScene = new RenderPass(scene, get(camera));
+	const bloomPass = new UnrealBloomPass(new THREE.Vector2(width, height), 0, 2, 0.5);
+	bloomPass.threshold = 0;
+	bloomPass.strength = 2; //intensity of glow
+	bloomPass.radius = 0.5;
+	let bloomComposer: EffectComposer;
+
 	onMount(() => {
 		scene.add(new THREE.AxesHelper(EARTH_ORBIT_RADIUS));
+
+		if (renderer) {
+			renderer.autoClear = false;
+			bloomComposer = new EffectComposer(renderer);
+			// TODO: update bloom size on window resize
+			bloomComposer.setSize(width, height);
+			bloomComposer.renderToScreen = true;
+			bloomComposer.addPass(renderScene);
+			bloomComposer.addPass(bloomPass);
+		}
 	});
 
 	useFrame(updateFlare);
 
 	function updateFlare({ camera }: ThrelteContext) {
-		const cam = get(camera);
-		const pcam = cam as THREE.PerspectiveCamera;
-		if (pcam == null) return;
-
-		const camToSun = cam.position.clone().sub(position);
-
-		planeMesh.mesh.quaternion.copy(cam.quaternion);
-		planeMesh.mesh.position.copy(camToSun.clone().multiplyScalar(0.1));
-
-		const sunScreenPos = position.clone().project(cam);
-
-		uniforms.sunPosition.value.copy(camToSun.multiplyScalar(-1));
-
-		const visibleW = Math.tan((DEG2RAD * pcam.fov) / 2) * camToSun.length() * 2;
-		const sunScaledSize = SUN_RADIUS * 0.5; //this.scale;
-		const sunScreenRatio = sunScaledSize / visibleW;
-
-		uniforms.sunSize.value = sunScreenRatio;
-		uniforms.randAngle.value = uniforms.randAngle.value + 0.001;
-		uniforms.camAngle.value = camToSun.angleTo(new THREE.Vector3(1, 1, 0));
-		uniforms.sunScreenPos.value = sunScreenPos;
-		console.log(uniforms);
+		if (bloomComposer) bloomComposer.render();
 	}
 </script>
 
 <Group {position}>
+	<Mesh geometry={sunGeom} material={sunMat} />
 	<PointLight decay={2} intensity={SUN_INTENSITY} />
-	<!-- <AmbientLight /> -->
 </Group>
-<Mesh bind:this={planeMesh} geometry={geo} material={mat} />

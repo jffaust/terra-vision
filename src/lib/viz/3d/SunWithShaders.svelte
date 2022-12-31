@@ -20,9 +20,9 @@
 	let interval: NodeJS.Timer;
 
 	onMount(() => {
-		interval = setInterval(() => {
-			position.x -= 10;
-		}, 100);
+		// interval = setInterval(() => {
+		// 	position.x -= 10;
+		// }, 100);
 	});
 
 	onDestroy(() => {
@@ -32,7 +32,7 @@
 
 <!-- SpaceScene uses useThrelte so the canvas component must be inside a parent component -->
 <Canvas rendererParameters={{ antialias: true }} size={{ width, height }}>
-	<PerspectiveCamera position={{ x: 1000, y: 0, z: 0 }} far={100000}>
+	<PerspectiveCamera position={{ x: 20, y: 0, z: 0 }} far={100000}>
 		<OrbitControls target={{ x: 0, y: 0, z: 0 }} zoomSpeed={0.5} />
 	</PerspectiveCamera>
 
@@ -40,8 +40,6 @@
 
 	<!-- <Sun /> -->
 	<AltSun {width} {height} {position} />
-
-	<Earth {position} />
 </Canvas>
 
 <style>

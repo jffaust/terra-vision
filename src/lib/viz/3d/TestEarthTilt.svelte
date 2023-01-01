@@ -9,7 +9,7 @@
 		Group
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
-	import Earth from '$lib/gaphics/3d/Earth.svelte';
+	import Earth from '$lib/graphics/3d/Earth.svelte';
 	import { EARTH_RADIUS, spaceSim } from '$lib/sim/threejs';
 
 	// When we load the texture of the Earth onto a sphere, by default the north

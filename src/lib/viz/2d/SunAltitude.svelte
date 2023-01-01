@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { simCurrentDate, simGPS } from '$lib/sim/sim';
 	import { LayerCake, Svg } from 'layercake';
-	import AxisX from '$lib/gaphics/2d/AxisX.svelte';
-	import AxisY from '$lib/gaphics/2d/AxisY.svelte';
+	import AxisX from '$lib/graphics/2d/AxisX.svelte';
+	import AxisY from '$lib/graphics/2d/AxisY.svelte';
 	import { scaleTime } from 'd3-scale';
 	import { astroSkySim } from '$lib/sim/astro';
 	import dateFormat from 'dateformat';
-	import MultiLine from '$lib/gaphics/2d/MultiLine.svelte';
-	import CustomCircle from '$lib/gaphics/2d/CustomCircle.svelte';
+	import MultiLine from '$lib/graphics/2d/MultiLine.svelte';
+	import CustomCircle from '$lib/graphics/2d/CustomCircle.svelte';
 	import { formatGPSCoords, getTimeInSeconds } from '$lib/utils';
 	import { interpolateRgb } from 'd3-interpolate';
 	import { onDestroy } from 'svelte';

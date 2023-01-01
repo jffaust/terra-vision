@@ -1,10 +1,10 @@
 <script lang="ts">
-	import MilkyWay from '$lib/gaphics/3d/MilkyWay.svelte';
-	import AltSun from '$lib/gaphics/3d/AltSun.svelte';
+	import MilkyWay from '$lib/graphics/3d/MilkyWay.svelte';
+	import AltSun from '$lib/graphics/3d/AltSun.svelte';
 	import { Canvas, OrbitControls, PerspectiveCamera } from '@threlte/core';
 	import * as THREE from 'three';
 	import { onDestroy, onMount } from 'svelte';
-	import Earth from '$lib/gaphics/3d/Earth.svelte';
+	import Earth from '$lib/graphics/3d/Earth.svelte';
 
 	// https://mgvez.github.io/jsorrery/
 	// https://github.com/mgvez/jsorrery/blob/master/src/graphics3d/Sun.js

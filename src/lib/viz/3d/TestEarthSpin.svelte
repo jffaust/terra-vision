@@ -10,7 +10,7 @@
 		Mesh
 	} from '@threlte/core';
 	import { onDestroy, onMount } from 'svelte';
-	import Earth from '$lib/gaphics/3d/Earth.svelte';
+	import Earth from '$lib/graphics/3d/Earth.svelte';
 	import { EARTH_RADIUS, spaceSim } from '$lib/sim/threejs';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
 	import * as ae from 'astronomy-engine';

@@ -12,7 +12,7 @@
 	import { Textures, CTX_TEXTURES } from '$lib/types';
 	import { EARTH_ORBIT_RADIUS, SUN_INTENSITY, SUN_RADIUS } from '$lib/sim/threejs';
 	import { onMount } from 'svelte';
-	import sunshineFrag from '$lib/gaphics/3d/shaders/sunshineFragment.glsl';
+	import sunshineFrag from '$lib/graphics/3d/shaders/sunshineFragment.glsl';
 	import sunshineVertex from '$lib/graphics/3d/shaders/sunshineVertex.glsl';
 
 	// export let width: number;

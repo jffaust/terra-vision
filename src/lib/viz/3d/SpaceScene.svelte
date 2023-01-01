@@ -5,12 +5,12 @@
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { EARTH_ORBIT_RADIUS, spaceSim } from '$lib/sim/threejs';
 	import type { SimData } from '$lib/sim/threejs';
-	import Earth from '$lib/gaphics/3d/Earth.svelte';
-	import Sun from '$lib/gaphics/3d/Sun.svelte';
-	import GpsMarker from '$lib/gaphics/3d/GPSMarker.svelte';
+	import Earth from '$lib/graphics/3d/Earth.svelte';
+	import Sun from '$lib/graphics/3d/Sun.svelte';
+	import GpsMarker from '$lib/graphics/3d/GPSMarker.svelte';
 	import type { Unsubscriber } from 'svelte/store';
 	import type { GPSCoords } from '$lib/types';
-	import MilkyWay from '$lib/gaphics/3d/MilkyWay.svelte';
+	import MilkyWay from '$lib/graphics/3d/MilkyWay.svelte';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
 	import { simGPS } from '$lib/sim/sim';
 

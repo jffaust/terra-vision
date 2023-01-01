@@ -12,8 +12,8 @@
 	import { EARTH_ORBIT_RADIUS, METER, skySim } from '$lib/sim/threejs';
 	import { FPControls } from '$lib/FPControls';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
-	import Sun from '$lib/gaphics/3d/Sun.svelte';
-	import AltSun from '$lib/gaphics/3d/AltSun.svelte';
+	import Sun from '$lib/graphics/3d/Sun.svelte';
+	import AltSun from '$lib/graphics/3d/AltSun.svelte';
 
 	// export let width: number;
 	// export let height: number;

@@ -12,13 +12,11 @@
 	import { Textures, CTX_TEXTURES } from '$lib/types';
 	import { EARTH_ORBIT_RADIUS, SUN_INTENSITY, SUN_RADIUS } from '$lib/sim/threejs';
 	import { onMount } from 'svelte';
-	import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-	import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-	import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-	import { get } from 'svelte/store';
+	import sunshineFrag from '$lib/gaphics/3d/shaders/sunshineFragment.glsl';
+	import sunshineVertex from '$lib/graphics/3d/shaders/sunshineVertex.glsl';
 
-	export let width: number;
-	export let height: number;
+	// export let width: number;
+	// export let height: number;
 	export let position = new THREE.Vector3();
 
 	const textures = getContext<Map<Textures, THREE.Texture>>(CTX_TEXTURES);
@@ -30,39 +28,23 @@
 		emissiveMap: textures.get(Textures.Sun)
 	});
 
-	const { scene, camera, renderer } = useThrelte();
+	const sunshineGeom = new THREE.SphereGeometry(1.2, 50, 50);
+	const sunshineMat = new THREE.ShaderMaterial({
+		fragmentShader: sunshineFrag,
+		vertexShader: sunshineVertex,
+		uniforms: {}
+		// transparent: true,
+	});
 
-	// taken from https://github.com/ankit-alpha-q/glowing-sun
-	// bloom params: https://threejs.org/examples/#webgl_postprocessing_unreal_bloom
-	const renderScene = new RenderPass(scene, get(camera));
-	const bloomPass = new UnrealBloomPass(new THREE.Vector2(width, height), 0, 2, 0.5);
-	bloomPass.threshold = 0;
-	bloomPass.strength = 2; //intensity of glow
-	bloomPass.radius = 0.5;
-	let bloomComposer: EffectComposer;
+	const { scene, camera, renderer } = useThrelte();
 
 	onMount(() => {
 		scene.add(new THREE.AxesHelper(EARTH_ORBIT_RADIUS));
-
-		if (renderer) {
-			renderer.autoClear = false;
-			bloomComposer = new EffectComposer(renderer);
-			// TODO: update bloom size on window resize
-			bloomComposer.setSize(width, height);
-			bloomComposer.renderToScreen = true;
-			bloomComposer.addPass(renderScene);
-			bloomComposer.addPass(bloomPass);
-		}
 	});
-
-	useFrame(updateFlare);
-
-	function updateFlare({ camera }: ThrelteContext) {
-		if (bloomComposer) bloomComposer.render();
-	}
 </script>
 
 <Group {position}>
 	<Mesh geometry={sunGeom} material={sunMat} />
+	<Mesh geometry={sunshineGeom} material={sunshineMat} />
 	<PointLight decay={2} intensity={SUN_INTENSITY} />
 </Group>

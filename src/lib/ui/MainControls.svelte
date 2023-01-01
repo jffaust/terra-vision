@@ -182,15 +182,4 @@
 		margin-right: 5px;
 		font-size: 20px;
 	}
-
-	button {
-		background-color: transparent;
-		border: none;
-		padding: 4px;
-		cursor: pointer;
-	}
-	img {
-		width: 22px;
-		height: 22px;
-	}
 </style>

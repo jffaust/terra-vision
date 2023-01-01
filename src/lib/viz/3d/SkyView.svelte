@@ -8,5 +8,5 @@
 
 <!-- SpaceScene uses useThrelte so the canvas component must be inside a parent component -->
 <Canvas rendererParameters={{ antialias: true }} size={{ width, height }}>
-	<SkyViewScene {width} {height} />
+	<SkyViewScene />
 </Canvas>

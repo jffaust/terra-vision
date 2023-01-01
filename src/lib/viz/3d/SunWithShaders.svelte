@@ -39,8 +39,5 @@
 	<MilkyWay />
 
 	<!-- <Sun /> -->
-	<AltSun {width} {height} {position} />
+	<AltSun {position} />
 </Canvas>
-
-<style>
-</style>

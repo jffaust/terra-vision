@@ -106,6 +106,3 @@
 		<GpsMarker lat={$simGPS.lat} lon={$simGPS.lon} />
 	{/if}
 </Earth>
-
-<style>
-</style>

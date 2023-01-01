@@ -28,11 +28,12 @@
 		emissiveMap: textures.get(Textures.Sun)
 	});
 
-	const sunshineGeom = new THREE.SphereGeometry(1.2, 50, 50);
+	const sunshineGeom = new THREE.SphereGeometry(1.5, 50, 50);
 	const sunshineMat = new THREE.ShaderMaterial({
 		fragmentShader: sunshineFrag,
 		vertexShader: sunshineVertex,
-		uniforms: {}
+		uniforms: {},
+		side: THREE.BackSide
 		// transparent: true,
 	});
 

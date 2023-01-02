@@ -32,7 +32,13 @@
 	const sunshineMat = new THREE.ShaderMaterial({
 		fragmentShader: sunshineFrag,
 		vertexShader: sunshineVertex,
-		uniforms: {},
+		uniforms: {
+			uSunCenter: {
+				//@ts-ignore
+				type: 'vec3',
+				value: position
+			}
+		},
 		side: THREE.BackSide
 		// transparent: true,
 	});

@@ -1,4 +1,4 @@
-varying vec3 vPosition;
+varying float vDistToCenter;
 // varying vec3 vNormal;
 // varying vec3 vLayer0;
 // varying vec3 vLayer1;
@@ -15,31 +15,16 @@ vec3 brightnessToColor(float b) {
   return (vec3(b, b * b, b * b * b) / 0.25) * 0.8;
 }
 
-float supersun() {
-  float sum = 0.;
-  // sum += texturecube(uPerlin, vLayer0).r;
-  // sum += texturecube(uPerlin, vLayer1).r;
-  // sum += texturecube(uPerlin, vLayer2).r;
-  sum *= 0.33;
-  return sum;
-}
-
 void main() {
-  // float brightness = supersun();
-  // brightness = brightness * 4. + 1.;
 
-  // float fres = Fresnel(eyeVector, vNormal);
-  // brightness += fres;
-
-  // vec3 col = brightnessToColor(brightness);
-
-  float radial = 1. - vPosition.z;
+  float radial = 1. - vDistToCenter;
   radial *= radial * radial;
 
-  float brightness = 1. + radial * 0.8;
+  float brightness = 1. + radial;
 
   gl_FragColor.rgb = brightnessToColor(brightness) * radial;
   gl_FragColor.a = radial;
 
-  gl_FragColor = vec4(0.8, 1., 0., 1.);
+  // gl_FragColor = vec4(0.8, 1., 0., 1.);
+  // gl_FragColor = vec4(vPosition.x, 0, 0, 1.);
 }

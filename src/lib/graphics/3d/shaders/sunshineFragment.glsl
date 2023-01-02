@@ -18,7 +18,7 @@ vec3 brightnessToColor(float b) {
 void main() {
 
   float radial = 1. - vDistToCenter;
-  radial *= radial * radial;
+  radial *= radial;
 
   float brightness = 1. + radial;
 

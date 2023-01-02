@@ -13,6 +13,7 @@
 	import MilkyWay from '$lib/graphics/3d/MilkyWay.svelte';
 	import { DEG2RAD } from 'three/src/math/MathUtils';
 	import { simGPS } from '$lib/sim/sim';
+	import AltSun from '$lib/graphics/3d/AltSun.svelte';
 
 	export let showEquator: boolean;
 	export let showRotationAxis: boolean;
@@ -88,7 +89,7 @@
 
 <MilkyWay />
 
-<Sun />
+<AltSun />
 
 <!-- <AmbientLight /> -->
 

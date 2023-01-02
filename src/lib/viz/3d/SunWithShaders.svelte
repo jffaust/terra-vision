@@ -5,6 +5,7 @@
 	import * as THREE from 'three';
 	import { onDestroy, onMount } from 'svelte';
 	import Earth from '$lib/graphics/3d/Earth.svelte';
+	import { EARTH_RADIUS, SUN_RADIUS } from '$lib/sim/threejs';
 
 	// https://mgvez.github.io/jsorrery/
 	// https://github.com/mgvez/jsorrery/blob/master/src/graphics3d/Sun.js
@@ -32,7 +33,7 @@
 
 <!-- SpaceScene uses useThrelte so the canvas component must be inside a parent component -->
 <Canvas rendererParameters={{ antialias: true }} size={{ width, height }}>
-	<PerspectiveCamera position={{ x: 5, y: 0, z: 0 }} far={100000}>
+	<PerspectiveCamera position={{ x: SUN_RADIUS * 4, y: 0, z: 0 }} far={100000}>
 		<OrbitControls target={{ x: 0, y: 0, z: 0 }} zoomSpeed={0.5} />
 	</PerspectiveCamera>
 

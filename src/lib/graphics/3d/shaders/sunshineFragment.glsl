@@ -20,7 +20,7 @@ void main() {
   float radial = 1. - vDistToCenter;
   radial *= radial;
 
-  float brightness = 1. + radial;
+  float brightness = 4. - 4. * vDistToCenter;
 
   gl_FragColor.rgb = brightnessToColor(brightness) * radial;
   gl_FragColor.a = radial;

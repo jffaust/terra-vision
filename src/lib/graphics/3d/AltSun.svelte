@@ -49,7 +49,7 @@
 </script>
 
 <Group {position}>
-	<Mesh geometry={sunGeom} material={sunMat} />
+	<!-- <Mesh geometry={sunGeom} material={sunMat} /> -->
 	<Mesh geometry={sunshineGeom} material={sunshineMat} />
 	<PointLight decay={2} intensity={SUN_INTENSITY} />
 </Group>

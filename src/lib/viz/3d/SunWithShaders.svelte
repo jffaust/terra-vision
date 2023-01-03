@@ -16,13 +16,15 @@
 	export let width: number;
 	export let height: number;
 
-	let position = new THREE.Vector3(0, 0, 0);
+	let pos1 = new THREE.Vector3(0, 0, -1000);
+	let pos2 = new THREE.Vector3(0, 0, 1000);
 
 	let interval: NodeJS.Timer;
 
 	onMount(() => {
 		// interval = setInterval(() => {
-		// 	position.x -= 10;
+		// 	pos1.z -= 100;
+		// 	pos2.z += 100;
 		// }, 100);
 	});
 
@@ -33,12 +35,14 @@
 
 <!-- SpaceScene uses useThrelte so the canvas component must be inside a parent component -->
 <Canvas rendererParameters={{ antialias: true }} size={{ width, height }}>
-	<PerspectiveCamera position={{ x: SUN_RADIUS * 4, y: 0, z: 0 }} far={100000}>
+	<PerspectiveCamera position={{ x: SUN_RADIUS * 10, y: 0, z: 0 }} far={100000}>
 		<OrbitControls target={{ x: 0, y: 0, z: 0 }} zoomSpeed={0.5} />
 	</PerspectiveCamera>
 
 	<MilkyWay />
 
 	<!-- <Sun /> -->
-	<AltSun {position} />
+	<AltSun position={pos1} />
+
+	<AltSun position={pos2} />
 </Canvas>

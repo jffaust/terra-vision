@@ -1,0 +1,40 @@
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import DaylightHoursStaticChart from '$lib/viz/2d/static/DaylightHoursStaticChart.svelte';
+	import type { GPSCoords } from '$lib/types';
+
+	let pos: GPSCoords | null = null;
+
+	onMount(async () => {
+		pos = initGPSPosition();
+	});
+
+	function initGPSPosition(): GPSCoords | null {
+		const urlParams = new URLSearchParams(window.location.search);
+
+		const latStr = urlParams.get('lat');
+		const lonStr = urlParams.get('lon');
+
+		if (latStr && lonStr) {
+			try {
+				const parsed = {
+					lat: parseFloat(latStr),
+					lon: parseFloat(lonStr)
+				};
+				return parsed;
+			} catch (e) {}
+		}
+		return null;
+	}
+</script>
+
+<div class="app">
+	<DaylightHoursStaticChart {pos} />
+</div>
+
+<style>
+	.app {
+		width: 100vw;
+		height: 100vh;
+	}
+</style>

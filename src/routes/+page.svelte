@@ -9,7 +9,7 @@
 	import SkyView from '$lib/viz/3d/SkyView.svelte';
 	import Loading from '$lib/ui/loading.svelte';
 	import { simGPS } from '$lib/sim/sim';
-	import DaylightHours from '$lib/viz/2d/charts/DaylightHours.svelte';
+	import DaylightHoursSimChart from '$lib/viz/2d/sim/DaylightHoursSimChart.svelte';
 	import SunAltitudeSimChart from '$lib/viz/2d/sim/SunAltitudeSimChart.svelte';
 
 	let texturesLoaded = false;
@@ -89,7 +89,7 @@
 				{:else if view.type == VizTypes.SunAltitudeChart}
 					<SunAltitudeSimChart />
 				{:else if view.type == VizTypes.DaylightHoursChart}
-					<DaylightHours />
+					<DaylightHoursSimChart />
 				{/if}
 			</ViewContainer>
 		{/each}

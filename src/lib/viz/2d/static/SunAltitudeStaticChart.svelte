@@ -18,7 +18,6 @@
 	}
 
 	function calcSeriesData(coords: GPSCoords | null, year: number): Series[] {
-		console.log('refreshing');
 		if (coords == null) return [];
 
 		let data: Series[] = [];

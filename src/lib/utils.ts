@@ -37,6 +37,10 @@ export function getTimeInSeconds(d: Date): number {
     return d.getHours() * 60 * 60 + d.getMinutes() * 60 + d.getSeconds();
 }
 
+export function getTimeInHours(d: Date): number {
+    return d.getHours() + d.getMinutes() / 60 + d.getSeconds() / (60 * 60);
+}
+
 export function formatGPSCoords(coords: GPSCoords | null) {
     if (!coords) return "";
     else return `${coords.lat}, ${coords.lon}`

@@ -2,6 +2,7 @@
 	import ColumnDateChart, { type DataPoint } from '$lib/gaphics/2d/charts/ColumnDateChart.svelte';
 	import { formatGPSCoords } from '$lib/utils';
 	import type { GPSCoords } from '$lib/types';
+	import { calcDaylightHoursDay } from '$lib/data/sun';
 
 	export let pos: GPSCoords | null;
 
@@ -16,10 +17,16 @@
 		while (tmpDate.getFullYear() == year) {
 			initial.push({
 				x: new Date(tmpDate.getFullYear(), tmpDate.getMonth(), tmpDate.getDate()),
-				y: Math.random() * 24
+				y: calcDaylightHoursDay(
+					tmpDate.getFullYear(),
+					tmpDate.getMonth(),
+					tmpDate.getDate(),
+					coords
+				)
 			});
 			tmpDate.setDate(tmpDate.getDate() + 1);
 		}
+		console.log(initial);
 		return initial;
 	}
 </script>

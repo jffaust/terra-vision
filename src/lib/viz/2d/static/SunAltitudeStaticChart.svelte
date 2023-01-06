@@ -11,15 +11,15 @@
 	export let pos: GPSCoords | null;
 
 	let title = `Altitude of the sun over time for location ${formatGPSCoords(pos)} `;
-	let seriesData = calcSeriesData(new Date().getFullYear());
+	$: seriesData = calcSeriesData(pos, new Date().getFullYear());
 
 	function formatDateKey(date: Date): string {
 		return dateFormat(date, 'yyyy-m-d');
 	}
 
-	function calcSeriesData(year: number): Series[] {
+	function calcSeriesData(coords: GPSCoords | null, year: number): Series[] {
 		console.log('refreshing');
-		if (pos == null) return [];
+		if (coords == null) return [];
 
 		let data: Series[] = [];
 		let date = new Date(year, 0, 1);
@@ -30,7 +30,7 @@
 				year,
 				date.getMonth(),
 				date.getDay(),
-				pos,
+				coords,
 				86400 / (60 * 5)
 			);
 			const seriesDayData: Series = {

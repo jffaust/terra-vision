@@ -25,13 +25,15 @@
 
 <g class="line-group">
 	{#each $data as group, i}
-		<path
-			class="path-line"
-			d={path(group.values)}
-			stroke={calcStroke(group, i)}
-			on:pointermove={(e) => onHover(e, group)}
-			on:pointerleave={(e) => onHover(e, null)}
-		/>
+		{#if group.values.length > 0}
+			<path
+				class="path-line"
+				d={path(group.values)}
+				stroke={calcStroke(group, i)}
+				on:pointermove={(e) => onHover(e, group)}
+				on:pointerleave={(e) => onHover(e, null)}
+			/>
+		{/if}
 	{/each}
 </g>
 

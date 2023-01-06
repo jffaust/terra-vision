@@ -29,12 +29,12 @@
 			const dayData = calcSunAltitudeDay(
 				year,
 				date.getMonth(),
-				date.getDay(),
+				date.getDate(),
 				coords,
 				86400 / (60 * 5)
 			);
 			const seriesDayData: Series = {
-				date,
+				date: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
 				dateKey,
 				values: dayData
 					.filter((d) => d.altitude >= 0)
@@ -49,7 +49,9 @@
 			date.setDate(date.getDate() + 1);
 		}
 
-		console.log(data);
+		// const testData = data.slice(0, 5);
+		// console.log(testData);
+		// return testData;
 		return data;
 	}
 

@@ -5,6 +5,7 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 
+	export let onHover: (e: PointerEvent, series: any) => void = () => {};
 	export let calcStroke: (series: any, index: number) => string;
 
 	// @ts-ignore
@@ -24,7 +25,13 @@
 
 <g class="line-group">
 	{#each $data as group, i}
-		<path class="path-line" d={path(group.values)} stroke={calcStroke(group, i)} />
+		<path
+			class="path-line"
+			d={path(group.values)}
+			stroke={calcStroke(group, i)}
+			on:pointermove={(e) => onHover(e, group)}
+			on:pointerleave={(e) => onHover(e, null)}
+		/>
 	{/each}
 </g>
 
@@ -34,5 +41,9 @@
 		stroke-linejoin: round;
 		stroke-linecap: round;
 		stroke-width: 3px;
+	}
+
+	.path-line:hover {
+		stroke: aquamarine !important;
 	}
 </style>

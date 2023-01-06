@@ -13,19 +13,38 @@
 </script>
 
 <script lang="ts">
-	import { LayerCake, Svg } from 'layercake';
+	import { Html, LayerCake, Svg } from 'layercake';
 	import AxisX from '$lib/gaphics/2d/AxisX.svelte';
 	import AxisY from '$lib/gaphics/2d/AxisY.svelte';
 	import { scaleTime } from 'd3-scale';
 	import MultiLine from '$lib/gaphics/2d/MultiLine.svelte';
 	import { fit, parent_style } from '@leveluptuts/svelte-fit';
+	import Tooltip from '$lib/gaphics/2d/Tooltip.html.svelte';
 
 	export let title: string;
 	export let seriesData: Series[];
 	export let calcSeriesStrokeColor: (series: any, index: number) => string;
 
+	let evt: any;
+	let showTooltip = false;
+
 	function formatTimeTick(d: number): string {
 		return `${Math.floor(d / 60 / 60)}:00`;
+	}
+
+	function onHover(e: PointerEvent, series: Series) {
+		if (!series) {
+			showTooltip = false;
+			return;
+		}
+
+		showTooltip = true;
+		evt = {
+			detail: {
+				e,
+				dateKey: series.dateKey
+			}
+		};
 	}
 </script>
 
@@ -55,10 +74,18 @@
 					textColor="white"
 				/>
 				<AxisY textColor="white" />
-				<MultiLine calcStroke={calcSeriesStrokeColor} />
+				<MultiLine calcStroke={calcSeriesStrokeColor} {onHover} />
 
 				<slot />
 			</Svg>
+
+			<Html pointerEvents={false}>
+				{#if showTooltip === true}
+					<Tooltip {evt}>
+						<p>{evt.detail.dateKey}</p>
+					</Tooltip>
+				{/if}
+			</Html>
 		</LayerCake>
 	</div>
 </div>

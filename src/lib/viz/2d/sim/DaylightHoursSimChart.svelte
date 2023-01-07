@@ -13,12 +13,14 @@
 	import { onDestroy } from 'svelte';
 	import { fit, parent_style } from '@leveluptuts/svelte-fit';
 	import Column from '$lib/gaphics/2d/Column.svelte';
+	import ColumnDateChart from '$lib/gaphics/2d/charts/ColumnDateChart.svelte';
 
 	interface DataPoint {
 		x: Date; // Date object used on the X axis
 		y: number; // number of hours of daylight
 	}
 
+	let title = `Daylight hours for location ${formatGPSCoords($simGPS)}`;
 	let currentYear = $simCurrentDate.getFullYear();
 	$: data = calcData($simCurrentDate, $astroSkySim.altitude);
 
@@ -65,61 +67,23 @@
 	function formatDateKey(date: Date): string {
 		return dateFormat(date, 'yyyy-m-d');
 	}
-
-	function formatTimeTick(date: Date): string {
-		return dateFormat(date, 'mmm d');
-	}
 </script>
 
-<div class="main">
-	{#if !$simGPS}
+{#if !$simGPS}
+	<div class="msg">
 		<p><i>GPS position required</i></p>
-	{:else}
-		<header>
-			<div style={parent_style}>
-				<p use:fit>
-					<i>Daylight hours for location {formatGPSCoords($simGPS)} </i>
-				</p>
-			</div>
-		</header>
-		<div class="chart-container">
-			<LayerCake
-				{data}
-				x="x"
-				y="y"
-				yDomain={[0, 24]}
-				xScale={scaleTime()}
-				padding={{ top: 20, right: 20, bottom: 20, left: 20 }}
-			>
-				<!-- Components go here -->
-				<Svg>
-					<AxisX formatTick={formatTimeTick} textColor="white" gridlines={false} tickMarks={true} />
-					<AxisY textColor="white" ticks={10} />
-					<Column fill="yellow" />
-				</Svg>
-			</LayerCake>
-		</div>
-	{/if}
-</div>
+	</div>
+{:else}
+	<ColumnDateChart {title} {data} />
+{/if}
 
 <style>
-	.main {
+	.msg {
 		width: 100%;
 		height: 100%;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-	}
-
-	header {
-		height: 10%;
-		width: 75%;
-		text-align: center;
-	}
-
-	.chart-container {
-		width: 90%;
-		height: 80%;
 	}
 </style>

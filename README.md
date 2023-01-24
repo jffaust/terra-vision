@@ -1,4 +1,7 @@
 # Terra Vision
+
+![demo](./docs/demo.gif)
+
 Terra Vision is a web application that provides insights about the Earth in the form of simulations, charts, maps, etc. The initial drive behind the project was to facilitate the application of permaculture based on the idea that the better we understand our world and its complexity, the better we can live in harmony with it and live a more sustainable life. 
 
 The current focus of the project is on insights about the Sun. It is a good opportunity to lay out the fondation of the project. We have the large scale simulation of the Earth and the Sun in space, where we can better understand how the tilt of the Earth causes seasons and why in some cases the Sun never rises or never sets for long periods of time. We also have the small scale simulation of how the Sun moves through the sky from the perspective of a specicic position on the surface of the Earth, enabling us to simulate shadows and design more energy-efficient homes and agriculture. The application uses the great [Astronomy Engine](https://github.com/cosinekitty/astronomy) library to get the positions of the Sun and the Earth at different times along with orientation data and more.
